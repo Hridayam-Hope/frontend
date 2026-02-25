@@ -88,7 +88,7 @@ export default function VolunteersPage() {
     {
       key: "last_activity_date",
       label: "Last Active",
-      render: (item) => item.last_activity_date ? new Date(item.last_activity_date).toLocaleDateString() : <span className="text-gray-300">—</span>,
+      render: (item) => item.last_activity_date ? new Date(item.last_activity_date).toLocaleDateString() : <span className="text-gray-300">-</span>,
     },
   ];
 

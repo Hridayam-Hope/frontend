@@ -99,7 +99,7 @@ async function apiFetch<T>(
 
   let res = await fetch(url, { ...rest, headers });
 
-  // Token expired — try refresh
+  // Token expired - try refresh
   if (res.status === 401 && tokens?.refresh_token) {
     const newToken = await refreshAccessToken();
     if (newToken) {

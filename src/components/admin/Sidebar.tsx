@@ -105,7 +105,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-gray-100 min-h-[73px]">
-        <Image src="/logo.webp" alt="Hridayam" width={36} height={36} className="shrink-0" />
+        <Image src="/logo.webp" alt="Hridayam" width={36} height={36} className="shrink-0 rounded-md" />
         {!collapsed && (
           <div className="overflow-hidden">
             <h1 className="text-sm font-bold bg-gradient-to-r from-brand-500 to-accent-500 bg-clip-text text-transparent whitespace-nowrap">

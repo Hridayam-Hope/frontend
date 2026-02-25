@@ -228,7 +228,7 @@ export default function CampaignForm({
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const categoryName = categories.find((c) => c.id === form.category_id)?.name || "—";
+  const categoryName = categories.find((c) => c.id === form.category_id)?.name || "-";
   const typeLabel = CAMPAIGN_TYPES.find((t) => t.value === form.campaign_type)?.label || form.campaign_type;
 
   return (
@@ -440,7 +440,7 @@ export default function CampaignForm({
           </section>
       </div>
 
-      {/* Step 2: Media — always mounted so ImageUpload state persists */}
+      {/* Step 2: Media - always mounted so ImageUpload state persists */}
       <div className={currentStep === "media" ? "space-y-6" : "hidden"}>
           <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Featured Image</h2>
@@ -629,17 +629,17 @@ export default function CampaignForm({
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-brand-400 to-accent-400 rounded-full w-0" />
                 </div>
-                <p className="text-xs text-gray-400 mt-1.5">0% achieved — Campaign will start as Draft</p>
+                <p className="text-xs text-gray-400 mt-1.5">0% achieved - Campaign will start as Draft</p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
                   { label: "Category", value: categoryName, icon: "🏷️" },
-                  { label: "Location", value: form.location || "—", icon: "📍" },
-                  { label: "Start Date", value: form.start_date ? new Date(form.start_date).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "—", icon: "📅" },
-                  { label: "End Date", value: form.end_date ? new Date(form.end_date).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "—", icon: "🏁" },
-                  { label: "Beneficiaries", value: form.beneficiary_count || "—", icon: "👥" },
-                  { label: "Beneficiary Type", value: form.beneficiary_type || "—", icon: "🎯" },
+                  { label: "Location", value: form.location || "-", icon: "📍" },
+                  { label: "Start Date", value: form.start_date ? new Date(form.start_date).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "-", icon: "📅" },
+                  { label: "End Date", value: form.end_date ? new Date(form.end_date).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "-", icon: "🏁" },
+                  { label: "Beneficiaries", value: form.beneficiary_count || "-", icon: "👥" },
+                  { label: "Beneficiary Type", value: form.beneficiary_type || "-", icon: "🎯" },
                   { label: "Visibility", value: form.visibility, icon: "🔒" },
                   { label: "Priority", value: form.priority, icon: "⚡" },
                 ].map((item) => (
@@ -691,7 +691,7 @@ export default function CampaignForm({
 
         <p className="text-xs text-gray-400 hidden sm:block">
           Step {step + 1} of {STEPS.length}
-          {currentStep === "preview" && (isEdit ? " — Review your changes" : " — Campaign will be created as Draft")}
+          {currentStep === "preview" && (isEdit ? " - Review your changes" : " - Campaign will be created as Draft")}
         </p>
 
         <div>

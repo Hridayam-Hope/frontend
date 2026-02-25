@@ -56,7 +56,7 @@ export default function DonationsPage() {
           <StatCard label="Total Amount" value={`₹${stats.total_amount.toLocaleString()}`} color="from-brand-400 to-brand-500" />
           <StatCard label="Completed" value={stats.completed_donations} color="from-emerald-400 to-emerald-500" />
           <StatCard label="Pending" value={stats.pending_donations} color="from-amber-400 to-amber-500" />
-          <StatCard label="Average" value={`₹${stats.average_donation.toLocaleString()}`} color="from-accent-400 to-accent-500" />
+          <StatCard label="Average" value={`₹${parseFloat(Number(stats.average_donation).toFixed(2)).toLocaleString()}`} color="from-accent-400 to-accent-500" />
         </div>
       )}
 

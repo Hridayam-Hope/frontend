@@ -69,10 +69,10 @@ export default function DonationDetailPage() {
             { label: "Campaign", value: donation.campaign_title || "General" },
             { label: "Anonymous", value: donation.is_anonymous ? "Yes" : "No" },
             { label: "Receipt Sent", value: donation.receipt_sent ? "Yes" : "No" },
-            { label: "Tax Certificate", value: donation.tax_certificate_number || "—" },
-            { label: "Phone", value: donation.donor_phone || "—" },
+            { label: "Tax Certificate", value: donation.tax_certificate_number || "-" },
+            { label: "Phone", value: donation.donor_phone || "-" },
             { label: "Created", value: new Date(donation.created_at).toLocaleString() },
-            { label: "Completed", value: donation.completed_at ? new Date(donation.completed_at).toLocaleString() : "—" },
+            { label: "Completed", value: donation.completed_at ? new Date(donation.completed_at).toLocaleString() : "-" },
           ].map((item) => (
             <div key={item.label}>
               <p className="text-xs text-gray-400 uppercase tracking-wider">{item.label}</p>

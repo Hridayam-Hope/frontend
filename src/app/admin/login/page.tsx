@@ -39,7 +39,7 @@ export default function LoginPage() {
               alt="Hridayam Hope Foundation"
               width={64}
               height={64}
-              className="mx-auto mb-4"
+              className="mx-auto mb-4 rounded-md"
             />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-brand-500 to-accent-500 bg-clip-text text-transparent">
               Hridayam Hope

@@ -572,6 +572,7 @@ export interface DashboardSummary {
     completed: number;
     pending: number;
     failed: number;
+    average_amount: number;
   };
   inkind: {
     total: number;
@@ -608,4 +609,5 @@ export interface DashboardSummary {
     user_email: string;
     created_at: string;
   }[];
+  cached_at: string;
 }

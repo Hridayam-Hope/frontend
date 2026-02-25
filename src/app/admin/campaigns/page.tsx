@@ -98,17 +98,27 @@ export default function CampaignsPage() {
     {
       key: "progress_percentage",
       label: "Progress",
-      render: (item) => (
-        <div className="flex items-center gap-2">
-          <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-brand-400 to-accent-400 rounded-full"
-              style={{ width: `${Math.min(item.progress_percentage, 100)}%` }}
-            />
+      render: (item) => {
+        const pct = item.progress_percentage;
+        const overFunded = pct > 100;
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${
+                  overFunded
+                    ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
+                    : "bg-gradient-to-r from-brand-400 to-accent-400"
+                }`}
+                style={{ width: `${Math.min(pct, 100)}%` }}
+              />
+            </div>
+            <span className={`text-xs font-medium ${
+              overFunded ? "text-emerald-600" : "text-gray-500"
+            }`}>{pct}%</span>
           </div>
-          <span className="text-xs text-gray-500">{item.progress_percentage}%</span>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "achieved_value",

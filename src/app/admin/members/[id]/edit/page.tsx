@@ -59,7 +59,7 @@ export default function EditMemberPage() {
       <button onClick={() => router.back()} className="text-sm text-gray-500 hover:text-gray-700 mb-4">
         ← Back to Member
       </button>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Member — {member.full_name}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Member - {member.full_name}</h1>
       <MemberForm
         initialData={initialData}
         onSubmit={handleSubmit}

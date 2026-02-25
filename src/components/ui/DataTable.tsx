@@ -73,7 +73,7 @@ export default function DataTable<T extends { id: number }>({
                   >
                     {col.render
                       ? col.render(item)
-                      : String((item as Record<string, unknown>)[col.key] ?? "—")}
+                      : String((item as Record<string, unknown>)[col.key] ?? "-")}
                   </td>
                 ))}
               </tr>

@@ -181,17 +181,32 @@ export default function CampaignDetailPage() {
           {/* Progress bar */}
           <div className="mt-6 bg-gray-50 rounded-lg p-4">
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-600 font-medium">{progressLabel}</span>
-              <span className="font-bold text-gray-900">{campaign.progress_percentage}%</span>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-600 font-medium">{progressLabel}</span>
+                {campaign.progress_percentage > 100 && (
+                  <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    Goal Met!
+                  </span>
+                )}
+              </div>
+              <span className={`font-bold ${
+                campaign.progress_percentage > 100 ? "text-emerald-600" : "text-gray-900"
+              }`}>{campaign.progress_percentage}%</span>
             </div>
             <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-brand-400 to-accent-400 rounded-full transition-all duration-500"
+                className={`h-full rounded-full transition-all duration-500 ${
+                  campaign.progress_percentage > 100
+                    ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
+                    : "bg-gradient-to-r from-brand-400 to-accent-400"
+                }`}
                 style={{ width: `${Math.min(campaign.progress_percentage, 100)}%` }}
               />
             </div>
             <div className="flex justify-between text-sm mt-2">
-              <span className="text-gray-500">{currencySymbol}{Number(campaign.achieved_value).toLocaleString()}{unitSuffix} achieved</span>
+              <span className={campaign.progress_percentage > 100 ? "text-emerald-600 font-medium" : "text-gray-500"}>
+                {currencySymbol}{Number(campaign.achieved_value).toLocaleString()}{unitSuffix} raised
+              </span>
               <span className="text-gray-500">{currencySymbol}{Number(campaign.target_value).toLocaleString()}{unitSuffix} goal</span>
             </div>
           </div>
@@ -222,16 +237,16 @@ export default function CampaignDetailPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { label: "Type", value: campaign.campaign_type, icon: "📋" },
-              { label: "Location", value: campaign.location || "—", icon: "📍" },
-              { label: "Beneficiaries", value: campaign.beneficiary_count || "—", icon: "👥" },
+              { label: "Location", value: campaign.location || "-", icon: "📍" },
+              { label: "Beneficiaries", value: campaign.beneficiary_count || "-", icon: "👥" },
               { label: "Views", value: campaign.view_count, icon: "👁️" },
               { label: "Shares", value: campaign.share_count, icon: "🔗" },
               { label: "Priority", value: campaign.priority, icon: "⚡" },
               { label: "Visibility", value: campaign.visibility, icon: "🔒" },
-              { label: "Days Left", value: campaign.days_remaining ?? "—", icon: "⏳" },
+              { label: "Days Left", value: campaign.days_remaining ?? "-", icon: "⏳" },
               { label: "Start Date", value: new Date(campaign.start_date).toLocaleDateString(), icon: "📅" },
-              { label: "End Date", value: campaign.end_date ? new Date(campaign.end_date).toLocaleDateString() : "—", icon: "🏁" },
-              { label: "Category", value: campaign.category_name || "—", icon: "🏷️" },
+              { label: "End Date", value: campaign.end_date ? new Date(campaign.end_date).toLocaleDateString() : "-", icon: "🏁" },
+              { label: "Category", value: campaign.category_name || "-", icon: "🏷️" },
               { label: "Created", value: new Date(campaign.created_at).toLocaleDateString(), icon: "🕐" },
             ].map((item) => (
               <div key={item.label} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">

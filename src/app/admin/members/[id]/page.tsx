@@ -78,12 +78,12 @@ export default function MemberDetailPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { label: "Email", value: member.email },
-            { label: "Phone", value: member.phone || "—" },
+            { label: "Phone", value: member.phone || "-" },
             { label: "Role", value: member.role },
             { label: "Position", value: member.position },
             { label: "Tenure", value: `${member.tenure_years} years` },
             { label: "Joined", value: new Date(member.joined_date).toLocaleDateString() },
-            { label: "Tenure End", value: member.tenure_end_date ? new Date(member.tenure_end_date).toLocaleDateString() : "—" },
+            { label: "Tenure End", value: member.tenure_end_date ? new Date(member.tenure_end_date).toLocaleDateString() : "-" },
             { label: "Display Order", value: member.display_order },
           ].map((item) => (
             <div key={item.label}>

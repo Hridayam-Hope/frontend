@@ -262,7 +262,7 @@ export default function VolunteerDetailPage() {
                       <td className="py-3 pr-4 font-medium text-gray-900">{a.hours}h</td>
                       <td className="py-3 pr-4 text-gray-600 max-w-xs truncate">{a.description}</td>
                       <td className="py-3 text-gray-500 text-xs">
-                        {a.campaign_title || a.opportunity_title || "—"}
+                        {a.campaign_title || a.opportunity_title || "-"}
                       </td>
                     </tr>
                   ))}
