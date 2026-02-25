@@ -246,6 +246,35 @@ export interface VolunteerApplicationListItem {
   reviewed_at: string | null;
 }
 
+export interface VolunteerApplicationDetail {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  date_of_birth: string;
+  address: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  skills: string[];
+  interests: string;
+  availability_weekdays: boolean;
+  availability_weekends: boolean;
+  hours_per_week: number;
+  languages: string[];
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
+  emergency_contact_relationship: string;
+  status: string;
+  application_date: string;
+  reviewed_by_id: number | null;
+  reviewed_at: string | null;
+  review_notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface VolunteerProfile {
   id: number;
   full_name: string;
@@ -272,6 +301,35 @@ export interface VolunteerProfileListItem {
   last_activity_date: string | null;
 }
 
+export interface VolunteerProfileDetail {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  date_of_birth: string;
+  profile_photo: string | null;
+  address: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  skills: string[];
+  interests: string;
+  availability_weekdays: boolean;
+  availability_weekends: boolean;
+  hours_per_week: number;
+  languages: string[];
+  emergency_contact_name: string;
+  emergency_contact_phone: string;
+  emergency_contact_relationship: string;
+  is_active: boolean;
+  joined_date: string;
+  total_hours: number;
+  last_activity_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface VolunteerOpportunity {
   id: number;
   title: string;
@@ -285,6 +343,88 @@ export interface VolunteerOpportunity {
   volunteers_accepted: number;
   status: string;
   is_published: boolean;
+}
+
+export interface VolunteerOpportunityDetail {
+  id: number;
+  title: string;
+  description: string;
+  location: string;
+  city: string;
+  state: string;
+  event_date: string;
+  event_time: string;
+  duration_hours: number;
+  required_skills: string[];
+  volunteers_needed: number;
+  volunteers_accepted: number;
+  status: string;
+  is_published: boolean;
+  created_by_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VolunteerActivity {
+  id: number;
+  volunteer_id: number;
+  volunteer_name: string;
+  activity_type: string;
+  activity_date: string;
+  hours: number;
+  description: string;
+  campaign_id: number | null;
+  campaign_title: string | null;
+  opportunity_id: number | null;
+  opportunity_title: string | null;
+  people_helped: number | null;
+  funds_raised: number | null;
+  recorded_by_id: number;
+  created_at: string;
+}
+
+export interface VolunteerCertificate {
+  id: number;
+  volunteer_id: number;
+  volunteer_name: string;
+  certificate_type: string;
+  milestone_value: number;
+  issued_date: string;
+  certificate_url: string | null;
+}
+
+export interface CampaignVolunteerItem {
+  id: number;
+  volunteer_id: number;
+  volunteer_name: string;
+  campaign_id: number;
+  campaign_title: string;
+  status: string;
+  hours_contributed: number;
+  applied_date: string;
+  reviewed_by_id: number | null;
+  reviewed_at: string | null;
+}
+
+export interface OpportunityApplicationItem {
+  id: number;
+  volunteer_id: number;
+  volunteer_name: string;
+  opportunity_id: number;
+  opportunity_title: string;
+  status: string;
+  applied_date: string;
+  reviewed_by_id: number | null;
+  reviewed_at: string | null;
+}
+
+export interface VolunteerSkill {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  category: string;
+  is_active: boolean;
 }
 
 // ============================================================================
@@ -402,4 +542,70 @@ export interface AuditLogStats {
   archived_logs: number;
   by_action: Record<string, number>;
   by_entity_type: Record<string, number>;
+}
+
+// ============================================================================
+// Dashboard Types
+// ============================================================================
+
+export interface DashboardSummary {
+  campaigns: {
+    total: number;
+    active: number;
+    draft: number;
+    completed: number;
+    paused: number;
+  };
+  top_campaigns: {
+    id: number;
+    title: string;
+    target_unit: string;
+    target_value: number;
+    achieved_value: number;
+    target_currency: string;
+    status: string;
+    progress: number;
+  }[];
+  donations: {
+    total: number;
+    total_amount: number;
+    completed: number;
+    pending: number;
+    failed: number;
+  };
+  inkind: {
+    total: number;
+    pending: number;
+    verified: number;
+    donated: number;
+    total_value: number;
+  };
+  volunteers: {
+    total: number;
+    active: number;
+    total_hours: number;
+    pending_applications: number;
+  };
+  opportunities: {
+    total: number;
+    open: number;
+    closed: number;
+  };
+  members: {
+    total: number;
+    active: number;
+  };
+  subscribers: {
+    total: number;
+    active: number;
+  };
+  recent_activity: {
+    id: number;
+    action: string;
+    entity_type: string;
+    entity_name: string;
+    description: string;
+    user_email: string;
+    created_at: string;
+  }[];
 }

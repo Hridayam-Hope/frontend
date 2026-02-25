@@ -2,21 +2,37 @@ import { apiFetch } from "./client";
 import type {
   PaginatedResponse,
   VolunteerApplicationListItem,
+  VolunteerApplicationDetail,
   VolunteerProfileListItem,
   VolunteerProfile,
+  VolunteerProfileDetail,
   VolunteerOpportunity,
+  VolunteerOpportunityDetail,
+  VolunteerActivity,
+  VolunteerCertificate,
+  CampaignVolunteerItem,
+  VolunteerSkill,
+  OpportunityApplicationItem,
   MessageResponse,
 } from "@/types/api";
 
-export async function getApplications(params?: {
-  page?: number;
-  page_size?: number;
-  status?: string;
-}) {
+// ── Skills ──
+
+export async function getSkills() {
+  return apiFetch<VolunteerSkill[]>("/volunteers/skills");
+}
+
+// ── Applications ──
+
+export async function getApplications(params?: Record<string, unknown>) {
   return apiFetch<PaginatedResponse<VolunteerApplicationListItem>>(
     "/volunteers/applications",
     { params: params as Record<string, string | number> }
   );
+}
+
+export async function getApplication(id: number) {
+  return apiFetch<VolunteerApplicationDetail>(`/volunteers/applications/${id}`);
 }
 
 export async function approveApplication(id: number, notes?: string) {
@@ -33,12 +49,9 @@ export async function rejectApplication(id: number, notes?: string) {
   );
 }
 
-export async function getVolunteers(params?: {
-  page?: number;
-  page_size?: number;
-  is_active?: boolean;
-  city?: string;
-}) {
+// ── Volunteers ──
+
+export async function getVolunteers(params?: Record<string, unknown>) {
   return apiFetch<PaginatedResponse<VolunteerProfileListItem>>(
     "/volunteers/volunteers",
     { params: params as Record<string, string | number | boolean> }
@@ -46,7 +59,14 @@ export async function getVolunteers(params?: {
 }
 
 export async function getVolunteer(id: number) {
-  return apiFetch<VolunteerProfile>(`/volunteers/volunteers/${id}`);
+  return apiFetch<VolunteerProfileDetail>(`/volunteers/volunteers/${id}`);
+}
+
+export async function updateVolunteer(id: number, data: Record<string, unknown>) {
+  return apiFetch<VolunteerProfile>(`/volunteers/volunteers/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
 }
 
 export async function deactivateVolunteer(id: number) {
@@ -55,13 +75,108 @@ export async function deactivateVolunteer(id: number) {
   });
 }
 
+// ── Volunteer Activities & Certificates ──
+
+export async function getVolunteerActivities(id: number) {
+  return apiFetch<VolunteerActivity[]>(`/volunteers/volunteers/${id}/activities`);
+}
+
+export async function recordActivity(volunteerId: number, data: Record<string, unknown>) {
+  return apiFetch<VolunteerActivity>(`/volunteers/volunteers/${volunteerId}/activities`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getVolunteerCertificates(id: number) {
+  return apiFetch<VolunteerCertificate[]>(`/volunteers/volunteers/${id}/certificates`);
+}
+
+// ── Campaign Volunteers ──
+
+export async function getCampaignVolunteers(campaignId: number) {
+  return apiFetch<CampaignVolunteerItem[]>(`/volunteers/campaigns/${campaignId}/volunteers`);
+}
+
+export async function assignCampaignVolunteer(campaignId: number, volunteerId: number) {
+  return apiFetch<CampaignVolunteerItem>(`/volunteers/campaigns/${campaignId}/volunteers/assign`, {
+    method: "POST",
+    body: JSON.stringify({ volunteer_id: volunteerId }),
+  });
+}
+
+export async function acceptCampaignVolunteer(assignmentId: number) {
+  return apiFetch<MessageResponse>(`/volunteers/campaigns/volunteers/${assignmentId}/accept`, {
+    method: "PATCH",
+  });
+}
+
+export async function rejectCampaignVolunteer(assignmentId: number, notes: string) {
+  return apiFetch<MessageResponse>(`/volunteers/campaigns/volunteers/${assignmentId}/reject`, {
+    method: "PATCH",
+    body: JSON.stringify({ notes }),
+  });
+}
+
+export async function recordCampaignHours(assignmentId: number, data: Record<string, unknown>) {
+  return apiFetch<VolunteerActivity>(`/volunteers/campaigns/volunteers/${assignmentId}/hours`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Opportunities ──
+
 export async function getOpportunities() {
   return apiFetch<VolunteerOpportunity[]>("/volunteers/opportunities");
 }
 
-export async function createOpportunity(data: Partial<VolunteerOpportunity>) {
-  return apiFetch<VolunteerOpportunity>("/volunteers/opportunities", {
+export async function getAllOpportunities(params?: Record<string, unknown>) {
+  return apiFetch<PaginatedResponse<VolunteerOpportunity>>("/volunteers/opportunities/all", {
+    params: params as Record<string, string | number>,
+  });
+}
+
+export async function getOpportunity(id: number) {
+  return apiFetch<VolunteerOpportunityDetail>(`/volunteers/opportunities/${id}`);
+}
+
+export async function createOpportunity(data: Record<string, unknown>) {
+  return apiFetch<VolunteerOpportunityDetail>("/volunteers/opportunities", {
     method: "POST",
     body: JSON.stringify(data),
   });
+}
+
+export async function closeOpportunity(id: number) {
+  return apiFetch<MessageResponse>(`/volunteers/opportunities/${id}/close`, {
+    method: "PATCH",
+  });
+}
+
+export async function updateOpportunity(id: number, data: Record<string, unknown>) {
+  return apiFetch<VolunteerOpportunityDetail>(`/volunteers/opportunities/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getOpportunityApplications(opportunityId: number) {
+  return apiFetch<OpportunityApplicationItem[]>(
+    `/volunteers/opportunities/${opportunityId}/applications`
+  );
+}
+
+export async function acceptOpportunityApplication(applicationId: number) {
+  return apiFetch<MessageResponse>(
+    `/volunteers/opportunities/applications/${applicationId}/accept`,
+    { method: "PATCH" }
+  );
+}
+
+export async function rejectOpportunityApplication(applicationId: number) {
+  return apiFetch<MessageResponse>(
+    `/volunteers/opportunities/applications/${applicationId}/reject`,
+    { method: "PATCH" }
+  );
 }
