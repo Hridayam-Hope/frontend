@@ -10,6 +10,7 @@ interface DataTableProps<T> {
   data: T[];
   loading?: boolean;
   onRowClick?: (item: T) => void;
+  selectedRowId?: number | null;
   emptyMessage?: string;
 }
 
@@ -18,6 +19,7 @@ export default function DataTable<T extends { id: number }>({
   data,
   loading = false,
   onRowClick,
+  selectedRowId,
   emptyMessage = "No data found",
 }: DataTableProps<T>) {
   if (loading) {
@@ -62,9 +64,11 @@ export default function DataTable<T extends { id: number }>({
               <tr
                 key={item.id}
                 onClick={() => onRowClick?.(item)}
-                className={`hover:bg-gray-50/50 transition-colors ${
-                  onRowClick ? "cursor-pointer" : ""
-                }`}
+                className={`transition-colors ${
+                  selectedRowId === item.id
+                    ? "bg-brand-50/60"
+                    : "hover:bg-gray-50/50"
+                } ${onRowClick ? "cursor-pointer" : ""}`}
               >
                 {columns.map((col) => (
                   <td

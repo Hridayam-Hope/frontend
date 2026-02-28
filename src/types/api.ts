@@ -576,6 +576,13 @@ export interface DashboardSummary {
     total: number;
     active: number;
   };
+  volunteer_donations: {
+    total_amount: number;
+    total_count: number;
+    this_month_amount: number;
+    this_month_count: number;
+    contributing_volunteers: number;
+  };
   recent_activity: {
     id: number;
     action: string;
@@ -586,4 +593,61 @@ export interface DashboardSummary {
     created_at: string;
   }[];
   cached_at: string;
+}
+
+// ============================================================================
+// Volunteer Donation (Finance) Types
+// ============================================================================
+
+export interface VolunteerDonationListItem {
+  id: number;
+  volunteer_id: number;
+  volunteer_name: string;
+  amount: number;
+  date: string;
+  payment_method: string;
+  recorded_by_email: string;
+  created_at: string;
+}
+
+export interface VolunteerDonationDetail {
+  id: number;
+  volunteer_id: number;
+  volunteer_name: string;
+  volunteer_role: string;
+  amount: number;
+  date: string;
+  payment_method: string;
+  transaction_reference: string;
+  notes: string;
+  recorded_by_email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VolunteerDonationSummary {
+  total_amount: number;
+  total_count: number;
+  this_month_amount: number;
+  this_month_count: number;
+  month_wise: {
+    month: number;
+    year: number;
+    total: number;
+    count: number;
+  }[];
+  top_volunteers: {
+    volunteer_id: number;
+    volunteer_name: string;
+    volunteer_role: string;
+    total_amount: number;
+    donation_count: number;
+    last_donation_date: string | null;
+  }[];
+}
+
+export interface BulkDonationResult {
+  created: number;
+  failed: number;
+  errors: string[];
 }
