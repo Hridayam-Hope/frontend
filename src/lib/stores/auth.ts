@@ -40,7 +40,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       document.cookie = "hridayam_authenticated=true; path=/; max-age=86400";
       set({ user, error: null });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Login failed";
+      // Extract user-friendly message from ApiError
+      let msg = "Login failed";
+      if (err instanceof Error) {
+        msg = err.message;
+      }
       set({ error: msg });
       throw err;
     }

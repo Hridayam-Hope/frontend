@@ -62,6 +62,13 @@ export async function getVolunteer(id: number) {
   return apiFetch<VolunteerProfileDetail>(`/volunteers/volunteers/${id}`);
 }
 
+export async function createVolunteer(data: Record<string, unknown>) {
+  return apiFetch<VolunteerProfile>("/volunteers/volunteers", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function updateVolunteer(id: number, data: Record<string, unknown>) {
   return apiFetch<VolunteerProfile>(`/volunteers/volunteers/${id}`, {
     method: "PUT",

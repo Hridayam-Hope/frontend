@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCampaignsStore } from "@/lib/stores/campaigns";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import Button from "@/components/ui/Button";
 import type { Category } from "@/types/api";
 
@@ -10,12 +12,13 @@ export default function CategoriesPage() {
   const router = useRouter();
   const { categories, fetchCategories, createCategory, updateCategory, deleteCategory } =
     useCampaignsStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchCategories(true);
@@ -26,7 +29,6 @@ export default function CategoriesPage() {
     setDescription("");
     setEditingId(null);
     setShowForm(false);
-    setError("");
   };
 
   const startEdit = (cat: Category) => {
@@ -38,20 +40,21 @@ export default function CategoriesPage() {
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      setError("Category name is required");
+      showToast("error", "Category name is required");
       return;
     }
     setSubmitting(true);
-    setError("");
     try {
       if (editingId) {
         await updateCategory(editingId, { name, description });
+        showToast("success", "Category updated successfully");
       } else {
         await createCategory({ name, description });
+        showToast("success", "Category created successfully");
       }
       resetForm();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save category");
+      handleError(err, "Failed to save category");
     } finally {
       setSubmitting(false);
     }
@@ -61,8 +64,9 @@ export default function CategoriesPage() {
     if (confirm("Delete this category? This cannot be undone.")) {
       try {
         await deleteCategory(id);
+        showToast("success", "Category deleted successfully");
       } catch (err) {
-        alert(err instanceof Error ? err.message : "Cannot delete category");
+        handleError(err, "Cannot delete category");
       }
     }
   };
@@ -100,11 +104,6 @@ export default function CategoriesPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             {editingId ? "Edit Category" : "New Category"}
           </h2>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
-              {error}
-            </div>
-          )}
           <div className="space-y-4">
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">Name *</label>

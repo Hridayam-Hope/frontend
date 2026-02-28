@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import { StatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import type { VolunteerApplicationDetail } from "@/types/api";
@@ -12,6 +14,8 @@ export default function ApplicationDetailPage() {
   const numId = Number(id);
   const router = useRouter();
   const { fetchApplication, approveApplication, rejectApplication, appDetailLoading, applicationCache } = useVolunteersStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [app, setApp] = useState<VolunteerApplicationDetail | null>(null);
   const [reviewModal, setReviewModal] = useState<"approve" | "reject" | null>(null);
   const [reviewNotes, setReviewNotes] = useState("");
@@ -30,14 +34,18 @@ export default function ApplicationDetailPage() {
     try {
       if (reviewModal === "approve") {
         await approveApplication(numId, reviewNotes);
+        showToast("success", "Application approved successfully");
       } else {
         await rejectApplication(numId, reviewNotes);
+        showToast("success", "Application rejected");
       }
       setReviewModal(null);
       setReviewNotes("");
       // Refresh
       const updated = await fetchApplication(numId, true);
       setApp(updated);
+    } catch (error) {
+      handleError(error, `Failed to ${reviewModal} application`);
     } finally {
       setReviewLoading(false);
     }

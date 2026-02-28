@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useInKindStore } from "@/lib/stores/inkind";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import { StatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import type { InKindDonationDetail } from "@/types/api";
@@ -18,9 +20,10 @@ export default function InKindDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { fetchDonation, updateStatus, issueCertificate, detailLoading, donationCache } = useInKindStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [donation, setDonation] = useState<InKindDonationDetail | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -48,16 +51,23 @@ export default function InKindDetailPage() {
       await updateStatus(donation.id, status);
       const updated = await fetchDonation(donation.id, true);
       setDonation(updated);
+      showToast("success", `Status updated to ${status.replace(/_/g, " ")}`);
+    } catch (error) {
+      handleError(error, "Failed to update status");
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleIssueCert = async () => {
-    const msg = await issueCertificate(donation.id);
-    setMessage(msg);
-    const updated = await fetchDonation(donation.id, true);
-    setDonation(updated);
+    try {
+      const msg = await issueCertificate(donation.id);
+      showToast("success", msg);
+      const updated = await fetchDonation(donation.id, true);
+      setDonation(updated);
+    } catch (error) {
+      handleError(error, "Failed to issue certificate");
+    }
   };
 
   // Status flow visualization
@@ -78,12 +88,6 @@ export default function InKindDetailPage() {
           </div>
           <StatusBadge status={donation.status} />
         </div>
-
-        {message && (
-          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-lg px-4 py-3 mb-6">
-            {message}
-          </div>
-        )}
 
         {/* Status flow */}
         {donation.status !== "rejected" && (

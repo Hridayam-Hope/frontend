@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import DataTable, { type Column } from "@/components/ui/DataTable";
 import Pagination from "@/components/ui/Pagination";
 import { StatusBadge } from "@/components/ui/Badge";
@@ -15,6 +17,8 @@ export default function ApplicationsPage() {
     applications, appsTotal, appsPage, appsTotalPages, appsLoading,
     fetchApplications, approveApplication, rejectApplication,
   } = useVolunteersStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const [reviewModal, setReviewModal] = useState<{ id: number; action: "approve" | "reject" } | null>(null);
@@ -54,11 +58,15 @@ export default function ApplicationsPage() {
     try {
       if (reviewModal.action === "approve") {
         await approveApplication(reviewModal.id, reviewNotes);
+        showToast("success", "Application approved successfully");
       } else {
         await rejectApplication(reviewModal.id, reviewNotes);
+        showToast("success", "Application rejected");
       }
       setReviewModal(null);
       setReviewNotes("");
+    } catch (error) {
+      handleError(error, `Failed to ${reviewModal.action} application`);
     } finally {
       setReviewLoading(false);
     }

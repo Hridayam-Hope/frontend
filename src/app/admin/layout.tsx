@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AuthProvider } from "@/lib/auth/context";
 import { useAuthStore } from "@/lib/stores/auth";
+import { ToastProvider } from "@/lib/toast";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
 
@@ -73,7 +74,9 @@ export default function AdminLayout({
 }) {
   return (
     <AuthProvider>
-      <AdminShell>{children}</AdminShell>
+      <ToastProvider>
+        <AdminShell>{children}</AdminShell>
+      </ToastProvider>
     </AuthProvider>
   );
 }

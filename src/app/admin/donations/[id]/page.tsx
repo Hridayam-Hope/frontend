@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useDonationsStore } from "@/lib/stores/donations";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import { StatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import type { DonationDetail } from "@/types/api";
@@ -11,8 +13,9 @@ export default function DonationDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { fetchDonation, issueCertificate, detailLoading, donationCache } = useDonationsStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [donation, setDonation] = useState<DonationDetail | null>(null);
-  const [certMessage, setCertMessage] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -33,10 +36,14 @@ export default function DonationDetailPage() {
   if (!donation) return <p className="p-6 text-gray-500">Donation not found</p>;
 
   const handleIssueCert = async () => {
-    const msg = await issueCertificate(donation.id);
-    setCertMessage(msg);
-    const updated = await fetchDonation(donation.id, true);
-    setDonation(updated);
+    try {
+      const msg = await issueCertificate(donation.id);
+      showToast("success", msg);
+      const updated = await fetchDonation(donation.id, true);
+      setDonation(updated);
+    } catch (error) {
+      handleError(error, "Failed to issue certificate");
+    }
   };
 
   return (
@@ -53,12 +60,6 @@ export default function DonationDetailPage() {
           </div>
           <StatusBadge status={donation.status} />
         </div>
-
-        {certMessage && (
-          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-lg px-4 py-3 mb-6">
-            {certMessage}
-          </div>
-        )}
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[

@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import DataTable, { type Column } from "@/components/ui/DataTable";
 import Pagination from "@/components/ui/Pagination";
 import { StatusBadge } from "@/components/ui/Badge";
@@ -14,6 +16,8 @@ import type { VolunteerOpportunity } from "@/types/api";
 export default function OpportunitiesPage() {
   const router = useRouter();
   const { opportunities, oppsTotal, oppsPage, oppsTotalPages, oppsLoading, fetchOpportunities, skills, fetchSkills } = useVolunteersStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
@@ -61,7 +65,10 @@ export default function OpportunitiesPage() {
   };
 
   const handleCreate = async () => {
-    if (!form.title || !form.city || !form.event_date || !form.event_time) return;
+    if (!form.title || !form.city || !form.event_date || !form.event_time) {
+      showToast("error", "Please fill in all required fields");
+      return;
+    }
     setCreateLoading(true);
     try {
       await api.createOpportunity({
@@ -70,10 +77,13 @@ export default function OpportunitiesPage() {
         volunteers_needed: Number(form.volunteers_needed),
         required_skill_ids: selectedSkillIds,
       });
+      showToast("success", "Opportunity created successfully");
       setShowCreate(false);
       setSelectedSkillIds([]);
       setForm({ title: "", description: "", location: "", city: "", state: "", event_date: "", event_time: "", duration_hours: 1, volunteers_needed: 1, is_published: true });
       fetchOpportunities();
+    } catch (error) {
+      handleError(error, "Failed to create opportunity");
     } finally {
       setCreateLoading(false);
     }

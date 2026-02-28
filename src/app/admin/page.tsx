@@ -118,7 +118,7 @@ export default function AdminDashboard() {
             <HeroStat
               label="Subscribers"
               value={data.subscribers.active}
-              sub={`${data.subscribers.total} total · ${data.members.active} active members`}
+              sub={`${data.subscribers.total} total · ${data.leadership.active} leadership`}
               gradient="from-amber-500 to-orange-400"
               icon={<path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />}
             />
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 lg:col-span-2">
               <h3 className="text-sm font-semibold text-gray-800 mb-5">Quick Overview</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <MiniStat label="Members" value={data.members.active} total={data.members.total} color="text-purple-600" />
+                <MiniStat label="Leadership" value={data.leadership.active} total={data.leadership.total} color="text-purple-600" />
                 <MiniStat label="Opportunities" value={data.opportunities.open} total={data.opportunities.total} color="text-brand-600" suffix="open" />
                 <MiniStat label="Vol. Apps" value={data.volunteers.pending_applications} color="text-amber-600" suffix="pending" />
                 <MiniStat label="Vol. Hours" value={Math.round(data.volunteers.total_hours)} color="text-accent-600" />

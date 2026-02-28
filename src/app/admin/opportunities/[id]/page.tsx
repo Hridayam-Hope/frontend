@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import { StatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -14,6 +16,8 @@ export default function OpportunityDetailPage() {
   const numId = Number(id);
   const router = useRouter();
   const { fetchOpportunity, closeOpportunity, oppDetailLoading, opportunityCache, skills, fetchSkills } = useVolunteersStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [opp, setOpp] = useState<VolunteerOpportunityDetail | null>(null);
   const [applicants, setApplicants] = useState<OpportunityApplicationItem[]>([]);
   const [applicantsLoading, setApplicantsLoading] = useState(false);
@@ -89,8 +93,11 @@ export default function OpportunityDetailPage() {
       });
       setOpp(updated);
       setEditing(false);
+      showToast("success", "Opportunity updated successfully");
       // Invalidate cache so list refreshes
       fetchOpportunity(numId, true).catch(() => {});
+    } catch (error) {
+      handleError(error, "Failed to update opportunity");
     } finally {
       setEditLoading(false);
     }
@@ -103,6 +110,9 @@ export default function OpportunityDetailPage() {
       await closeOpportunity(numId);
       const updated = await fetchOpportunity(numId, true);
       setOpp(updated);
+      showToast("success", "Opportunity closed successfully");
+    } catch (error) {
+      handleError(error, "Failed to close opportunity");
     } finally {
       setCloseLoading(false);
     }
@@ -115,6 +125,9 @@ export default function OpportunityDetailPage() {
       await loadApplicants();
       const updated = await fetchOpportunity(numId, true);
       setOpp(updated);
+      showToast("success", "Application accepted");
+    } catch (error) {
+      handleError(error, "Failed to accept application");
     } finally {
       setActionLoading(null);
     }
@@ -125,6 +138,9 @@ export default function OpportunityDetailPage() {
     try {
       await api.rejectOpportunityApplication(applicationId);
       await loadApplicants();
+      showToast("success", "Application rejected");
+    } catch (error) {
+      handleError(error, "Failed to reject application");
     } finally {
       setActionLoading(null);
     }

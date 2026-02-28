@@ -4,18 +4,76 @@ interface FetchOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
 }
 
+interface ApiErrorResponse {
+  error?: {
+    code: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
+  detail?: string | Array<{ loc: string[]; msg: string; type: string }>; // Fallback for non-standard errors or Pydantic validation
+}
+
 class ApiError extends Error {
   status: number;
+  code?: string;
+  details?: Record<string, unknown>;
   data: unknown;
 
   constructor(status: number, data: unknown) {
-    const message =
-      typeof data === "object" && data && "detail" in data
-        ? String((data as { detail: string }).detail)
-        : `API Error ${status}`;
+    const errorData = data as ApiErrorResponse;
+    
+    // Extract message from new error format or fallback to old format
+    let message = `API Error ${status}`;
+    let code: string | undefined;
+    let details: Record<string, unknown> | undefined;
+
+    if (errorData?.error) {
+      // New format: { error: { code, message, details } }
+      message = errorData.error.message;
+      code = errorData.error.code;
+      details = errorData.error.details;
+    } else if (errorData?.detail) {
+      // Handle Pydantic validation errors (array format)
+      if (Array.isArray(errorData.detail)) {
+        const fieldErrors = errorData.detail.map((err) => {
+          const field = err.loc.filter((l) => l !== "body" && l !== "payload").join(".");
+          return `${field}: ${err.msg}`;
+        });
+        message = "Validation failed: " + fieldErrors.join("; ");
+        code = "VALIDATION_ERROR";
+      } else {
+        // Old format: { detail: "message" }
+        message = errorData.detail;
+      }
+    }
+
     super(message);
     this.status = status;
+    this.code = code;
+    this.details = details;
     this.data = data;
+    this.name = "ApiError";
+  }
+
+  /**
+   * Get a user-friendly error message
+   */
+  getUserMessage(): string {
+    return this.message;
+  }
+
+  /**
+   * Check if this is an authentication error
+   */
+  isAuthError(): boolean {
+    return this.status === 401 || this.code?.startsWith("AUTH_");
+  }
+
+  /**
+   * Check if this is a validation error
+   */
+  isValidationError(): boolean {
+    return this.status === 400 || this.code?.startsWith("VAL_");
   }
 }
 

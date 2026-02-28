@@ -4,16 +4,22 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
+import { useToast } from "@/lib/toast";
+import { useApiError } from "@/lib/hooks/useApiError";
 import DataTable, { type Column } from "@/components/ui/DataTable";
 import Pagination from "@/components/ui/Pagination";
 import { StatusBadge } from "@/components/ui/Badge";
+import VolunteerForm, { type VolunteerFormData } from "@/components/admin/VolunteerForm";
 import type { VolunteerProfileListItem } from "@/types/api";
 
 export default function VolunteersPage() {
   const router = useRouter();
-  const { volunteers, volTotal, volPage, volTotalPages, volLoading, fetchVolunteers } = useVolunteersStore();
+  const { volunteers, volTotal, volPage, volTotalPages, volLoading, fetchVolunteers, createVolunteer } = useVolunteersStore();
+  const { showToast } = useToast();
+  const { handleError } = useApiError();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("");
+  const [showForm, setShowForm] = useState(false);
 
   const buildParams = useCallback(
     (overrides: Record<string, unknown> = {}) => {
@@ -40,6 +46,17 @@ export default function VolunteersPage() {
   const handleFilter = (value: string) => {
     setActiveFilter(value);
     fetchVolunteers(buildParams({ is_active: value }));
+  };
+
+  const handleCreateVolunteer = async (data: VolunteerFormData) => {
+    try {
+      await createVolunteer(data);
+      showToast("success", "Volunteer created successfully");
+      setShowForm(false);
+    } catch (err) {
+      handleError(err);
+      throw err;
+    }
   };
 
   const statCards = [
@@ -101,6 +118,15 @@ export default function VolunteersPage() {
           <p className="text-gray-500 mt-1">Manage volunteer profiles and track contributions</p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+          >
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+              Add Volunteer
+            </span>
+          </button>
           <Link
             href="/admin/volunteers/applications"
             className="px-4 py-2 text-sm font-medium rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
@@ -183,6 +209,20 @@ export default function VolunteersPage() {
         total={volTotal}
         onPageChange={(p) => fetchVolunteers(buildParams({ page: p }))}
       />
+
+      {/* Create Volunteer Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
+              <h2 className="text-xl font-bold text-gray-900">Add New Volunteer</h2>
+            </div>
+            <div className="p-6">
+              <VolunteerForm onSubmit={handleCreateVolunteer} onCancel={() => setShowForm(false)} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

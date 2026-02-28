@@ -293,12 +293,15 @@ export interface VolunteerProfileListItem {
   id: number;
   full_name: string;
   email: string;
+  role: string;
+  position: string;
   city: string;
   state: string;
   total_hours: number;
   is_active: boolean;
   joined_date: string;
   last_activity_date: string | null;
+  display_order: number;
 }
 
 export interface VolunteerProfileDetail {
@@ -322,10 +325,18 @@ export interface VolunteerProfileDetail {
   emergency_contact_name: string;
   emergency_contact_phone: string;
   emergency_contact_relationship: string;
+  role: string;
+  position: string;
+  responsibilities: string;
+  bio: string;
+  linkedin_url: string | null;
+  tenure_end_date: string | null;
+  display_order: number;
   is_active: boolean;
   joined_date: string;
   total_hours: number;
   last_activity_date: string | null;
+  tenure_years: number;
   created_at: string;
   updated_at: string;
 }
@@ -425,41 +436,6 @@ export interface VolunteerSkill {
   description: string;
   category: string;
   is_active: boolean;
-}
-
-// ============================================================================
-// Member Types
-// ============================================================================
-
-export interface MemberListItem {
-  id: number;
-  full_name: string;
-  email: string;
-  role: string;
-  position: string;
-  is_active: boolean;
-  joined_date: string;
-  tenure_years: number;
-}
-
-export interface MemberDetail {
-  id: number;
-  full_name: string;
-  email: string;
-  phone: string;
-  profile_photo: string | null;
-  role: string;
-  position: string;
-  responsibilities: string;
-  bio: string;
-  linkedin_url: string | null;
-  joined_date: string;
-  tenure_end_date: string | null;
-  is_active: boolean;
-  display_order: number;
-  tenure_years: number;
-  created_at: string;
-  updated_at: string;
 }
 
 // ============================================================================
@@ -592,7 +568,7 @@ export interface DashboardSummary {
     open: number;
     closed: number;
   };
-  members: {
+  leadership: {
     total: number;
     active: number;
   };

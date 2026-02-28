@@ -63,6 +63,7 @@ interface VolunteersState {
   rejectApplication: (id: number, notes?: string) => Promise<void>;
   fetchVolunteers: (params?: Record<string, unknown>) => Promise<void>;
   fetchVolunteer: (id: number, force?: boolean) => Promise<VolunteerProfileDetail>;
+  createVolunteer: (data: Record<string, unknown>) => Promise<void>;
   deactivateVolunteer: (id: number) => Promise<void>;
   fetchActivities: (volunteerId: number) => Promise<void>;
   fetchCertificates: (volunteerId: number) => Promise<void>;
@@ -196,6 +197,12 @@ export const useVolunteersStore = create<VolunteersState>((set, get) => ({
       set({ detailLoading: false });
       throw err;
     }
+  },
+
+  createVolunteer: async (data) => {
+    await api.createVolunteer(data);
+    // Refresh list after creation
+    get().fetchVolunteers();
   },
 
   deactivateVolunteer: async (id) => {
