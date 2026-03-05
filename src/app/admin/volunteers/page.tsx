@@ -50,7 +50,7 @@ export default function VolunteersPage() {
 
   const handleCreateVolunteer = async (data: VolunteerFormData) => {
     try {
-      await createVolunteer(data);
+      await createVolunteer(data as any);
       showToast("success", "Volunteer created successfully");
       setShowForm(false);
     } catch (err) {

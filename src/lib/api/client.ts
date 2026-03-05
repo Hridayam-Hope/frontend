@@ -66,14 +66,14 @@ class ApiError extends Error {
    * Check if this is an authentication error
    */
   isAuthError(): boolean {
-    return this.status === 401 || this.code?.startsWith("AUTH_");
+    return this.status === 401 || (this.code?.startsWith("AUTH_") ?? false);
   }
 
   /**
    * Check if this is a validation error
    */
   isValidationError(): boolean {
-    return this.status === 400 || this.code?.startsWith("VAL_");
+    return this.status === 400 || (this.code?.startsWith("VAL_") ?? false);
   }
 }
 

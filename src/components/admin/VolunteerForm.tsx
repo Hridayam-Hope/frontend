@@ -136,7 +136,7 @@ export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps
       if (!submitData.emergency_contact_phone) delete submitData.emergency_contact_phone;
       if (!submitData.emergency_contact_relationship) delete submitData.emergency_contact_relationship;
       
-      await onSubmit(submitData as VolunteerFormData);
+      await onSubmit(submitData as any);
     } catch (err) {
       setApiError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
