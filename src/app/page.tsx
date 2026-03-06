@@ -7,10 +7,12 @@ import Testimonials from '@/components/sections/Testimonials';
 import Newsletter from '@/components/sections/Newsletter';
 import MobileDonateButton from '@/components/layout/MobileDonateButton';
 import Footer from '@/components/layout/Footer';
+import JsonLd from '@/components/seo/JsonLd';
 
 export default function Home() {
 	return (
 		<>
+			<JsonLd />
 			<Header />
 			<main>
 				<Hero />
