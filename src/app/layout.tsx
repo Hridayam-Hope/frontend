@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { Inter, Poppins, Playfair_Display } from 'next/font/google';
 import { SITE_CONFIG } from '@/lib/seo-constants';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 const inter = Inter({
@@ -102,6 +104,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<head>
+				<Analytics />
+				<SpeedInsights />
 				{/* Google Tag Manager */}
 				<Script
 					id="gtm-script"
