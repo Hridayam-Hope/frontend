@@ -1,42 +1,96 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --color-brand-50: #eefbfa;
-  --color-brand-100: #d5f5f2;
-  --color-brand-200: #aeebe7;
-  --color-brand-300: #7fdbd6;
-  --color-brand-400: #5bb8b0;
-  --color-brand-500: #3a9e97;
-  --color-brand-600: #2d7f7b;
-  --color-brand-700: #286664;
-  --color-brand-800: #245251;
-  --color-brand-900: #224544;
+	/* ── Admin brand colors (do not remove) ── */
+	--color-brand-50: #eefbfa;
+	--color-brand-100: #d5f5f2;
+	--color-brand-200: #aeebe7;
+	--color-brand-300: #7fdbd6;
+	--color-brand-400: #5bb8b0;
+	--color-brand-500: #3a9e97;
+	--color-brand-600: #2d7f7b;
+	--color-brand-700: #286664;
+	--color-brand-800: #245251;
+	--color-brand-900: #224544;
 
-  --color-accent-400: #4a8fd9;
-  --color-accent-500: #3a7bc8;
-  --color-accent-600: #2f66b0;
-  --color-accent-700: #275298;
+	--color-accent-400: #4a8fd9;
+	--color-accent-500: #3a7bc8;
+	--color-accent-600: #2f66b0;
+	--color-accent-700: #275298;
+
+	/* ── Homepage palette ── */
+	--color-hp-primary: #4886cf;
+	--color-hp-accent: #65bac1;
+	--color-hp-text-dark: #1f1f1f;
+	--color-hp-text-light: #797979;
+	--color-hp-bg-1: #edf3fa;
+	--color-hp-bg-2: #eff8f9;
+
+	/* ── Homepage font families ── */
+	--font-poppins: 'Poppins', sans-serif;
+	--font-inter: 'Inter', sans-serif;
+	--font-playfair: 'Playfair Display', serif;
 }
 
 @layer base {
-  body {
-    @apply bg-gray-50 text-gray-900 antialiased;
-  }
+	body {
+		@apply bg-gray-50 text-gray-900 antialiased;
+	}
 }
 
 @layer utilities {
-  @keyframes slide-in {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
+	/* Admin animation */
+	@keyframes slide-in {
+		from {
+			transform: translateX(100%);
+			opacity: 0;
+		}
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+	.animate-slide-in {
+		animation: slide-in 0.3s ease-out;
+	}
 
-  .animate-slide-in {
-    animation: slide-in 0.3s ease-out;
-  }
+	/* Homepage animations */
+	@keyframes bounce-arrow {
+		0%,
+		100% {
+			transform: translateY(0);
+			opacity: 0.6;
+		}
+		50% {
+			transform: translateY(12px);
+			opacity: 1;
+		}
+	}
+	.animate-bounce-arrow {
+		animation: bounce-arrow 2s ease-in-out infinite;
+	}
+
+	@keyframes pulse-glow {
+		0%,
+		100% {
+			box-shadow: 0 0 0 0 rgba(72, 134, 207, 0.5);
+		}
+		50% {
+			box-shadow: 0 0 0 12px rgba(72, 134, 207, 0);
+		}
+	}
+	.animate-pulse-glow {
+		animation: pulse-glow 2s ease-in-out infinite;
+	}
+
+	/* Homepage gradient helpers */
+	.hp-gradient-bg {
+		background: linear-gradient(318.92deg, #4886cf 20.44%, #65bac1 86.52%);
+	}
+	.hp-gradient-text {
+		background: linear-gradient(318.92deg, #4886cf 20.44%, #65bac1 86.52%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
 }

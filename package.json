@@ -9,20 +9,23 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"embla-carousel-autoplay": "^8.6.0",
+		"embla-carousel-react": "^8.6.0",
+		"framer-motion": "^12.35.0",
+		"lucide-react": "^0.577.0",
 		"next": "^16.1.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
+		"react-intersection-observer": "^10.0.3",
 		"zustand": "^5.0.11"
 	},
 	"devDependencies": {
-		"@opennextjs/cloudflare": "^1.0.0",
 		"@tailwindcss/postcss": "^4.1.0",
 		"@types/node": "^22.0.0",
 		"@types/react": "^19.1.0",
 		"@types/react-dom": "^19.1.0",
 		"postcss": "^8.5.0",
 		"tailwindcss": "^4.1.0",
-		"typescript": "^5.7.0",
-		"wrangler": "^4.6.8"
+		"typescript": "^5.7.0"
 	}
 }
