@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 	metadataBase: new URL(SITE_CONFIG.url),
 
 	title: {
-		default: `${SITE_CONFIG.name} — From the Heart, For Humanity`,
+		default: `${SITE_CONFIG.name} - From the Heart, For Humanity`,
 		template: `%s | ${SITE_CONFIG.name}`,
 	},
 	description: SITE_CONFIG.description,
@@ -58,14 +58,14 @@ export const metadata: Metadata = {
 		locale: SITE_CONFIG.locale,
 		url: SITE_CONFIG.url,
 		siteName: SITE_CONFIG.name,
-		title: `${SITE_CONFIG.name} — From the Heart, For Humanity`,
+		title: `${SITE_CONFIG.name} - From the Heart, For Humanity`,
 		description: SITE_CONFIG.description,
 		images: [
 			{
 				url: '/hero-girl-plant.webp',
 				width: 1200,
 				height: 630,
-				alt: 'Hridayam Hope Foundation — Empowering communities in Andhra Pradesh',
+				alt: 'Hridayam Hope Foundation  -  Empowering communities in Andhra Pradesh',
 			},
 		],
 	},
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
 	// ── Twitter Card ──
 	twitter: {
 		card: 'summary_large_image',
-		title: `${SITE_CONFIG.name} — From the Heart, For Humanity`,
+		title: `${SITE_CONFIG.name} - From the Heart, For Humanity`,
 		description: SITE_CONFIG.shortDescription,
 		images: ['/hero-girl-plant.webp'],
 	},

@@ -40,7 +40,7 @@ export default function Header() {
 					{/* Logo */}
 					<Link href="/" className="relative z-10 flex-shrink-0">
 						<Image
-							src={scrolled ? '/logo-header.svg' : '/logo-footer.svg'}
+							src={scrolled ? '/logo-header.svg' : '/logo-mono.svg'}
 							alt="Hridayam Hope Foundation"
 							width={160}
 							height={48}
@@ -56,7 +56,7 @@ export default function Header() {
 								key={link.label}
 								href={link.href}
 								className={`relative text-sm font-medium transition-colors duration-200 group ${
-									scrolled ? 'text-hp-text-dark' : 'text-white'
+									scrolled ? 'text-hp-text-dark' : 'hp-gradient-text'
 								}`}
 							>
 								{link.label}
