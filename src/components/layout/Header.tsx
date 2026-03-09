@@ -66,7 +66,7 @@ export default function Header() {
 					</nav>
 
 					{/* Desktop CTA */}
-					<SignatureButton href="#quick-impact" className="hidden lg:inline-flex" showIcon={false}>
+					<SignatureButton href="/donate" className="hidden lg:inline-flex" showIcon={false}>
 						Donate Now
 					</SignatureButton>
 
