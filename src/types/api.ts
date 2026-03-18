@@ -651,3 +651,76 @@ export interface BulkDonationResult {
   failed: number;
   errors: string[];
 }
+
+// ============================================================================
+// Expenses Types
+// ============================================================================
+
+export interface ExpenseListItem {
+  id: number;
+  title: string;
+  amount: number;
+  date: string;
+  category: string;
+  category_label: string;
+  payment_method: string;
+  paid_to: string;
+  campaign_title: string | null;
+  status: string;
+  is_recurring: boolean;
+  recorded_by_email: string;
+  created_at: string;
+}
+
+export interface ExpenseDetail {
+  id: number;
+  title: string;
+  description: string;
+  amount: number;
+  date: string;
+  category: string;
+  category_label: string;
+  payment_method: string;
+  paid_to: string;
+  reference_number: string;
+  campaign_id: number | null;
+  campaign_title: string | null;
+  receipt_url: string;
+  status: string;
+  is_recurring: boolean;
+  recurrence_note: string;
+  notes: string;
+  rejection_reason: string;
+  recorded_by_email: string;
+  approved_by_email: string | null;
+  approved_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExpenseSummary {
+  total_amount: number;
+  total_count: number;
+  paid_amount: number;
+  pending_amount: number;
+  this_month_amount: number;
+  this_month_count: number;
+  by_category: {
+    category: string;
+    category_label: string;
+    total: number;
+    count: number;
+  }[];
+  by_month: {
+    month: number;
+    year: number;
+    total: number;
+    count: number;
+  }[];
+  by_campaign: {
+    campaign_id: number;
+    campaign_title: string;
+    total: number;
+    count: number;
+  }[];
+}
