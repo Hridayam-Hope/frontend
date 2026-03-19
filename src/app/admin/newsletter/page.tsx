@@ -56,10 +56,10 @@ export default function NewsletterPage() {
             Subscribers
           </Link>
           <Link
-            href="/admin/newsletter/templates"
+            href="/admin/email-templates"
             className="px-4 py-2 text-sm font-medium rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
           >
-            Templates
+            Email Templates
           </Link>
         </div>
       </div>

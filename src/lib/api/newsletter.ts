@@ -1,10 +1,15 @@
 import { apiFetch } from "./client";
 import type {
+  EmailLogListItem,
+  EmailTemplateDetail,
+  EmailTemplateListItem,
+  EmailTemplateVersionItem,
   PaginatedResponse,
   NewsletterListItem,
   SubscriberListItem,
   NewsletterStats,
   MessageResponse,
+  TemplatePreviewResponse,
 } from "@/types/api";
 
 export async function getNewsletters(params?: {
@@ -45,7 +50,92 @@ export async function createNewsletter(data: {
 }
 
 export async function getTemplates() {
-  return apiFetch<{ id: number; name: string; description: string; category: string }[]>(
-    "/newsletter/templates"
+  return apiFetch<EmailTemplateListItem[]>("/newsletter/templates");
+}
+
+export async function getTemplate(templateId: number) {
+  return apiFetch<EmailTemplateDetail>(`/newsletter/templates/${templateId}`);
+}
+
+export async function createTemplate(data: {
+  slug?: string;
+  name: string;
+  description?: string;
+  category?: string;
+  subject_template?: string;
+  html_content: string;
+  text_content?: string;
+  variables?: string[];
+  required_variables?: string[];
+  sample_context?: Record<string, unknown>;
+  is_active?: boolean;
+}) {
+  return apiFetch<EmailTemplateDetail>("/newsletter/templates", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateTemplate(
+  templateId: number,
+  data: Partial<{
+    slug: string;
+    name: string;
+    description: string;
+    category: string;
+    subject_template: string;
+    html_content: string;
+    text_content: string;
+    variables: string[];
+    required_variables: string[];
+    sample_context: Record<string, unknown>;
+    is_active: boolean;
+  }>
+) {
+  return apiFetch<EmailTemplateDetail>(`/newsletter/templates/${templateId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteTemplate(templateId: number) {
+  return apiFetch<MessageResponse>(`/newsletter/templates/${templateId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function previewTemplate(
+  templateId: number,
+  context: Record<string, unknown>
+) {
+  return apiFetch<TemplatePreviewResponse>(
+    `/newsletter/templates/${templateId}/preview`,
+    {
+      method: "POST",
+      body: JSON.stringify({ context }),
+    }
+  );
+}
+
+export async function testSendTemplate(templateId: number, email: string) {
+  return apiFetch<MessageResponse>(`/newsletter/templates/${templateId}/test-send`, {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function getTemplateVersions(templateId: number) {
+  return apiFetch<EmailTemplateVersionItem[]>(
+    `/newsletter/templates/${templateId}/versions`
+  );
+}
+
+export async function getTemplateLogs(
+  templateId: number,
+  params?: { page?: number; page_size?: number }
+) {
+  return apiFetch<PaginatedResponse<EmailLogListItem>>(
+    `/newsletter/templates/${templateId}/logs`,
+    { params: params as Record<string, string | number> }
   );
 }

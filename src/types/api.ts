@@ -453,6 +453,68 @@ export interface NewsletterListItem {
   created_at: string;
 }
 
+export interface EmailTemplateListItem {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  category: string;
+  subject_template: string;
+  variables: string[];
+  required_variables: string[];
+  is_active: boolean;
+  times_sent: number;
+  last_sent_at: string | null;
+  is_predefined: boolean;
+}
+
+export interface EmailTemplateDetail {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  category: string;
+  subject_template: string;
+  html_content: string;
+  text_content: string;
+  variables: string[];
+  required_variables: string[];
+  sample_context: Record<string, unknown>;
+  is_predefined: boolean;
+  is_active: boolean;
+  times_sent: number;
+  last_sent_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EmailTemplateVersionItem {
+  id: number;
+  version_number: number;
+  subject_template: string;
+  change_note: string;
+  created_by_id: number | null;
+  created_at: string;
+}
+
+export interface EmailLogListItem {
+  id: number;
+  to_email: string;
+  subject: string;
+  status: string;
+  sent_at: string | null;
+  error_message: string;
+  retry_count: number;
+  provider_message_id: string;
+  created_at: string;
+}
+
+export interface TemplatePreviewResponse {
+  subject: string;
+  html_body: string;
+  text_body: string;
+}
+
 export interface SubscriberListItem {
   id: number;
   email: string;
