@@ -28,6 +28,12 @@ export interface MessageResponse {
   message: string;
 }
 
+export interface UploadAssetResponse {
+  path: string;
+  url?: string | null;
+  message: string;
+}
+
 // ============================================================================
 // Pagination
 // ============================================================================

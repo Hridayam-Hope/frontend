@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type ChangeEvent } from "react";
-import { apiUpload } from "@/lib/api/client";
+import { uploadImage } from "@/lib/api/uploads";
 
 type Variant = "avatar" | "banner";
 
@@ -17,11 +17,6 @@ interface ImageUploadProps {
   deferred?: boolean;
   /** Hint text below the upload area */
   hint?: string;
-}
-
-interface UploadResponse {
-  url: string;
-  message: string;
 }
 
 export default function ImageUpload({
@@ -56,9 +51,10 @@ export default function ImageUpload({
     setUploading(true);
     setError("");
     try {
-      const result = await apiUpload<UploadResponse>("/upload/image", file, { folder });
-      setPreview(result.url);
-      onChange(result.url);
+      const result = await uploadImage(file, folder);
+      setPreview(result.url || result.path);
+      // Persist stable storage key/path in forms and API payloads.
+      onChange(result.path);
       setPendingFile(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
