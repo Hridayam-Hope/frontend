@@ -28,8 +28,12 @@ function AdminShell({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    if (!loading && !user && pathname !== "/admin/login") {
+    if (loading) return;
+    if (!user && pathname !== "/admin/login") {
       router.push("/admin/login");
+    }
+    if (user && pathname === "/admin/login") {
+      router.push("/admin");
     }
   }, [user, loading, pathname, router]);
 

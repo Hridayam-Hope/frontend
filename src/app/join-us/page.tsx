@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
 	Heart,
@@ -31,6 +32,9 @@ import Footer from '@/components/layout/Footer';
 import MobileDonateButton from '@/components/layout/MobileDonateButton';
 import SignatureButton from '@/components/ui/SignatureButton';
 import { fadeUp, fadeIn, scaleIn, staggerContainer, slideInLeft, slideInRight } from '@/lib/animations';
+import { submitVolunteerApplication } from '@/lib/api/volunteers';
+import { useVolunteersStore } from '@/lib/stores/volunteers';
+import { ApiError } from '@/lib/api/client';
 
 // ══════════════════════════════════════════════════════════════════
 // Constants
@@ -719,45 +723,179 @@ function TestimonialsSection() {
 // ══════════════════════════════════════════════════════════════════
 
 function VolunteerFormSection() {
+	const { skills, fetchSkills } = useVolunteersStore();
+	
+	const [step, setStep] = useState(1);
 	const [formData, setFormData] = useState({
 		fullName: '',
 		email: '',
 		phone: '',
+		dateOfBirth: '',
+		address: '',
 		city: '',
-		interest: '',
-		availability: 'weekends',
-		message: '',
+		state: '',
+		postalCode: '',
+		country: 'India',
+		interests: '',
+		availabilityWeekdays: false,
+		availabilityWeekends: false,
+		hoursPerWeek: 4,
+		languages: [] as string[],
+		emergencyName: '',
+		emergencyPhone: '',
+		emergencyRel: '',
 	});
-	const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+	const [selectedSkillIds, setSelectedSkillIds] = useState<number[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [warning, setWarning] = useState<string | null>(null);
+	const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
 	const formRef = useRef<HTMLElement>(null);
+	const turnstileRef = useRef<HTMLDivElement>(null);
+	const turnstileWidgetId = useRef<string | null>(null);
 	const isInView = useInView(formRef, { once: true, amount: 0.1 });
 
-	const handleInputChange = (field: string, value: string) => {
+	useEffect(() => {
+		fetchSkills();
+	}, [fetchSkills]);
+
+	const handleInputChange = (field: string, value: any) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
+		setError(null);
+		setWarning(null);
 	};
 
-	const toggleSkill = (skill: string) => {
-		setSelectedSkills((prev) =>
-			prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+	const toggleSkill = (id: number) => {
+		setSelectedSkillIds((prev) =>
+			prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
 		);
 	};
 
+	// ── Turnstile rendering ──────────────────────────────────────────
+	const [turnstileReady, setTurnstileReady] = useState(false);
+
+	const renderTurnstile = useCallback(() => {
+		const el = turnstileRef.current;
+		if (!el || !(window as any).turnstile) return;
+
+		// Remove any previously rendered widget
+		if (turnstileWidgetId.current) {
+			try { (window as any).turnstile.remove(turnstileWidgetId.current); } catch {}
+			turnstileWidgetId.current = null;
+		}
+		el.innerHTML = '';
+
+		turnstileWidgetId.current = (window as any).turnstile.render(el, {
+			sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+			callback: (token: string) => setTurnstileToken(token),
+			'expired-callback': () => setTurnstileToken(null),
+		});
+	}, []);
+
+	// Render Turnstile when step 4 is active AND script is loaded
+	useEffect(() => {
+		if (step !== 4) return;
+
+		// Script already loaded → render immediately (with a micro-delay
+		// so the DOM node is painted after AnimatePresence finishes)
+		if ((window as any).turnstile) {
+			const t = setTimeout(renderTurnstile, 150);
+			return () => clearTimeout(t);
+		}
+
+		// Poll until the script finishes loading
+		const interval = setInterval(() => {
+			if ((window as any).turnstile) {
+				clearInterval(interval);
+				renderTurnstile();
+			}
+		}, 200);
+		return () => clearInterval(interval);
+	}, [step, turnstileReady, renderTurnstile]);
+
+	const nextStep = () => setStep((s) => Math.min(s + 1, 4));
+	const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		if (step < 4) {
+			nextStep();
+			return;
+		}
+
+		if (!turnstileToken) {
+			setError('Please complete the captcha verification.');
+			return;
+		}
+
 		setIsSubmitting(true);
-		await new Promise((r) => setTimeout(r, 2000));
-		setIsSubmitting(false);
-		setShowSuccess(true);
-		setFormData({ fullName: '', email: '', phone: '', city: '', interest: '', availability: 'weekends', message: '' });
-		setSelectedSkills([]);
-		setTimeout(() => setShowSuccess(false), 5000);
+		setError(null);
+		setWarning(null);
+
+		try {
+			await submitVolunteerApplication({
+				full_name: formData.fullName,
+				email: formData.email,
+				phone: formData.phone,
+				date_of_birth: formData.dateOfBirth,
+				address: formData.address,
+				city: formData.city,
+				state: formData.state,
+				postal_code: formData.postalCode,
+				country: formData.country,
+				skill_ids: selectedSkillIds,
+				interests: formData.interests,
+				availability_weekdays: formData.availabilityWeekdays,
+				availability_weekends: formData.availabilityWeekends,
+				hours_per_week: formData.hoursPerWeek,
+				languages: formData.languages,
+				emergency_contact_name: formData.emergencyName,
+				emergency_contact_phone: formData.emergencyPhone,
+				emergency_contact_relationship: formData.emergencyRel,
+				turnstile_token: turnstileToken,
+			});
+
+			setShowSuccess(true);
+			setStep(1);
+			setFormData({
+				fullName: '', email: '', phone: '', dateOfBirth: '',
+				address: '', city: '', state: '', postalCode: '', country: 'India',
+				interests: '', availabilityWeekdays: false, availabilityWeekends: false,
+				hoursPerWeek: 4, languages: [],
+				emergencyName: '', emergencyPhone: '', emergencyRel: '',
+			});
+			setSelectedSkillIds([]);
+			setTurnstileToken(null);
+			// Reset turnstile widget if possible, or just let it refresh on next visit
+			if ((window as any).turnstile) (window as any).turnstile.reset();
+
+			setTimeout(() => setShowSuccess(false), 8000);
+		} catch (err: any) {
+			if (err instanceof ApiError) {
+				if (err.message.includes('under review')) {
+					setWarning(err.message);
+				} else if (err.status === 409 || err.message.includes('already a registered')) {
+					setWarning(err.message);
+				} else {
+					setError(err.message);
+				}
+			} else {
+				setError('Something went wrong. Please try again later.');
+			}
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
 		<section ref={formRef} id="volunteer-form" className="bg-white py-16 sm:py-24">
+			<Script
+				src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+				strategy="lazyOnload"
+				onReady={() => setTurnstileReady(true)}
+			/>
 			<div className="mx-auto max-w-3xl px-5 lg:px-8">
 				{/* Header */}
 				<motion.div
@@ -777,8 +915,25 @@ function VolunteerFormSection() {
 						<span className="font-playfair italic hp-gradient-text">Application</span>
 					</motion.h2>
 					<motion.p variants={fadeUp} className="mt-3 text-sm text-gray-500 sm:text-base">
-						Fill out the form below and we&apos;ll be in touch within 48 hours.
+						Step {step} of 4: {
+							step === 1 ? 'Personal Details' :
+							step === 2 ? 'Location Info' :
+							step === 3 ? 'Interests & Skills' :
+							'Emergency Contact'
+						}
 					</motion.p>
+
+					{/* Step Indicators */}
+					<motion.div variants={fadeUp} className="mt-6 flex justify-center gap-2">
+						{[1, 2, 3, 4].map((s) => (
+							<div
+								key={s}
+								className={`h-1.5 rounded-full transition-all duration-300 ${
+									s === step ? 'w-8 hp-gradient-bg' : s < step ? 'w-4 bg-teal-400' : 'w-4 bg-gray-200'
+								}`}
+							/>
+						))}
+					</motion.div>
 				</motion.div>
 
 				{/* Form */}
@@ -789,181 +944,323 @@ function VolunteerFormSection() {
 					variants={staggerContainer}
 					className="overflow-hidden rounded-2xl bg-gray-50 p-6 ring-1 ring-gray-100/80 sm:rounded-3xl sm:p-8 lg:p-10"
 				>
-					{/* Name + Email Row */}
-					<motion.div variants={fadeUp} className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-						<FormField
-							label="Full Name"
-							required
-							placeholder="Your full name"
-							value={formData.fullName}
-							onChange={(v) => handleInputChange('fullName', v)}
-						/>
-						<FormField
-							label="Email Address"
-							required
-							type="email"
-							placeholder="you@example.com"
-							value={formData.email}
-							onChange={(v) => handleInputChange('email', v)}
-						/>
-					</motion.div>
-
-					{/* Phone + City Row */}
-					<motion.div variants={fadeUp} className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-						<FormField
-							label="Phone Number"
-							type="tel"
-							placeholder="+91 XXXXX XXXXX"
-							value={formData.phone}
-							onChange={(v) => handleInputChange('phone', v)}
-						/>
-						<FormField
-							label="City / Town"
-							placeholder="Your city"
-							value={formData.city}
-							onChange={(v) => handleInputChange('city', v)}
-						/>
-					</motion.div>
-
-					{/* Interest Area */}
-					<motion.div variants={fadeUp} className="mb-5">
-						<label className="mb-2 block text-sm font-semibold text-gray-700">
-							Area of Interest
-						</label>
-						<div className="relative">
-							<select
-								value={formData.interest}
-								onChange={(e) => handleInputChange('interest', e.target.value)}
-								className="w-full appearance-none rounded-xl border-2 border-gray-200 bg-white py-3 pl-4 pr-10 text-sm text-gray-700 transition-all duration-200 hover:border-gray-300 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/20"
-							>
-								<option value="">Select an area</option>
-								<option value="education">Education & Awareness</option>
-								<option value="health">Health & Well-being</option>
-								<option value="environment">Environmental Protection</option>
-								<option value="community">Community Care</option>
-								<option value="digital">Digital & Content</option>
-								<option value="any">Open to Anything</option>
-							</select>
-							<ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
-						</div>
-					</motion.div>
-
-					{/* Skills */}
-					<motion.div variants={fadeUp} className="mb-5">
-						<label className="mb-2 block text-sm font-semibold text-gray-700">
-							Your Skills <span className="font-normal text-gray-400">(select all that apply)</span>
-						</label>
-						<div className="flex flex-wrap gap-2">
-							{SKILLS_OPTIONS.map((skill) => (
-								<motion.button
-									key={skill}
-									type="button"
-									onClick={() => toggleSkill(skill)}
-									whileHover={{ scale: 1.04 }}
-									whileTap={{ scale: 0.96 }}
-									className={`rounded-lg border-2 px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm ${
-										selectedSkills.includes(skill)
-											? 'border-teal-400 bg-teal-50 text-teal-700'
-											: 'border-gray-200 text-gray-500 hover:border-teal-300 hover:bg-teal-50/50'
-									}`}
-								>
-									{selectedSkills.includes(skill) && (
-										<CheckCircle2 size={12} className="mr-1 inline-block" />
-									)}
-									{skill}
-								</motion.button>
-							))}
-						</div>
-					</motion.div>
-
-					{/* Availability */}
-					<motion.div variants={fadeUp} className="mb-5">
-						<label className="mb-2 block text-sm font-semibold text-gray-700">Availability</label>
-						<div className="flex flex-wrap gap-3">
-							{[
-								{ id: 'weekdays', label: 'Weekdays' },
-								{ id: 'weekends', label: 'Weekends' },
-								{ id: 'both', label: 'Both' },
-								{ id: 'flexible', label: 'Flexible' },
-							].map((opt) => (
-								<motion.button
-									key={opt.id}
-									type="button"
-									onClick={() => handleInputChange('availability', opt.id)}
-									whileHover={{ scale: 1.04 }}
-									whileTap={{ scale: 0.96 }}
-									className={`rounded-xl border-2 px-4 py-2 text-sm font-medium transition-all duration-200 ${
-										formData.availability === opt.id
-											? 'border-teal-400 bg-teal-50 text-teal-700'
-											: 'border-gray-200 text-gray-500 hover:border-teal-300'
-									}`}
-								>
-									{opt.label}
-								</motion.button>
-							))}
-						</div>
-					</motion.div>
-
-					{/* Message */}
-					<motion.div variants={fadeUp} className="mb-8">
-						<label className="mb-2 block text-sm font-semibold text-gray-700">
-							Anything else? <span className="font-normal text-gray-400">(Optional)</span>
-						</label>
-						<textarea
-							placeholder="Tell us why you'd like to volunteer, any prior experience, etc."
-							value={formData.message}
-							onChange={(e) => handleInputChange('message', e.target.value)}
-							rows={3}
-							className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-gray-300 hover:border-gray-300 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/20 resize-y"
-						/>
-					</motion.div>
-
-					{/* Submit */}
-					<motion.div variants={fadeUp}>
-						<motion.button
-							type="submit"
-							disabled={isSubmitting || !formData.fullName || !formData.email}
-							whileHover={formData.fullName && formData.email ? { scale: 1.01, y: -2 } : {}}
-							whileTap={formData.fullName && formData.email ? { scale: 0.98 } : {}}
-							className="group relative w-full overflow-hidden rounded-2xl py-4 text-base font-bold text-white shadow-lg transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 hp-gradient-bg hover:shadow-xl hover:shadow-teal-200/40 sm:py-5 sm:text-lg"
-						>
-							{/* Shimmer */}
+					<AnimatePresence mode="wait">
+						{step === 1 && (
 							<motion.div
-								className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
-								initial={{ x: '-100%' }}
-								animate={{ x: '100%' }}
-								transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' as const }}
-							/>
+								key="step1"
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: -20 }}
+								className="space-y-5"
+							>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<FormField
+										label="Full Name"
+										required
+										placeholder="Your full name"
+										value={formData.fullName}
+										onChange={(v) => handleInputChange('fullName', v)}
+									/>
+									<FormField
+										label="Email Address"
+										required
+										type="email"
+										placeholder="you@example.com"
+										value={formData.email}
+										onChange={(v) => handleInputChange('email', v)}
+									/>
+								</div>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<FormField
+										label="Phone Number"
+										required
+										type="tel"
+										placeholder="+91 XXXXX XXXXX"
+										value={formData.phone}
+										onChange={(v) => handleInputChange('phone', v)}
+									/>
+									<FormField
+										label="Date of Birth"
+										required
+										type="date"
+										placeholder="DD-MM-YYYY"
+										value={formData.dateOfBirth}
+										onChange={(v) => handleInputChange('dateOfBirth', v)}
+									/>
+								</div>
+							</motion.div>
+						)}
 
-							<span className="relative z-10 flex items-center justify-center gap-2">
-								{isSubmitting ? (
-									<>
-										<svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-										</svg>
-										Submitting...
-									</>
-								) : (
-									<>
-										<Send size={18} />
-										Submit Application
-									</>
-								)}
-							</span>
-						</motion.button>
+						{step === 2 && (
+							<motion.div
+								key="step2"
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: -20 }}
+								className="space-y-5"
+							>
+								<FormField
+									label="Residential Address"
+									required
+									placeholder="House No, Street, Landmark"
+									value={formData.address}
+									onChange={(v) => handleInputChange('address', v)}
+								/>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<FormField
+										label="City / Town"
+										required
+										placeholder="Your city"
+										value={formData.city}
+										onChange={(v) => handleInputChange('city', v)}
+									/>
+									<FormField
+										label="State"
+										required
+										placeholder="Andhra Pradesh"
+										value={formData.state}
+										onChange={(v) => handleInputChange('state', v)}
+									/>
+								</div>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<FormField
+										label="Postal Code"
+										required
+										placeholder="5XXXXX"
+										value={formData.postalCode}
+										onChange={(v) => handleInputChange('postalCode', v)}
+									/>
+									<FormField
+										label="Country"
+										required
+										placeholder="India"
+										value={formData.country}
+										onChange={(v) => handleInputChange('country', v)}
+									/>
+								</div>
+							</motion.div>
+						)}
 
-						{/* Success Message */}
+						{step === 3 && (
+							<motion.div
+								key="step3"
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: -20 }}
+								className="space-y-5"
+							>
+								<div>
+									<label className="mb-2 block text-sm font-semibold text-gray-700">
+										Your Skills <span className="font-normal text-gray-400">(select all that apply)</span>
+									</label>
+									<div className="flex flex-wrap gap-2">
+										{skills.map((skill) => (
+											<motion.button
+												key={skill.id}
+												type="button"
+												onClick={() => toggleSkill(skill.id)}
+												whileHover={{ scale: 1.04 }}
+												whileTap={{ scale: 0.96 }}
+												className={`rounded-lg border-2 px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm ${
+													selectedSkillIds.includes(skill.id)
+														? 'border-teal-400 bg-teal-50 text-teal-700'
+														: 'border-gray-200 text-gray-500 hover:border-teal-300 hover:bg-teal-50/50'
+												}`}
+											>
+												{selectedSkillIds.includes(skill.id) && (
+													<CheckCircle2 size={12} className="mr-1 inline-block" />
+												)}
+												{skill.name}
+											</motion.button>
+										))}
+									</div>
+								</div>
+
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<div>
+										<label className="mb-2 block text-sm font-semibold text-gray-700">Availability</label>
+										<div className="flex flex-col gap-2">
+											<label className="flex items-center gap-2 text-sm text-gray-600">
+												<input
+													type="checkbox"
+													checked={formData.availabilityWeekdays}
+													onChange={(e) => handleInputChange('availabilityWeekdays', e.target.checked)}
+													className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+												/>
+												Weekdays
+											</label>
+											<label className="flex items-center gap-2 text-sm text-gray-600">
+												<input
+													type="checkbox"
+													checked={formData.availabilityWeekends}
+													onChange={(e) => handleInputChange('availabilityWeekends', e.target.checked)}
+													className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+												/>
+												Weekends
+											</label>
+										</div>
+									</div>
+									<FormField
+										label="Hours/Week"
+										type="number"
+										required
+										placeholder="4"
+										value={formData.hoursPerWeek.toString()}
+										onChange={(v) => handleInputChange('hoursPerWeek', parseInt(v) || 0)}
+									/>
+								</div>
+
+								<div className="space-y-2">
+									<label className="block text-sm font-semibold text-gray-700">
+										Anything else? <span className="font-normal text-gray-400">(Interests, motivation, etc.)</span>
+									</label>
+									<textarea
+										placeholder="Tell us why you'd like to join..."
+										value={formData.interests}
+										onChange={(e) => handleInputChange('interests', e.target.value)}
+										rows={3}
+										className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-gray-300 hover:border-gray-300 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/20 resize-y"
+									/>
+								</div>
+							</motion.div>
+						)}
+
+						{step === 4 && (
+							<motion.div
+								key="step4"
+								initial={{ opacity: 0, x: 20 }}
+								animate={{ opacity: 1, x: 0 }}
+								exit={{ opacity: 0, x: -20 }}
+								className="space-y-5"
+							>
+								<FormField
+									label="Emergency Contact Name"
+									required
+									placeholder="Full name"
+									value={formData.emergencyName}
+									onChange={(v) => handleInputChange('emergencyName', v)}
+								/>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<FormField
+										label="Emergency Phone"
+										required
+										type="tel"
+										placeholder="+91 XXXXX XXXXX"
+										value={formData.emergencyPhone}
+										onChange={(v) => handleInputChange('emergencyPhone', v)}
+									/>
+									<FormField
+										label="Relationship"
+										required
+										placeholder="Parent, Sibling, Friend"
+										value={formData.emergencyRel}
+										onChange={(v) => handleInputChange('emergencyRel', v)}
+									/>
+								</div>
+
+							</motion.div>
+						)}
+					</AnimatePresence>
+
+					{/* Turnstile widget — kept outside AnimatePresence so the
+					   DOM node always exists for the render() call */}
+					<div
+						className={`mt-6 flex flex-col items-center transition-all duration-300 ${
+							step === 4 ? 'opacity-100 max-h-40' : 'opacity-0 max-h-0 overflow-hidden pointer-events-none'
+						}`}
+					>
+						<div className="pt-4 border-t border-gray-100 flex flex-col items-center w-full">
+							<div ref={turnstileRef} className="min-h-[65px] min-w-[300px]" />
+						</div>
+					</div>
+
+					{/* Navigation Buttons */}
+					<motion.div variants={fadeUp} className="mt-8 flex flex-col gap-3">
+						<div className="flex gap-3">
+							{step > 1 && (
+								<button
+									type="button"
+									onClick={prevStep}
+									className="flex-1 rounded-2xl border-2 border-gray-200 bg-white py-4 text-sm font-bold text-gray-600 transition-all hover:bg-gray-50 sm:text-base"
+								>
+									Back
+								</button>
+							)}
+							<motion.button
+								type="submit"
+								disabled={isSubmitting}
+								whileHover={{ scale: 1.01, y: -2 }}
+								whileTap={{ scale: 0.98 }}
+								className="group relative flex-[2] overflow-hidden rounded-2xl py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hp-gradient-bg hover:shadow-xl hover:shadow-teal-200/40 sm:py-5 sm:text-lg"
+							>
+								{/* Shimmer */}
+								<motion.div
+									className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
+									initial={{ x: '-100%' }}
+									animate={{ x: '100%' }}
+									transition={{ duration: 2, repeat: Infinity, repeatDelay: 3, ease: 'easeInOut' as const }}
+								/>
+
+								<span className="relative z-10 flex items-center justify-center gap-2">
+									{isSubmitting ? (
+										<>
+											<svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+											</svg>
+											Submitting...
+										</>
+									) : (
+										<>
+											{step < 4 ? <ArrowRight size={18} /> : <Send size={18} />}
+											{step < 4 ? 'Continue' : 'Submit Application'}
+										</>
+									)}
+								</span>
+							</motion.button>
+						</div>
+
+						{/* Messages */}
 						<AnimatePresence>
-							{showSuccess && (
+							{error && (
 								<motion.div
 									initial={{ opacity: 0, y: 10, height: 0 }}
 									animate={{ opacity: 1, y: 0, height: 'auto' }}
 									exit={{ opacity: 0, y: -10, height: 0 }}
-									className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 py-3 text-sm font-medium text-emerald-700"
+									className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700"
 								>
-									<CheckCircle2 size={16} />
-									Application submitted! We&apos;ll reach out soon.
+									<Shield size={16} className="shrink-0" />
+									{error}
+								</motion.div>
+							)}
+							{warning && (
+								<motion.div
+									initial={{ opacity: 0, y: 10, height: 0 }}
+									animate={{ opacity: 1, y: 0, height: 'auto' }}
+									exit={{ opacity: 0, y: -10, height: 0 }}
+									className="mt-4 flex flex-col items-center justify-center gap-1 rounded-xl bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800"
+								>
+									<div className="flex items-center gap-2">
+										<CheckCircle2 size={16} className="shrink-0" />
+										{warning}
+									</div>
+									<p className="text-xs font-normal opacity-80">
+										Need help? <a href="#contact-section" className="underline hover:text-amber-900">Contact our team</a>.
+									</p>
+								</motion.div>
+							)}
+							{showSuccess && !warning && (
+								<motion.div
+									initial={{ opacity: 0, y: 10, height: 0 }}
+									animate={{ opacity: 1, y: 0, height: 'auto' }}
+									exit={{ opacity: 0, y: -10, height: 0 }}
+									className="mt-4 flex flex-col items-center justify-center gap-1 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700"
+								>
+									<div className="flex items-center gap-2">
+										<Sparkles size={16} className="shrink-0" />
+										Application successfully submitted!
+									</div>
+									<p className="text-xs font-normal opacity-80">We&apos;ll review your details and get back to you within 48 hours.</p>
 								</motion.div>
 							)}
 						</AnimatePresence>

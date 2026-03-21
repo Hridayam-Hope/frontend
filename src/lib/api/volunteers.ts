@@ -49,6 +49,13 @@ export async function rejectApplication(id: number, notes?: string) {
   );
 }
 
+export async function submitVolunteerApplication(data: Record<string, unknown>) {
+  return apiFetch<MessageResponse>("/volunteers/apply", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 // ── Volunteers ──
 
 export async function getVolunteers(params?: Record<string, unknown>) {
