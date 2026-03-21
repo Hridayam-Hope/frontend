@@ -50,6 +50,12 @@ export default function NewsletterPage() {
         <h1 className="text-2xl font-bold text-gray-900">Newsletter</h1>
         <div className="flex gap-2">
           <Link
+            href="/admin/settings/newsletter"
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+          >
+            Settings
+          </Link>
+          <Link
             href="/admin/newsletter/subscribers"
             className="px-4 py-2 text-sm font-medium rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
           >

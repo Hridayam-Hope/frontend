@@ -548,6 +548,25 @@ export interface NewsletterStats {
   click_rate: number;
 }
 
+export interface NewsletterSettings {
+  site_name: string;
+  site_url: string;
+  contact_email: string;
+  contact_phone: string;
+  organization_address: string;
+  facebook_url: string;
+  instagram_url: string;
+  x_url: string;
+  linkedin_url: string;
+  youtube_url: string;
+  donate_url: string;
+  volunteer_url: string;
+  privacy_policy_url: string;
+  unsubscribe_url: string;
+  updated_at: string;
+  updated_by_id: number | null;
+}
+
 // ============================================================================
 // Audit Types
 // ============================================================================

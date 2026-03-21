@@ -8,6 +8,7 @@ import type {
   NewsletterListItem,
   SubscriberListItem,
   NewsletterStats,
+  NewsletterSettings,
   MessageResponse,
   TemplatePreviewResponse,
 } from "@/types/api";
@@ -35,6 +36,19 @@ export async function getSubscribers(params?: {
 
 export async function getNewsletterStats() {
   return apiFetch<NewsletterStats>("/newsletter/stats/summary");
+}
+
+export async function getNewsletterSettings() {
+  return apiFetch<NewsletterSettings>("/newsletter/settings");
+}
+
+export async function updateNewsletterSettings(
+  data: Partial<Omit<NewsletterSettings, "updated_at" | "updated_by_id">>
+) {
+  return apiFetch<NewsletterSettings>("/newsletter/settings", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
 }
 
 export async function createNewsletter(data: {

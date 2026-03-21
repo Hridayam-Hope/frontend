@@ -97,6 +97,15 @@ const navItems = [
     ),
   },
   {
+    label: "Settings",
+    href: "/admin/settings",
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9m-9 6h9m-9 6h9M4.5 6h.008v.008H4.5V6zm0 6h.008v.008H4.5V12zm0 6h.008v.008H4.5V18z" />
+      </svg>
+    ),
+  },
+  {
     label: "Audit Logs",
     href: "/admin/audit",
     icon: (
