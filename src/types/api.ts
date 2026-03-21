@@ -472,6 +472,7 @@ export interface EmailTemplateListItem {
   times_sent: number;
   last_sent_at: string | null;
   is_predefined: boolean;
+  storage_key?: string | null;
 }
 
 export interface EmailTemplateDetail {
@@ -490,6 +491,7 @@ export interface EmailTemplateDetail {
   is_active: boolean;
   times_sent: number;
   last_sent_at: string | null;
+  storage_key?: string | null;
   created_at: string;
   updated_at: string;
 }

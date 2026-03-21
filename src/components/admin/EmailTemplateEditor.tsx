@@ -316,6 +316,11 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
           <p className="text-sm text-gray-500 mt-1">
             {isEditMode ? "Review, update and test this template." : "Build a reusable transactional email template."}
           </p>
+          {templateDetail?.storage_key && (
+            <p className="text-xs font-mono text-gray-400 mt-1">
+              File-Backed: {templateDetail.storage_key}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -358,7 +363,8 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
             <input
               value={form.slug}
               onChange={(e) => onChange("slug", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              disabled={templateDetail?.is_predefined}
+              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-500"
             />
           </label>
 
@@ -367,7 +373,8 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
             <input
               value={form.name}
               onChange={(e) => onChange("name", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              disabled={templateDetail?.is_predefined}
+              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-500"
             />
           </label>
 
@@ -376,9 +383,10 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
             <select
               value={form.category}
               onChange={(e) => onChange("category", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white"
+              disabled={templateDetail?.is_predefined}
+              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white disabled:bg-gray-50 disabled:text-gray-500"
             >
-              {["campaign", "donation", "digest", "update", "event", "custom"].map(
+              {["campaign", "donation", "digest", "update", "event", "volunteer", "transactional", "custom"].map(
                 (category) => (
                   <option key={category} value={category}>
                     {category}
@@ -413,7 +421,8 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
           <input
             value={form.subject_template}
             onChange={(e) => onChange("subject_template", e.target.value)}
-            className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+            disabled={templateDetail?.is_predefined}
+            className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-500"
           />
         </label>
 
@@ -423,7 +432,8 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
             <input
               value={form.variables}
               onChange={(e) => onChange("variables", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              disabled={templateDetail?.is_predefined}
+              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-500"
             />
           </label>
 
@@ -432,7 +442,8 @@ export default function EmailTemplateEditor({ templateId }: EmailTemplateEditorP
             <input
               value={form.required_variables}
               onChange={(e) => onChange("required_variables", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              disabled={templateDetail?.is_predefined}
+              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-500"
             />
           </label>
         </div>
