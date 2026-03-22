@@ -36,13 +36,6 @@ const TRUST_BADGES = [
 		bg: 'bg-teal-50',
 	},
 	{
-		icon: FileCheck,
-		title: '80G Tax Benefit',
-		subtitle: 'Instant tax receipt via email',
-		color: 'text-emerald-500',
-		bg: 'bg-emerald-50',
-	},
-	{
 		icon: Sparkles,
 		title: 'Direct Impact',
 		subtitle: '85% goes to programs',
@@ -602,7 +595,7 @@ function DonationFormCard({
 					{/* Disclaimer */}
 					<p className="mt-4 text-center text-[11px] text-gray-400">
 						<Lock size={10} className="mr-1 inline-block" />
-						By donating, you agree to our terms. You&apos;ll receive an 80G tax receipt via email.
+						By donating, you agree to our terms. You&apos;ll receive an tax receipt via email.
 					</p>
 				</motion.div>
 			</div>

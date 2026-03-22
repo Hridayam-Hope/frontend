@@ -24,7 +24,6 @@ export const SITE_CONFIG = {
     'community empowerment India',
     'help needy families AP',
     'social welfare organization',
-    '80G tax exempt NGO',
     'volunteer opportunities India',
     'food distribution NGO',
     'health awareness camps AP',
@@ -52,11 +51,6 @@ export const SEO_FAQS = [
     question: 'How can I volunteer with Hridayam Hope Foundation?',
     answer:
       'You can volunteer by visiting our website and clicking "Become a Volunteer." We welcome individuals of all backgrounds to join our programs in education, health, environment, and community welfare across Andhra Pradesh.',
-  },
-  {
-    question: 'Is my donation to Hridayam Hope Foundation tax-deductible?',
-    answer:
-      'Yes, Hridayam Hope Foundation is a registered NGO. Donations are eligible for tax exemption under Section 80G of the Income Tax Act. You will receive an 80G certificate via email after your donation.',
   },
   {
     question: 'What programs does Hridayam Hope Foundation run?',

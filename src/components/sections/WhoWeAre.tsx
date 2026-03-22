@@ -122,14 +122,14 @@ export default function WhoWeAre() {
 							{WHO_WE_ARE.paragraph}
 						</motion.p>
 
-						<motion.div variants={fadeUp} className="pt-2">
+						{/* <motion.div variants={fadeUp} className="pt-2">
 							<SignatureButton href="#">{WHO_WE_ARE.cta}</SignatureButton>
-						</motion.div>
+						</motion.div> */}
 					</motion.div>
 				</motion.div>
 
 				{/* Impact Metrics */}
-				<motion.div
+				{/* <motion.div
 					className="mt-10 grid grid-cols-3 gap-2 sm:mt-16 sm:gap-6"
 					variants={staggerContainer}
 					initial="hidden"
@@ -156,7 +156,7 @@ export default function WhoWeAre() {
 							</p>
 						</motion.div>
 					))}
-				</motion.div>
+				</motion.div> */}
 			</div>
 		</section>
 	);

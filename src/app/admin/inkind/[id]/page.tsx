@@ -163,7 +163,7 @@ export default function InKindDetailPage() {
 
         {donation.status === "donated" && !donation.tax_certificate_number && (
           <div className="mt-6 pt-6 border-t border-gray-100">
-            <Button onClick={handleIssueCert}>Issue 80G Tax Certificate</Button>
+            <Button onClick={handleIssueCert}>Issue Tax Certificate</Button>
           </div>
         )}
       </div>

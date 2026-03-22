@@ -10,7 +10,6 @@ import SignatureButton from '@/components/ui/SignatureButton';
 
 export default function Header() {
 	const [scrolled, setScrolled] = useState(false);
-	const [mobileOpen, setMobileOpen] = useState(false);
 
 	useEffect(() => {
 		const onScroll = () => setScrolled(window.scrollY > 50);
@@ -18,6 +17,8 @@ export default function Header() {
 		onScroll();
 		return () => window.removeEventListener('scroll', onScroll);
 	}, []);
+
+	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -66,14 +67,21 @@ export default function Header() {
 					</nav>
 
 					{/* Desktop CTA */}
-					<SignatureButton href="/donate" className="hidden lg:inline-flex" showIcon={false}>
-						Donate Now
+					<SignatureButton 
+						href="https://wa.me/917674028833" 
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hidden lg:inline-flex" 
+						variant="whatsapp"
+					>
+						WhatsApp Us
 					</SignatureButton>
 
 					{/* Mobile Hamburger */}
 					<button
 						onClick={() => setMobileOpen((v) => !v)}
 						className={`relative z-10 lg:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-hp-text-dark' : 'text-white'}`}
+
 						aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
 					>
 						{mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -123,13 +131,15 @@ export default function Header() {
 									))}
 
 									<SignatureButton
-										href="#quick-impact"
+										href="https://wa.me/917674028833"
+										target="_blank"
+										rel="noopener noreferrer"
 										size="sm"
-										showIcon={false}
+										variant="whatsapp"
 										onClick={closeMobile}
 										className="w-full mt-4 !rounded-2xl py-4 text-xs"
 									>
-										Donate Now
+										WhatsApp Us
 									</SignatureButton>
 								</div>
 

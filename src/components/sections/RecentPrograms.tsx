@@ -146,7 +146,7 @@ export default function RecentPrograms() {
 				</div>
 
 				{/* Global CTA */}
-				<motion.div
+				{/* <motion.div
 					className="mt-16 text-center"
 					initial="hidden"
 					whileInView="visible"
@@ -156,7 +156,7 @@ export default function RecentPrograms() {
 					<SignatureButton href="#" showIcon={false}>
 						Explore More Moments
 					</SignatureButton>
-				</motion.div>
+				</motion.div> */}
 			</div>
 		</section>
 	);

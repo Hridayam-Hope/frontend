@@ -9,128 +9,174 @@ export const ABOUT_HERO = {
   headlineAccent2: 'Action',
   subtitle:
     "Since 2026, we've been transforming lives through education, healthcare, and sustainable development. Every initiative is powered by ordinary people who choose to care.",
-  stats: [
-    { value: 12500, suffix: '+', label: 'Lives Touched' },
-    { value: 45, suffix: '+', label: 'Communities' },
-    { value: 500, suffix: '+', label: 'Volunteers' },
-  ],
 } as const;
 
 export const ABOUT_STORY = {
-  eyebrow: 'OUR STORY',
-  headline: 'It Started with a Simple Question:',
-  headlineItalic: '"What if we could help?"',
+  eyebrow: 'OUR APPROACH',
+  headline: 'Driven by Community,',
+  headlineItalic: 'Guided by Impact',
   paragraphs: [
-    "In 2026, a small group of friends couldn't ignore the suffering around them. What began with a handful of meal distributions and tuition classes has grown into a multi-state movement for compassion in action.",
-    'Today, we work alongside communities, schools, hospitals, and local leaders to ensure that no child is denied education, no family goes to bed hungry, and no village is left without basic healthcare and awareness.',
-    'Every initiative is powered by ordinary people who believe that hope is a responsibility we all share.',
+    'Hridayam Hope Foundation follows a people-centric approach by identifying real needs through community interaction.',
+    'We collaborate with volunteers, educators, professionals, and institutions to implement ethical, practical, and impactful programs.',
+    'Continuously evaluating activities to improve effectiveness and reach ensures our efforts create lasting change.',
   ],
   infoCards: {
     since: {
-      label: 'SINCE 2026',
-      text: 'Serving communities across Delhi NCR, Rajasthan, Maharashtra, Karnataka and beyond through education, healthcare, environmental, social reformation, and technology for good.',
+      label: 'TARGET BENEFICIARIES',
+      text: 'Underprivileged individuals, families, school/college students, teenagers, and youth.',
     },
     focus: {
-      label: '6 Focus Areas',
-      text: 'Holistic approach to community development.',
+      label: 'Real Needs',
+      text: 'Community interaction first.',
     },
     impact: {
-      label: 'Growing Impact',
-      text: 'Expanding reach every month.',
+      label: 'Practical',
+      text: 'Ethical and impactful programs.',
     },
-    belief: '"Compassion is not a feeling \u2014 it is action."',
+    belief: '"Touching lives, inspiring minds, and building a hopeful society."',
   },
 } as const;
 
 export const ABOUT_PURPOSE = {
   eyebrow: 'OUR PURPOSE',
   headline: 'Guided by',
-  headlineAccent1: 'Purpose',
+  headlineAccent1: 'Vision',
   headlineMiddle: ', Driven by',
-  headlineAccent2: 'Impact',
+  headlineAccent2: 'Mission',
   mission: {
     label: 'MISSION',
-    title: 'To serve with heart and build dignified futures',
-    text: 'We exist to identify the most vulnerable individuals and communities and respond with practical, compassionate, and sustainable support \u2014 from food and education to healthcare, livelihood, and awareness.',
+    title: 'Our Mission',
+    text: '',
+    bullets: [
+      'To serve the needy with love, dignity, and respect.',
+      'To educate and create awareness among people, especially students and teenagers, on critical social, health, and environmental issues.',
+      'To empower communities through education, technology, and social reform initiatives.',
+      'To promote sustainable and environment-friendly practices for a healthier planet.',
+    ]
   },
   vision: {
     label: 'VISION',
-    title: 'A world where no one is invisible to compassion',
-    text: 'We envision communities where every child learns, every family eats with dignity, every patient is seen, and every citizen feels empowered to care for people and the planet.',
+    title: 'Our Vision',
+    text: 'To build a compassionate, informed, and inclusive society where every individual has access to basic needs, knowledge, dignity, and opportunities for growth.',
   },
+} as const;
+
+export const ABOUT_CORE_VALUES = {
+  eyebrow: 'CORE VALUES',
+  headline: 'The Principles',
+  headlineAccent: 'We Stand By',
+  subtitle: 'Our foundation operates on five non-negotiable pillars of humanity.',
+  values: [
+    {
+      title: 'Compassion & Empathy',
+      description: 'Serving humanity with a heartfelt approach.',
+      icon: 'Heart' as const,
+      color: 'text-rose-500',
+      bg: 'bg-rose-50',
+    },
+    {
+      title: 'Integrity & Transparency',
+      description: 'Upholding honesty and accountability in all activities.',
+      icon: 'ShieldCheck' as const,
+      color: 'text-blue-500',
+      bg: 'bg-blue-50',
+    },
+    {
+      title: 'Inclusiveness',
+      description: 'Reaching out to all sections of society without discrimination.',
+      icon: 'Users' as const,
+      color: 'text-amber-500',
+      bg: 'bg-amber-50',
+    },
+    {
+      title: 'Awareness & Education',
+      description: 'Belief that knowledge leads to empowerment.',
+      icon: 'BookOpen' as const,
+      color: 'text-emerald-500',
+      bg: 'bg-emerald-50',
+    },
+    {
+      title: 'Sustainability',
+      description: 'Focusing on long-term, eco-friendly solutions.',
+      icon: 'Leaf' as const,
+      color: 'text-teal-500',
+      bg: 'bg-teal-50',
+    },
+  ]
 } as const;
 
 export const ABOUT_PILLARS = {
   eyebrow: 'WHAT WE DO',
-  headline: 'Six Pillars of',
-  headlineAccent: 'Transformation',
+  headline: 'Focus Areas &',
+  headlineAccent: 'Activities',
   subtitle:
-    'From daily meal drives to digital literacy, each program is designed with community ownership and long-term impact in mind.',
+    'Dedicated initiatives to uplift communities, foster education, and build a sustainable future.',
   pillars: [
     {
       badge: 'SERVICE',
       badgeColor: 'bg-hp-primary/10 text-hp-primary',
       title: 'Service to the Needy',
-      description:
-        'Providing food, clothing, shelter support, and emergency relief to the most vulnerable communities. Our daily meal programs and relief camps reach those who need it most.',
+      description: 'Providing essential support to those in need.',
       bullets: [
-        'Fed 10,000+ people through daily meal drives',
-        'Distributed 10,000+ warm clothing items in winter',
+        'Distribution of food to underprivileged individuals and families.',
+        'Providing books, stationery, and learning materials to students.',
+        'Support for basic necessities during emergencies and crises.',
       ],
     },
     {
       badge: 'EDUCATION',
       badgeColor: 'bg-blue-50 text-blue-600',
-      title: 'Education & Awareness',
-      description:
-        'Bridging the education gap through school enrichment drives, scholarship programs, mentorship, and awareness campaigns on social issues.',
+      title: 'Education & Awareness Programs',
+      description: 'Spreading knowledge and essential life skills.',
       bullets: [
-        'Enrolled 3,000 children in school',
-        'Provided scholarships to 500 meritorious students',
+        'Awareness sessions for students, teenagers, and public.',
+        'Health awareness programs (physical & mental).',
+        'Ethical, age-appropriate sex education for teenagers.',
+        'Campaigns on social values, ethics, and citizenship.',
       ],
     },
     {
       badge: 'HEALTH',
       badgeColor: 'bg-rose-50 text-rose-600',
-      title: 'Health & Well-being',
-      description:
-        'Organizing free medical camps, health awareness sessions, mental health support, and medicine distribution in underserved areas.',
+      title: 'Health & Well-being Initiatives',
+      description: 'Prioritizing community wellness and preventative care.',
       bullets: [
-        'Conducted 120 free medical camps',
-        'Provided healthcare to 15,000+ individuals',
+        'Health awareness drives in schools and communities.',
+        'Seminars/workshops on hygiene, nutrition, and mental health.',
+        'Promoting preventive healthcare and healthy lifestyles.',
       ],
     },
     {
       badge: 'SOCIAL REFORM',
       badgeColor: 'bg-amber-50 text-amber-700',
       title: 'Social Reformation',
-      description:
-        "Empowering marginalized communities through women's skill development, anti-discrimination programs, and social awareness initiatives.",
+      description: 'Driving positive behavioral change in society.',
       bullets: [
-        'Trained 200 women in vocational skills',
-        'Conducted 50 awareness workshops',
+        'Programs that encourage social responsibility.',
+        'Addressing issues through dialogue and community participation.',
+        'Empowering youth to become active citizens.',
       ],
     },
     {
       badge: 'ENVIRONMENT',
       badgeColor: 'bg-emerald-50 text-emerald-600',
       title: 'Environmental Protection',
-      description:
-        'Leading tree plantation drives, clean up campaigns, waste management programs, and environmental education to build a sustainable future.',
+      description: 'Protecting our planet for future generations.',
       bullets: [
-        'Planted 8,000 trees across 5 states',
-        'Organized 20 community clean-up drives',
+        'Promoting environment-friendly habits and sustainable living.',
+        'Campaigns on waste management and plastic reduction.',
+        'Tree plantation drives and eco-awareness activities.',
       ],
     },
     {
       badge: 'TECH FOR GOOD',
       badgeColor: 'bg-violet-50 text-violet-600',
-      title: 'Technology for Social Good',
-      description:
-        'Leveraging technology to bridge the digital divide \u2014 from digital literacy programs for rural youth to tech solutions for social challenges.',
+      title: 'Technology & Innovation',
+      description: 'Bringing digital empowerment to communities.',
       bullets: [
-        'Trained 500 rural youth in digital skills',
-        'Developed 5 community impact tools',
+        'Providing simple tech solutions for social challenges.',
+        'Promoting digital awareness and basic tech education.',
+        'Using tech in education and awareness campaigns.',
       ],
     },
   ],
@@ -182,8 +228,7 @@ export const ABOUT_CTA = {
   primaryCta: 'Become a Volunteer',
   secondaryCta: 'Make a Donation',
   trust: [
-    '80G Tax Benefit',
+    'Tax Benefit',
     '100% Transparent',
-    'Join 500+ Volunteers',
   ],
 } as const;

@@ -26,7 +26,7 @@ export const HERO = {
 } as const;
 
 export const TRUST_ITEMS = [
-  { icon: "ShieldCheck" as const, text: "80G Tax Exemption Available" },
+  { icon: "ShieldCheck" as const, text: "Tax Exemption Available" },
   { icon: "Eye" as const, text: "100% Transparent Fund Usage" },
   { icon: "Award" as const, text: "Registered NGO Since 2024" },
 ] as const;
@@ -37,14 +37,14 @@ export const QUICK_IMPACT = {
   amounts: ["₹500", "₹1,000", "₹2,000", "Custom Amount"],
   cta: "Donate Now →",
   disclaimer:
-    "Secure payment via Razorpay. Receipt & 80G certificate emailed instantly.",
+    "Secure payment via Razorpay. Receipt & certificate emailed instantly.",
 } as const;
 
 export const WHO_WE_ARE = {
-  eyebrow: "WHO WE ARE",
-  headline: "Hridayam means Heart. Hope means Possibility.",
+  eyebrow: "ABOUT US",
+  headline: "Hridayam Hope Foundation",
   paragraph:
-    "Hridayam Hope Foundation is a non-profit organization committed to serving humanity with love, dignity, and purpose. We focus not only on helping people in need but also on fostering awareness, social responsibility, and positive behavioral change - especially among students and young adults. From food distribution and education support to eco-friendly initiatives and access to technology, we believe that awareness and compassion go hand in hand. Every life we touch is a step toward a stronger, more inclusive society.",
+    "Hridayam Hope Foundation is a non-profit organization established with a deep sense of compassion and responsibility towards society. The word Hridayam means heart, symbolizing love, care, and empathy, while Hope reflects our commitment to creating positive change and a better future. The foundation works with the belief that serving the needy and creating awareness are the strongest pillars for sustainable social development.",
   cta: "Read Our Full Story →",
   metrics: [
     { value: 500, suffix: "+", label: "Lives Touched" },
@@ -55,44 +55,44 @@ export const WHO_WE_ARE = {
 
 export const PROGRAMS = [
   {
-    title: "Education & Awareness",
+    title: "Service to the Needy",
     description:
-      "Empowering students through interactive workshops on health, hygiene, and social responsibility.",
-    image: "/program-education.webp",
-    icon: "BookOpen" as const,
-  },
-  {
-    title: "Health & Well-being",
-    description:
-      "Promoting better health outcomes through community wellness camps and awareness drives.",
-    image: "/program-health.webp",
-    icon: "Heart" as const,
-  },
-  {
-    title: "Care for the Needy",
-    description:
-      "Providing essential food, clothing, and supplies to families facing hardship with dignity.",
+      "Distribution of food to underprivileged individuals and families. Providing books, stationery, and learning materials to students in need. Support for basic necessities during emergencies and crises.",
     image: "/program-food.webp",
     icon: "Utensils" as const,
   },
   {
-    title: "Social Reformation",
+    title: "Education & Awareness Programs",
     description:
-      "Building inclusive communities through dialogue, cultural programs, and youth engagement.",
+      "Awareness sessions for students, teenagers, and the general public. Health awareness programs focusing on physical and mental well-being. Sex education programs for teenagers. Campaigns on social values.",
+    image: "/program-education.webp",
+    icon: "BookOpen" as const,
+  },
+  {
+    title: "Health & Well-being Initiatives",
+    description:
+      "Health awareness drives in schools and communities. Collaboration with professionals for seminars and workshops on hygiene, nutrition, and mental health. Promoting preventive healthcare.",
+    image: "/program-health.webp",
+    icon: "Heart" as const,
+  },
+  {
+    title: "Social Reformation & Community Development",
+    description:
+      "Programs that encourage social responsibility and positive behavioral change. Initiatives to address social issues through dialogue, education, and community participation.",
     image: "/program-social.webp",
     icon: "Users" as const,
   },
   {
-    title: "Environmental Protection",
+    title: "Environmental Protection & Sustainability",
     description:
-      "Leading tree plantation drives and eco-friendly initiatives to protect our planet.",
+      "Promoting environment-friendly habits and sustainable living. Awareness campaigns on waste management, plastic reduction, and conservation of natural resources. Tree plantation drives.",
     image: "/program-environment.webp",
     icon: "Leaf" as const,
   },
   {
-    title: "Technology for Good",
+    title: "Technology & Innovation for Social Good",
     description:
-      "Bridging the digital divide by providing tech access and digital literacy to underserved youth.",
+      "Providing simple and effective tech solutions for social challenges. Promoting digital awareness and developing technical education models for communities in need of awareness.",
     image: "/program-education.webp",
     icon: "Laptop" as const,
   },
@@ -117,15 +117,15 @@ export const ACTIVITIES = [
     description:
       "Interactive session on health and hygiene reached 100+ students, empowering them with knowledge.",
   },
-  {
-    image: "/activity-support-family.webp",
-    badge: "Care",
-    badgeColor: "bg-rose-500",
-    title: "Support for Families in Need",
-    meta: "Dilsukhnagar | 1 February 2025",
-    description:
-      "Provided essential supplies and food to 20 families, offering dignity and support in difficult times.",
-  },
+  // {
+  //   image: "/activity-support-family.webp",
+  //   badge: "Care",
+  //   badgeColor: "bg-rose-500",
+  //   title: "Support for Families in Need",
+  //   meta: "Dilsukhnagar | 1 February 2025",
+  //   description:
+  //     "Provided essential supplies and food to 20 families, offering dignity and support in difficult times.",
+  // },
 ] as const;
 
 export const TESTIMONIALS = [
@@ -182,7 +182,7 @@ export const FOOTER = {
     phone: "+91-81217-02286",
     address: "Andhra Pradesh, India",
   },
-  registrations: "80G Registration: TBA | 12A Registration: TBA",
+  registrations: "",
   bottomLinks: [
     { label: "Privacy Policy", href: "#" },
     { label: "Terms of Use", href: "#" },

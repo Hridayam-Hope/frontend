@@ -63,7 +63,7 @@ export default function AboutHero() {
 				</motion.div>
 
 				{/* Stats */}
-				<motion.div
+				{/* <motion.div
 					className="mt-12 grid grid-cols-3 gap-4 sm:mt-16 sm:gap-8"
 					variants={staggerContainer}
 					initial="hidden"
@@ -76,7 +76,7 @@ export default function AboutHero() {
 							<p className="mt-1 text-[10px] font-medium text-hp-text-light sm:mt-2 sm:text-sm">{s.label}</p>
 						</motion.div>
 					))}
-				</motion.div>
+				</motion.div> */}
 			</div>
 		</section>
 	);

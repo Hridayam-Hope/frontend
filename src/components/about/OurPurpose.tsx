@@ -64,7 +64,19 @@ export default function OurPurpose() {
 						<h3 className="font-(family-name:--font-poppins) text-xl font-bold text-hp-text-dark sm:text-2xl">
 							{ABOUT_PURPOSE.mission.title}
 						</h3>
-						<p className="mt-3 text-sm leading-[1.8] text-hp-text-dark/70 sm:text-base">{ABOUT_PURPOSE.mission.text}</p>
+						{ABOUT_PURPOSE.mission.text && (
+							<p className="mt-3 text-sm leading-[1.8] text-hp-text-dark/70 sm:text-base">{ABOUT_PURPOSE.mission.text}</p>
+						)}
+						{ABOUT_PURPOSE.mission.bullets && (
+							<ul className="mt-3 space-y-2">
+								{ABOUT_PURPOSE.mission.bullets.map((bullet, i) => (
+									<li key={i} className="flex items-start gap-2 text-sm leading-[1.8] text-hp-text-dark/70 sm:text-base">
+										<span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-hp-primary/60" />
+										<span>{bullet}</span>
+									</li>
+								))}
+							</ul>
+						)}
 					</motion.div>
 
 					{/* Vision Card */}

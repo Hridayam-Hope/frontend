@@ -87,7 +87,7 @@ export default function SixPillars() {
 				</motion.div>
 
 				{/* Explore All Link */}
-				<motion.div
+				{/* <motion.div
 					className="mt-10 text-center sm:mt-14"
 					initial="hidden"
 					whileInView="visible"
@@ -102,7 +102,7 @@ export default function SixPillars() {
 						Explore All Programs
 						<ArrowRight size={16} />
 					</motion.a>
-				</motion.div>
+				</motion.div> */}
 			</div>
 		</section>
 	);
