@@ -67,7 +67,7 @@ export default function WhoWeAre() {
 									variants={gridItemVariants}
 									className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
 								>
-									<Image src="/about-joy.png" alt="Joyful children supported by Hridayam Hope" fill className="object-cover" />
+									<Image src="/about-joy.webp" alt="Joyful children supported by Hridayam Hope" fill className="object-cover" />
 								</motion.div>
 								<motion.div
 									whileHover="hover"
@@ -91,7 +91,7 @@ export default function WhoWeAre() {
 									variants={gridItemVariants}
 									className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
 								>
-									<Image src="/about_4.jpeg" alt="Education support program" fill className="object-cover" />
+									<Image src="/about_4.webp" alt="Education support program" fill className="object-cover" />
 								</motion.div>
 							</div>
 						</div>
