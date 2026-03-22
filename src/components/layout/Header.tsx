@@ -54,15 +54,12 @@ export default function Header() {
 					</nav>
 
 					{/* Desktop CTA */}
-					<SignatureButton 
-						href="https://wa.me/917674028833" 
-						target="_blank"
-						rel="noopener noreferrer"
+					{/* <SignatureButton 
+						href="/donate" 
 						className="hidden lg:inline-flex" 
-						variant="whatsapp"
 					>
-						WhatsApp Us
-					</SignatureButton>
+						Donate Now
+					</SignatureButton> */}
 
 					{/* Mobile Hamburger */}
 					<button
@@ -117,17 +114,14 @@ export default function Header() {
 										</Link>
 									))}
 
-									<SignatureButton
-										href="https://wa.me/917674028833"
-										target="_blank"
-										rel="noopener noreferrer"
+									{/* <SignatureButton
+										href="/donate"
 										size="sm"
-										variant="whatsapp"
 										onClick={closeMobile}
 										className="w-full mt-4 !rounded-2xl py-4 text-xs"
 									>
-										WhatsApp Us
-									</SignatureButton>
+										Donate Now
+									</SignatureButton> */}
 								</div>
 
 								{/* Contact Quick Link */}

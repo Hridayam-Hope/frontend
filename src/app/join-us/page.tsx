@@ -1370,7 +1370,7 @@ function ContactSection() {
 								hridayamhopefoundation@gmail.com
 							</a>
 							<a
-								href="tel:+918121702286"
+								href="tel:++91 76740 28833"
 								className="group flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white"
 							>
 								<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 transition-colors group-hover:bg-teal-500/20">

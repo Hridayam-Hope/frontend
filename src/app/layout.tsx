@@ -4,6 +4,7 @@ import { Inter, Poppins, Playfair_Display } from 'next/font/google';
 import { SITE_CONFIG } from '@/lib/seo-constants';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import WhatsAppFloat from '@/components/ui/WhatsAppFloat';
 import './globals.css';
 
 const inter = Inter({
@@ -106,6 +107,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<head>
 				<Analytics />
 				<SpeedInsights />
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+							if (typeof window !== 'undefined') {
+								const cancelIfTouch = function(e) {
+									if (window.matchMedia('(hover: none)').matches || e.pointerType === 'touch') {
+										e.stopPropagation();
+									}
+								};
+								window.addEventListener('pointerenter', cancelIfTouch, true);
+								window.addEventListener('pointerleave', cancelIfTouch, true);
+							}
+						`,
+					}}
+				/>
 				{/* Google Tag Manager */}
 				<Script
 					id="gtm-script"
@@ -130,6 +146,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 					/>
 				</noscript>
 				{children}
+				<WhatsAppFloat />
 			</body>
 		</html>
 	);

@@ -19,13 +19,18 @@ export default function Hero() {
 					src="/hero.webp"
 					alt="A child planting a sapling  -  hope in action"
 					fill
-					className="object-cover object-right"
+					className="object-cover object-[65%_center] md:object-right"
 					priority
 					sizes="100vw"
 				/>
-				{/* Gradient overlay: solid dark on left, fading to transparent on right */}
+				{/* Mobile Gradient Overlay */}
+				<div 
+					className="absolute inset-0 bg-gradient-to-r from-[#1a2438]/90 via-[#1a2438]/60 to-[#1a2438]/30 md:hidden" 
+				/>
+				
+				{/* Desktop Gradient overlay: solid dark on left, fading to transparent on right */}
 				<div
-					className="absolute inset-0"
+					className="absolute inset-0 hidden md:block"
 					style={{
 						background:
 							'linear-gradient(to right, #1a2438 0%, #1a2438 10%, rgba(26,36,56,0.85) 20%, rgba(26,36,56,0.4) 50%, rgba(26,36,56,0.2) 100%)',

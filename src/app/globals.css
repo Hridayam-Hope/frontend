@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
 @theme {
 	/* ── Admin brand colors (do not remove) ── */
 	--color-brand-50: #eefbfa;

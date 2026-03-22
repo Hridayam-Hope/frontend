@@ -58,7 +58,7 @@ export default function WhoWeAre() {
 					viewport={{ once: true, amount: 0.2 }}
 				>
 					{/* Interactive Grid  -  2/5 */}
-					<motion.div variants={slideInLeft} className="lg:col-span-2">
+					<motion.div variants={slideInLeft} className="order-2 lg:order-1 lg:col-span-2 mt-8 lg:mt-0">
 						<div className="grid grid-cols-2 gap-3 sm:gap-6">
 							{/* Column 1 */}
 							<div className="space-y-3 sm:space-y-6">
@@ -67,7 +67,7 @@ export default function WhoWeAre() {
 									variants={gridItemVariants}
 									className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
 								>
-									<Image src="/about-joy.webp" alt="Joyful children supported by Hridayam Hope" fill className="object-cover" />
+									<Image src="/about-joy.png" alt="Joyful children supported by Hridayam Hope" fill className="object-cover" />
 								</motion.div>
 								<motion.div
 									whileHover="hover"
@@ -88,22 +88,17 @@ export default function WhoWeAre() {
 									<Image src="/about-books.webp" alt="Education support program" fill className="object-cover" />
 								</motion.div>
 								<motion.div
-									whileHover="hover"
 									variants={gridItemVariants}
-									className="flex aspect-[3/4] flex-col items-center justify-center rounded-2xl bg-[#f0f9fa] p-4 text-center shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl sm:p-6"
+									className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
 								>
-									<div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-hp-accent/80 shadow-sm sm:mb-4 sm:h-14 sm:w-14">
-										<Heart className="h-5 w-5 fill-current sm:h-7 sm:w-7" />
-									</div>
-									<span className="font-(family-name:--font-poppins) text-2xl font-bold hp-gradient-text sm:text-4xl">5+</span>
-									<p className="mt-1 text-[10px] font-medium text-hp-text-light/80 sm:mt-2 sm:text-sm">Years of Impact</p>
+									<Image src="/about_4.jpeg" alt="Education support program" fill className="object-cover" />
 								</motion.div>
 							</div>
 						</div>
 					</motion.div>
 
 					{/* Content  -  3/5 */}
-					<motion.div className="space-y-4 sm:space-y-6 lg:col-span-3" variants={{ visible: { transition: { staggerChildren: 0.12 } } }}>
+					<motion.div className="order-1 lg:order-2 space-y-4 sm:space-y-6 lg:col-span-3" variants={{ visible: { transition: { staggerChildren: 0.12 } } }}>
 						<motion.p
 							variants={fadeUp}
 							className="text-[10px] font-semibold uppercase tracking-[2px] hp-gradient-text sm:text-xs sm:tracking-[2.5px]"

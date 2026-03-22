@@ -58,21 +58,21 @@ export const PROGRAMS = [
     title: "Service to the Needy",
     description:
       "Distribution of food to underprivileged individuals and families. Providing books, stationery, and learning materials to students in need. Support for basic necessities during emergencies and crises.",
-    image: "/program-food.webp",
+    image: "/do_1.png",
     icon: "Utensils" as const,
   },
   {
     title: "Education & Awareness Programs",
     description:
       "Awareness sessions for students, teenagers, and the general public. Health awareness programs focusing on physical and mental well-being. Sex education programs for teenagers. Campaigns on social values.",
-    image: "/program-education.webp",
+    image: "/do_2.jpg",
     icon: "BookOpen" as const,
   },
   {
     title: "Health & Well-being Initiatives",
     description:
       "Health awareness drives in schools and communities. Collaboration with professionals for seminars and workshops on hygiene, nutrition, and mental health. Promoting preventive healthcare.",
-    image: "/program-health.webp",
+    image: "/do_3.png",
     icon: "Heart" as const,
   },
   {
@@ -100,7 +100,7 @@ export const PROGRAMS = [
 
 export const ACTIVITIES = [
   {
-    image: "/activity-tree-plantation.webp",
+    image: "/about_4.jpeg",
     badge: "Environment",
     badgeColor: "bg-emerald-500",
     title: "Tree Plantation Drive",
@@ -109,7 +109,7 @@ export const ACTIVITIES = [
       "Planted 50 saplings with local volunteers, creating greener futures for the next generation.",
   },
   {
-    image: "/activity-school-session.webp",
+    image: "/program_2.jpg",
     badge: "Education",
     badgeColor: "bg-blue-500",
     title: "School Awareness Session",
@@ -179,7 +179,7 @@ export const FOOTER = {
   ],
   contact: {
     email: "hridayamhopefoundation@gmail.com",
-    phone: "+91-81217-02286",
+    phone: "+917674028833",
     address: "Andhra Pradesh, India",
   },
   registrations: "",

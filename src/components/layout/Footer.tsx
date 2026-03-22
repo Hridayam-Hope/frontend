@@ -7,7 +7,7 @@ import { Facebook, Instagram, Twitter, Linkedin, Youtube, Mail, Phone, MapPin, C
 import { FOOTER } from '@/lib/constants';
 
 const socialLinks = [
-	{ icon: Facebook, href: 'https://www.facebook.com/share/18A876VpcB/', label: 'Facebook' },
+	{ icon: Facebook, href: 'https://www.facebook.com/share/1bpsM4Nyxb/', label: 'Facebook' },
 	{ icon: Instagram, href: 'https://www.instagram.com/hridayam_hope_foundation', label: 'Instagram' },
 	{ icon: Linkedin, href: 'https://www.linkedin.com/in/hridayam-hope-foundation-a936143b3', label: 'LinkedIn' },
 	{ icon: Youtube, href: 'https://youtube.com/@hridayamhopefoundation', label: 'YouTube' },
@@ -54,6 +54,7 @@ export default function Footer() {
 									key={label}
 									href={href}
 									aria-label={label}
+									target='__blank'
 									className="group relative rounded-full bg-white/5 p-2.5 transition-all hover:bg-hp-teal"
 								>
 									<Icon size={16} className="text-white/80 group-hover:text-white" />

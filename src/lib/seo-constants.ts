@@ -37,7 +37,7 @@ export const SITE_CONFIG = {
   },
   contact: {
     email: 'hridayamhopefoundation@gmail.com',
-    phone: '+91-81217-02286',
+    phone: '+917674028833',
     address: 'Andhra Pradesh, India',
     addressRegion: 'Andhra Pradesh',
     addressCountry: 'IN',
