@@ -16,7 +16,7 @@ export default function Hero() {
 			{/* Hero image  -  sits naturally on the right */}
 			<div className="absolute inset-0">
 				<Image
-					src="/hero.jpeg"
+					src="/hero.webp"
 					alt="A child planting a sapling  -  hope in action"
 					fill
 					className="object-cover object-right"
