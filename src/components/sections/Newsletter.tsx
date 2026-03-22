@@ -34,7 +34,7 @@ export default function Newsletter() {
 					<div className="relative z-10 grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-16">
 						{/* Text Content */}
 						<div className="text-center lg:text-left">
-							<motion.div
+							{/* <motion.div
 								initial={{ opacity: 0, x: -20 }}
 								whileInView={{ opacity: 1, x: 0 }}
 								transition={{ delay: 0.2 }}
@@ -46,7 +46,7 @@ export default function Newsletter() {
 									))}
 								</div>
 								<p className="text-[10px] font-bold uppercase tracking-widest text-white/70">Join 1,200+ supporters</p>
-							</motion.div>
+							</motion.div> */}
 
 							<h2 className="font-(family-name:--font-poppins) text-3xl font-bold leading-tight sm:text-4xl">
 								Get Monthly <br className="hidden sm:block" />

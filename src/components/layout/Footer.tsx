@@ -9,9 +9,8 @@ import { FOOTER } from '@/lib/constants';
 const socialLinks = [
 	{ icon: Facebook, href: 'https://www.facebook.com/share/18A876VpcB/', label: 'Facebook' },
 	{ icon: Instagram, href: 'https://www.instagram.com/hridayam_hope_foundation', label: 'Instagram' },
-	{ icon: Twitter, href: '#', label: 'Twitter' },
-	{ icon: Linkedin, href: 'https://www.linkedin.com/in/hridayam-hope-foundation/', label: 'LinkedIn' },
-	{ icon: Youtube, href: 'https://www.youtube.com/@hridayamhopefoundation', label: 'YouTube' },
+	{ icon: Linkedin, href: 'https://www.linkedin.com/in/hridayam-hope-foundation-a936143b3', label: 'LinkedIn' },
+	{ icon: Youtube, href: 'https://youtube.com/@hridayamhopefoundation', label: 'YouTube' },
 ];
 
 export default function Footer() {
@@ -101,7 +100,7 @@ export default function Footer() {
 														href={link.href}
 														className="group flex items-center text-sm text-white/50 transition-colors hover:text-white"
 													>
-														<span className="h-px w-0 bg-hp-teal transition-all group-hover:mr-2 group-hover:w-3" />
+														<span className="h-px w-0 bg-hp-teal transition-all" />
 														{link.label}
 													</Link>
 												</li>

@@ -9,15 +9,6 @@ import { NAV_LINKS } from '@/lib/constants';
 import SignatureButton from '@/components/ui/SignatureButton';
 
 export default function Header() {
-	const [scrolled, setScrolled] = useState(false);
-
-	useEffect(() => {
-		const onScroll = () => setScrolled(window.scrollY > 50);
-		window.addEventListener('scroll', onScroll, { passive: true });
-		onScroll();
-		return () => window.removeEventListener('scroll', onScroll);
-	}, []);
-
 	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
@@ -33,15 +24,13 @@ export default function Header() {
 	return (
 		<>
 			<header
-				className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-					scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'
-				}`}
+				className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/95 backdrop-blur-md shadow-md"
 			>
 				<div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
 					{/* Logo */}
 					<Link href="/" className="relative z-10 flex-shrink-0">
 						<Image
-							src={scrolled ? '/logo-header.svg' : '/logo-mono.svg'}
+							src="/logo-header.svg"
 							alt="Hridayam Hope Foundation"
 							width={160}
 							height={48}
@@ -56,9 +45,7 @@ export default function Header() {
 							<Link
 								key={link.label}
 								href={link.href}
-								className={`relative text-sm font-medium transition-colors duration-200 group ${
-									scrolled ? 'text-hp-text-dark' : 'hp-gradient-text'
-								}`}
+								className="relative text-sm font-medium transition-colors duration-200 group text-hp-text-dark"
 							>
 								{link.label}
 								<span className="absolute -bottom-1 left-0 h-0.5 w-0 hp-gradient-bg transition-all duration-300 group-hover:w-full" />
@@ -80,7 +67,7 @@ export default function Header() {
 					{/* Mobile Hamburger */}
 					<button
 						onClick={() => setMobileOpen((v) => !v)}
-						className={`relative z-10 lg:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-hp-text-dark' : 'text-white'}`}
+						className="relative z-10 lg:hidden p-2 rounded-lg transition-colors text-hp-text-dark"
 
 						aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
 					>
