@@ -68,7 +68,7 @@ export const BLOG_POSTS: BlogPost[] = [
 			},
 			{
 				type: 'paragraph',
-				text: 'At Hridayam Hope Foundation, we believe that every individual has the power to create meaningful change. Through our programs, we\'ve witnessed countless stories of transformation, resilience, and hope. This article explores the journey of those we serve and the impact of community-driven initiatives.',
+				text: 'At Hridayam Hope Foundation, we believe that every individual has the power to create meaningful change. We have given awareness on social media to government school students. Through our programs, we\'ve witnessed countless stories of transformation, resilience, and hope. This article explores the journey of those we serve and the impact of community-driven initiatives.',
 			},
 			{
 				type: 'heading',
@@ -95,8 +95,8 @@ export const BLOG_POSTS: BlogPost[] = [
 		isFeatured: true,
 	},
 	{
-		slug: '1000-trees-and-counting',
-		title: '1000 Trees and Counting: Our Green Earth Journey',
+		slug: '26-trees-and-counting',
+		title: '26 Trees and Counting: Our Green Earth Journey',
 		excerpt:
 			'A look back at our tree plantation drive milestones and the environmental impact we\'ve created together.',
 		highlight:
@@ -104,7 +104,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		content: [
 			{
 				type: 'paragraph',
-				text: 'When we planted our first sapling two years ago, we had a simple dream — to make our surroundings greener. Today, that dream has blossomed into something far greater. With over 1,000 trees planted across multiple districts, we\'re not just adding greenery — we\'re building ecosystems.',
+				text: 'When we planted our first sapling, we had a simple dream — to make our surroundings greener. Today, that dream has blossomed into something meaningful. With 26 trees planted on behalf of our volunteers, we\'re not just adding greenery — we\'re building ecosystems.',
 			},
 			{
 				type: 'heading',
@@ -112,7 +112,7 @@ export const BLOG_POSTS: BlogPost[] = [
 			},
 			{
 				type: 'paragraph',
-				text: 'Our journey began in Chevella, where a small group of 15 volunteers planted 50 saplings on a hot March morning. The energy was infectious — locals joined in, children asked questions about the species we were planting, and by the end of the day, something had shifted. People started caring more about their environment.',
+				text: 'Our journey began with a small group of volunteers coming together. We have planted 26 trees on behalf of our volunteers. The energy was infectious — locals joined in, children asked questions about the species we were planting, and by the end of the day, something had shifted. People started caring more about their environment.',
 			},
 			{
 				type: 'quote',
@@ -132,7 +132,7 @@ export const BLOG_POSTS: BlogPost[] = [
 			},
 			{
 				type: 'paragraph',
-				text: 'Our goal for 2027 is ambitious — 5,000 trees across 10 districts. We\'re partnering with forest departments, agricultural universities, and corporate sponsors to make this possible. If you\'d like to sponsor a tree or join a drive, we\'d love to have you.',
+				text: 'Our goal for 2027 is ambitious — 500 trees across the district. We\'re partnering with local communities to make this possible. If you\'d like to sponsor a tree or join a drive, we\'d love to have you.',
 			},
 		],
 		category: 'Environment',

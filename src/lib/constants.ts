@@ -106,7 +106,7 @@ export const ACTIVITIES = [
     title: "Tree Plantation Drive",
     meta: "Bhimavaram | 11 March 2026",
     description:
-      "Planted 26 saplings with local volunteers, creating greener futures for the next generation.",
+      "Planted 26 trees on behalf of our volunteers.",
   },
   {
     image: "/program_2.webp",
@@ -115,7 +115,7 @@ export const ACTIVITIES = [
     title: "School Awareness Session",
     meta: "Bhimavaram | 11 March 2026",
     description:
-      "Interactive session on health and hygiene reached 100+ students, empowering them with knowledge.",
+      "We have given awareness on social media to government school students.",
   },
   // {
   //   image: "/activity-support-family.webp",
