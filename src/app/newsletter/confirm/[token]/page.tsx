@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -10,10 +10,11 @@ import { ApiError } from '@/lib/api/client';
 type ConfirmState = 'loading' | 'success' | 'error';
 
 interface PageProps {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 }
 
 export default function NewsletterConfirmPathPage({ params }: PageProps) {
+  const { token: routeToken } = use(params);
   const [token, setToken] = useState('');
   const [state, setState] = useState<ConfirmState>('loading');
   const [message, setMessage] = useState('Confirming your subscription...');
@@ -22,7 +23,7 @@ export default function NewsletterConfirmPathPage({ params }: PageProps) {
     let mounted = true;
 
     const run = async () => {
-      const resolvedToken = decodeURIComponent(params.token || '').trim();
+      const resolvedToken = decodeURIComponent(routeToken || '').trim();
       setToken(resolvedToken);
 
       if (!resolvedToken) {
@@ -51,7 +52,7 @@ export default function NewsletterConfirmPathPage({ params }: PageProps) {
     return () => {
       mounted = false;
     };
-  }, [params.token]);
+  }, [routeToken]);
 
   const title = useMemo(() => {
     if (state === 'success') return 'Subscription Confirmed';

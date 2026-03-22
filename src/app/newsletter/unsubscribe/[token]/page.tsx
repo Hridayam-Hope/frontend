@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -10,10 +10,11 @@ import { ApiError } from '@/lib/api/client';
 type UnsubscribeState = 'loading' | 'success' | 'error';
 
 interface PageProps {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 }
 
 export default function NewsletterUnsubscribePage({ params }: PageProps) {
+  const { token: routeToken } = use(params);
   const [token, setToken] = useState<string>('');
   const [state, setState] = useState<UnsubscribeState>('loading');
   const [message, setMessage] = useState<string>('Unsubscribing you from newsletter updates...');
@@ -22,7 +23,7 @@ export default function NewsletterUnsubscribePage({ params }: PageProps) {
     let mounted = true;
 
     const run = async () => {
-      const resolvedToken = decodeURIComponent(params.token || '').trim();
+      const resolvedToken = decodeURIComponent(routeToken || '').trim();
       setToken(resolvedToken);
 
       if (!resolvedToken) {
@@ -59,7 +60,7 @@ export default function NewsletterUnsubscribePage({ params }: PageProps) {
     return () => {
       mounted = false;
     };
-  }, [params.token]);
+  }, [routeToken]);
 
   const statusTitle = useMemo(() => {
     if (state === 'success') return 'You are unsubscribed';
