@@ -48,7 +48,7 @@ const gridItemVariants: Variants = {
 
 export default function WhoWeAre() {
 	return (
-		<section id="who-we-are" className="bg-hp-bg-2 py-14 sm:py-28" aria-label="Who we are">
+		<section id="who-we-are" className="bg-hp-bg-2 py-8 sm:py-12" aria-label="Who we are">
 			<div className="mx-auto max-w-7xl px-5 lg:px-8">
 				<motion.div
 					className="grid items-center gap-4 lg:grid-cols-5 lg:gap-16"
@@ -59,7 +59,7 @@ export default function WhoWeAre() {
 				>
 					{/* Interactive Grid  -  2/5 */}
 					<motion.div variants={slideInLeft} className="order-2 lg:order-1 lg:col-span-2 mt-8 lg:mt-0">
-						<div className="grid grid-cols-2 gap-3 sm:gap-6">
+						<div className="grid grid-cols-2 gap-3 sm:gap-6 max-w-[280px] sm:max-w-[360px] mx-auto lg:mx-0">
 							{/* Column 1 */}
 							<div className="space-y-3 sm:space-y-6">
 								<motion.div

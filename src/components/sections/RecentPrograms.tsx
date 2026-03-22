@@ -45,8 +45,8 @@ export default function RecentPrograms() {
 					</motion.p>
 				</motion.div>
 
-				{/* Masonry Layout */}
-				<div className="columns-1 gap-6 sm:columns-2 lg:columns-3 lg:gap-8">
+				{/* Centered Layout */}
+				<div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8">
 					{ACTIVITIES.map((activity, index) => (
 						<motion.div
 							key={activity.title}
@@ -60,19 +60,11 @@ export default function RecentPrograms() {
 								damping: 15,
 								stiffness: 100,
 							}}
-							className="mb-6 break-inside-avoid sm:mb-8"
+							className="w-full max-w-sm lg:max-w-[380px]"
 						>
 							<article className="group relative overflow-hidden rounded-[2rem] bg-white shadow-xl transition-all duration-700 hover:shadow-2xl sm:rounded-[2.5rem]">
-								{/* Image with Staggered Heights */}
-								<div
-									className={`relative overflow-hidden ${
-										index % 3 === 0
-											? 'aspect-[4/5] sm:aspect-[4/5.5]'
-											: index % 3 === 1
-												? 'aspect-square'
-												: 'aspect-[4/4.5] sm:aspect-[4/5]'
-									}`}
-								>
+								{/* Image with Uniform Height */}
+								<div className="relative overflow-hidden aspect-[4/5]">
 									<Image
 										src={activity.image}
 										alt={activity.title}
