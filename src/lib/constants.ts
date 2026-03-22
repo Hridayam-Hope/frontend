@@ -58,7 +58,7 @@ export const PROGRAMS = [
     title: "Service to the Needy",
     description:
       "Distribution of food to underprivileged individuals and families. Providing books, stationery, and learning materials to students in need. Support for basic necessities during emergencies and crises.",
-    image: "/do_1.webp",
+    image: "/service.webp",
     icon: "Utensils" as const,
   },
   {
@@ -100,7 +100,7 @@ export const PROGRAMS = [
 
 export const ACTIVITIES = [
   {
-    image: "/program_1.JPG",
+    image: "/program_1.webp",
     badge: "Environment",
     badgeColor: "bg-emerald-500",
     title: "Tree Plantation Drive",
