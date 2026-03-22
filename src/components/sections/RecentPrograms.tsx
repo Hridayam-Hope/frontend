@@ -132,7 +132,7 @@ export default function RecentPrograms() {
 									</div>
 
 									{/* Static Badge */}
-									<div className="absolute top-6 right-6 z-10 transition-all duration-700 group-hover:opacity-0 group-hover:scale-90">
+									<div className="absolute top-6 right-6 z-10 transition-all duration-700">
 										<span
 											className={`px-3 py-1.5 rounded-xl text-[10px] font-bold text-white uppercase tracking-widest shadow-2xl backdrop-blur-sm border border-white/10 ${activity.badgeColor}`}
 										>

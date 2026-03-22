@@ -5,7 +5,7 @@ import WhatWeDo from '@/components/sections/WhatWeDo';
 import RecentPrograms from '@/components/sections/RecentPrograms';
 import Testimonials from '@/components/sections/Testimonials';
 import Newsletter from '@/components/sections/Newsletter';
-import MobileDonateButton from '@/components/layout/MobileDonateButton';
+// import MobileDonateButton from '@/components/layout/MobileDonateButton';
 import Footer from '@/components/layout/Footer';
 import JsonLd from '@/components/seo/JsonLd';
 
@@ -23,7 +23,7 @@ export default function Home() {
 				<Newsletter />
 			</main>
 			<Footer />
-			<MobileDonateButton />
+			{/* <MobileDonateButton /> */}
 		</>
 	);
 }

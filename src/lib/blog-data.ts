@@ -34,7 +34,7 @@ export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
 	kavita: {
-		name: 'Kavita Reddy',
+		name: 'David Raju',
 		role: 'Author',
 		bio: 'A passionate advocate for social change and community development.',
 		avatar: null,
@@ -90,7 +90,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		category: 'Education',
 		featuredImage: '/program_2.webp',
 		author: BLOG_AUTHORS.kavita,
-		publishedAt: '2026-02-08',
+		publishedAt: '2026-03-11',
 		readTime: 5,
 		isFeatured: true,
 	},
@@ -138,7 +138,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		category: 'Environment',
 		featuredImage: '/blog_2.webp',
 		author: BLOG_AUTHORS.rahul,
-		publishedAt: '2026-01-22',
+		publishedAt: '2026-03-11',
 		readTime: 4,
 		isFeatured: false,
 	},
@@ -194,7 +194,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		category: 'Community',
 		featuredImage: '/volunteers.webp',
 		author: BLOG_AUTHORS.priya,
-		publishedAt: '2026-01-15',
+		publishedAt: '2026-02-15',
 		readTime: 6,
 		isFeatured: false,
 	},

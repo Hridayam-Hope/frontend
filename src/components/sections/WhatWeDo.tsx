@@ -94,17 +94,17 @@ export default function WhatWeDo() {
 												</div>
 
 												{/* Slide-up Content */}
-												<div className="absolute inset-x-0 bottom-0 z-20 p-4 transition-transform duration-500 translate-y-[calc(100%-72px)] group-hover:translate-y-0 sm:p-6 sm:translate-y-[calc(100%-100px)]">
+												<div className="absolute inset-x-0 bottom-0 z-20 p-4 transition-transform duration-500 sm:p-6">
 													<div className="flex flex-col gap-2 rounded-2xl bg-black/40 p-3 backdrop-blur-xl border border-white/10 shadow-2xl sm:p-5 sm:gap-4">
 														<h3 className="font-(family-name:--font-poppins) text-lg font-bold text-white sm:text-xl">{prog.title}</h3>
-														<p className="text-xs leading-relaxed text-white/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-sm">
+														{/* <p className="text-xs leading-relaxed text-white/80 sm:text-sm">
 															{prog.description}
-														</p>
-														<div className="translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+														</p> */}
+														{/* <div className="translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
 															<SignatureButton href="#" showIcon={false} size="sm" className="w-full !rounded-xl">
 																Learn More
 															</SignatureButton>
-														</div>
+														</div> */}
 													</div>
 												</div>
 											</div>

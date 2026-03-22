@@ -36,7 +36,6 @@ export default function SixPillars() {
 				<motion.div
 					className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6"
 					variants={staggerContainer}
-					initial="hidden"
 					whileInView="visible"
 					viewport={{ once: true, amount: 0.1 }}
 				>
@@ -44,16 +43,14 @@ export default function SixPillars() {
 						<motion.div
 							key={pillar.title}
 							variants={fadeUp}
-							whileHover={{ y: -6, scale: 1.01 }}
-							transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-							className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-lg hover:border-hp-primary/15 sm:p-6"
+							className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6"
 						>
-							{/* Hover gradient line at top */}
-							<div className="absolute top-0 left-0 right-0 h-0.5 hp-gradient-bg opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
+							{/* Hover gradient line at top
+							<div className="absolute top-0 left-0 right-0 h-0.5 hp-gradient-bg opacity-0 transition-opacity duration-400 group-hover:opacity-100" /> */}
 
 							{/* Badge */}
 							<span
-								className={`inline-block rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider transition-transform duration-300 group-hover:scale-105 sm:text-[10px] ${pillar.badgeColor}`}
+								className={`inline-block rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider sm:text-[10px] ${pillar.badgeColor}`}
 							>
 								{pillar.badge}
 							</span>
@@ -68,7 +65,7 @@ export default function SixPillars() {
 							<ul className="mt-3 space-y-1.5">
 								{pillar.bullets.map((b: string) => (
 									<li key={b} className="flex items-start gap-2 text-xs text-hp-text-dark/60 sm:text-sm">
-										<span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-hp-primary/40 transition-colors duration-300 group-hover:bg-hp-primary" />
+										<span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-hp-primary/40" />
 										{b}
 									</li>
 								))}
@@ -80,7 +77,7 @@ export default function SixPillars() {
 								className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-hp-primary transition-colors hover:text-hp-accent sm:text-sm"
 							>
 								Learn more
-								<ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1.5" />
+								<ArrowRight size={14} />
 							</a>
 						</motion.div>
 					))}

@@ -100,20 +100,20 @@ export const PROGRAMS = [
 
 export const ACTIVITIES = [
   {
-    image: "/about_4.webp",
+    image: "/program_1.JPG",
     badge: "Environment",
     badgeColor: "bg-emerald-500",
     title: "Tree Plantation Drive",
-    meta: "Chevella | 7 March 2025",
+    meta: "Bhimavaram | 11 March 2026",
     description:
-      "Planted 50 saplings with local volunteers, creating greener futures for the next generation.",
+      "Planted 26 saplings with local volunteers, creating greener futures for the next generation.",
   },
   {
     image: "/program_2.webp",
     badge: "Education",
     badgeColor: "bg-blue-500",
     title: "School Awareness Session",
-    meta: "Hayathnagar | 15 February 2025",
+    meta: "Bhimavaram | 11 March 2026",
     description:
       "Interactive session on health and hygiene reached 100+ students, empowering them with knowledge.",
   },
@@ -131,23 +131,37 @@ export const ACTIVITIES = [
 export const TESTIMONIALS = [
   {
     quote:
-      "Hridayam Hope Foundation didn't just help us - they restored our dignity. Their compassionate approach made all the difference.",
-    name: "Ramesh Kumar",
-    role: "Parent, Beneficiary",
-    image: "/testimonial-person.webp",
-  },
-  {
-    quote:
-      "Volunteering with Hridayam has been life-changing. Seeing the direct impact on children's education keeps me inspired every day.",
-    name: "Priya Sharma",
+      "I enjoyed being part of Hridayam through plantation and awareness activities, interacting with kids, spreading useful knowledge, and contributing to a greener, better future.",
+    name: "Yogendra P",
     role: "Volunteer",
     image: "/testimonial-person.webp",
   },
   {
     quote:
-      "Their tree plantation drives have transformed our neighbourhood. Hridayam proves that small initiatives can make a big difference.",
-    name: "Ahmed Khan",
-    role: "Community Member",
+      "This month's activities were meaningful and impactful, promoting environmental responsibility through plantation and spreading social awareness among students, while providing an enjoyable and inspiring experience.",
+    name: "Asha",
+    role: "Volunteer",
+    image: "/testimonial-person.webp",
+  },
+  {
+    quote:
+      "Being part of Hridayam Hope Foundation has been meaningful, offering a positive, inspiring community where volunteering feels purposeful and truly special.",
+    name: "Zaheer Khan",
+    role: "Volunteer",
+    image: "/testimonial-person.webp",
+  },
+  {
+    quote:
+      "Spreading awareness made me realize that even a message can shift how people think and act—and that gave my experience real meaning.",
+    name: "Bhanu Sai",
+    role: "Volunteer",
+    image: "/testimonial-person.webp",
+  },
+  {
+    quote:
+      "Planting trees felt like a small step at first, but I later understood the impact it holds for the future and the responsibility it carries.",
+    name: "Ankith Pissay",
+    role: "Volunteer",
     image: "/testimonial-person.webp",
   },
 ] as const;
