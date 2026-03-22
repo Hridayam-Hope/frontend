@@ -23,6 +23,26 @@ export async function getNewsletters(params?: {
   });
 }
 
+export async function unsubscribeByToken(token: string) {
+  return apiFetch<MessageResponse>(`/newsletter/unsubscribe/${token}`);
+}
+
+export async function confirmSubscriptionByToken(token: string) {
+  return apiFetch<MessageResponse>(`/newsletter/confirm/${token}`);
+}
+
+export async function subscribeToNewsletter(data: {
+  email: string;
+  name?: string;
+  segments?: string[];
+  preferences?: Record<string, unknown>;
+}) {
+  return apiFetch<MessageResponse>("/newsletter/subscribe", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function getSubscribers(params?: {
   page?: number;
   page_size?: number;

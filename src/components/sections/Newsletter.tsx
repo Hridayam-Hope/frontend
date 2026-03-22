@@ -1,11 +1,47 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Sparkles } from 'lucide-react';
 import { fadeUp } from '@/lib/animations';
 import SignatureButton from '@/components/ui/SignatureButton';
+import { subscribeToNewsletter } from '@/lib/api/newsletter';
+import { ApiError } from '@/lib/api/client';
 
 export default function Newsletter() {
+	const [email, setEmail] = useState('');
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [message, setMessage] = useState<string | null>(null);
+	const [messageType, setMessageType] = useState<'success' | 'error' | null>(null);
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (!email.trim()) return;
+
+		setIsSubmitting(true);
+		setMessage(null);
+		setMessageType(null);
+
+		try {
+			const response = await subscribeToNewsletter({
+				email: email.trim(),
+				segments: ['general'],
+			});
+			setMessage(response.message || 'Subscription successful. Please check your email to confirm.');
+			setMessageType('success');
+			setEmail('');
+		} catch (error) {
+			if (error instanceof ApiError) {
+				setMessage(error.message || 'Unable to subscribe right now. Please try again.');
+			} else {
+				setMessage('Unable to subscribe right now. Please try again.');
+			}
+			setMessageType('error');
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
 	return (
 		<section
 			id="newsletter"
@@ -62,7 +98,7 @@ export default function Newsletter() {
 						<div className="flex flex-col gap-4">
 							<motion.form
 								className="flex flex-col gap-3 sm:flex-row sm:items-center"
-								onSubmit={(e) => e.preventDefault()}
+								onSubmit={handleSubmit}
 								initial={{ opacity: 0, y: 20 }}
 								whileInView={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.3 }}
@@ -72,19 +108,33 @@ export default function Newsletter() {
 										type="email"
 										required
 										placeholder="your@email.com"
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										disabled={isSubmitting}
 										className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-4 text-sm text-black placeholder:text-black/40 backdrop-blur-md outline-none transition-all focus:bg-white/20 focus:ring-2 focus:ring-white/30"
 									/>
 								</div>
 
 								<SignatureButton
 									type="submit"
+									disabled={isSubmitting}
 									showIcon={false}
 									className="group !rounded-2xl !bg-white !text-hp-text-dark hover:!scale-[1.02] active:!scale-95 shadow-xl !py-4 transition-all"
 								>
-									Subscribe
+									{isSubmitting ? 'Subscribing...' : 'Subscribe'}
 									<Send size={16} className="ml-2 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
 								</SignatureButton>
 							</motion.form>
+
+							{message && (
+								<p
+									className={`text-xs sm:text-sm ${
+										messageType === 'success' ? 'text-emerald-100' : 'text-rose-100'
+									}`}
+								>
+									{message}
+								</p>
+							)}
 
 							<div className="flex items-center justify-center gap-4 text-[10px] text-white/60 lg:justify-start">
 								<p>✓ Monthly Insights</p>
