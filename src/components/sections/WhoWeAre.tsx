@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion, useInView, type Variants } from 'framer-motion';
-import { ArrowRight, Heart } from 'lucide-react';
-import { fadeUp, slideInLeft, slideInRight, staggerContainer } from '@/lib/animations';
+import { motion, useInView } from 'framer-motion';
+import { Heart, Sparkles } from 'lucide-react';
+import { fadeUp, slideInRight, staggerContainer } from '@/lib/animations';
 import { WHO_WE_ARE } from '@/lib/constants';
 import SignatureButton from '@/components/ui/SignatureButton';
 
@@ -31,127 +31,104 @@ function Counter({ target, suffix }: { target: number; suffix: string }) {
 	}, [isInView, target]);
 
 	return (
-		<span ref={ref} className="font-(family-name:--font-poppins) text-3xl font-bold hp-gradient-text sm:text-5xl">
+		<span ref={ref} className="font-(family-name:--font-poppins) text-3xl font-bold hp-gradient-text sm:text-4xl md:text-5xl">
 			{count}
 			{suffix}
 		</span>
 	);
 }
 
-const gridItemVariants: Variants = {
-	hover: {
-		y: -10,
-		scale: 1.02,
-		transition: { type: 'spring', stiffness: 300, damping: 20 },
-	},
-};
-
 export default function WhoWeAre() {
 	return (
-		<section id="who-we-are" className="bg-hp-bg-2 py-8 sm:py-12" aria-label="Who we are">
-			<div className="mx-auto max-w-7xl px-5 lg:px-8">
+		<section id="who-we-are" className="relative overflow-hidden bg-white py-16 sm:py-24 lg:py-28" aria-label="Who we are">
+			{/* Decorative background elements to reduce whitespace visually */}
+			<div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-hp-primary/5 blur-3xl" />
+			<div className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-blue-500/5 blur-3xl" />
+
+			<div className="relative mx-auto max-w-7xl px-5 lg:px-8">
 				<motion.div
-					className="grid items-center gap-4 lg:grid-cols-5 lg:gap-16"
+					className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-24"
 					variants={staggerContainer}
 					initial="hidden"
 					whileInView="visible"
 					viewport={{ once: true, amount: 0.2 }}
 				>
-					{/* Interactive Grid  -  2/5 */}
-					<motion.div variants={slideInLeft} className="order-2 lg:order-1 lg:col-span-2 mt-8 lg:mt-0">
-						<div className="grid grid-cols-2 gap-3 sm:gap-6 max-w-[280px] sm:max-w-[360px] mx-auto lg:mx-0">
-							{/* Column 1 */}
-							<div className="space-y-3 sm:space-y-6">
-								<motion.div
-									whileHover="hover"
-									variants={gridItemVariants}
-									className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
-								>
-									<Image src="/about-joy.webp" alt="Joyful children supported by Hridayam Hope" fill className="object-cover" />
-								</motion.div>
-								<motion.div
-									whileHover="hover"
-									variants={gridItemVariants}
-									className="relative aspect-square overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
-								>
-									<Image src="/about-sprout.webp" alt="Environmental sustainability initiative" fill className="object-cover" />
-								</motion.div>
-							</div>
+					{/* Content Side */}
+					<motion.div className="space-y-6 sm:space-y-8" variants={{ visible: { transition: { staggerChildren: 0.12 } } }}>
+						<div className="space-y-4">
+							<motion.div variants={fadeUp} className="inline-flex">
+								<span className="inline-flex items-center gap-1.5 rounded-full bg-hp-primary/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-hp-primary shadow-sm sm:text-xs">
+									<Sparkles size={14} className="text-hp-primary" />
+									{WHO_WE_ARE.eyebrow}
+								</span>
+							</motion.div>
 
-							{/* Column 2 (Offset) */}
-							<div className="space-y-3 pt-6 sm:space-y-6 sm:pt-12">
-								<motion.div
-									whileHover="hover"
-									variants={gridItemVariants}
-									className="relative aspect-square overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
-								>
-									<Image src="/about-books.webp" alt="Education support program" fill className="object-cover" />
-								</motion.div>
-								<motion.div
-									variants={gridItemVariants}
-									className="relative aspect-[3/4] overflow-hidden rounded-2xl shadow-lg ring-1 ring-hp-primary/10 sm:rounded-3xl"
-								>
-									<Image src="/about_4.webp" alt="Education support program" fill className="object-cover" />
-								</motion.div>
-							</div>
+							<motion.h2
+								variants={fadeUp}
+								className="font-(family-name:--font-poppins) text-3xl font-bold leading-tight text-hp-text-dark sm:text-4xl lg:text-5xl"
+							>
+								{WHO_WE_ARE.headline}
+							</motion.h2>
 						</div>
-					</motion.div>
 
-					{/* Content  -  3/5 */}
-					<motion.div className="order-1 lg:order-2 space-y-4 sm:space-y-6 lg:col-span-3" variants={{ visible: { transition: { staggerChildren: 0.12 } } }}>
-						<motion.p
-							variants={fadeUp}
-							className="text-[10px] font-semibold uppercase tracking-[2px] hp-gradient-text sm:text-xs sm:tracking-[2.5px]"
-						>
-							{WHO_WE_ARE.eyebrow}
-						</motion.p>
-
-						<motion.h2
-							variants={fadeUp}
-							className="font-(family-name:--font-poppins) text-2xl font-bold leading-tight text-hp-text-dark sm:text-4xl lg:text-[40px]"
-						>
-							{WHO_WE_ARE.headline}
-						</motion.h2>
-
-						<motion.p variants={fadeUp} className="text-sm leading-[1.7] text-hp-text-dark/80 sm:text-base sm:leading-[1.8]">
-							{WHO_WE_ARE.paragraph}
-						</motion.p>
-
-						{/* <motion.div variants={fadeUp} className="pt-2">
-							<SignatureButton href="#">{WHO_WE_ARE.cta}</SignatureButton>
-						</motion.div> */}
-					</motion.div>
-				</motion.div>
-
-				{/* Impact Metrics */}
-				{/* <motion.div
-					className="mt-10 grid grid-cols-3 gap-2 sm:mt-16 sm:gap-6"
-					variants={staggerContainer}
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, amount: 0.3 }}
-				>
-					{WHO_WE_ARE.metrics.map((m) => (
-						<motion.div
-							key={m.label}
-							variants={fadeUp}
-							whileHover={{
-								y: -8,
-								scale: 1.02,
-								backgroundColor: 'rgba(255, 255, 255, 0.8)',
-								boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-							}}
-							transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-							className="group relative flex flex-col items-center justify-center rounded-2xl border border-hp-primary/5 p-4 transition-colors duration-300 hover:border-hp-primary/20 sm:p-6"
-						>
-							<div className="absolute inset-0 -z-10 rounded-2xl bg-white/40 opacity-0 transition-opacity duration-300 backdrop-blur-[2px] group-hover:opacity-100" />
-							<Counter target={m.value} suffix={m.suffix} />
-							<p className="mt-1 text-[10px] font-medium text-hp-text-light transition-colors group-hover:text-hp-primary sm:mt-2 sm:text-sm">
-								{m.label}
+						<motion.div variants={fadeUp} className="relative rounded-2xl border-l-4 border-hp-primary bg-hp-bg-1 p-5 shadow-sm sm:p-6 lg:rounded-3xl lg:p-8">
+							<p className="text-sm leading-relaxed text-hp-text-dark/80 sm:text-base sm:leading-loose">
+								{WHO_WE_ARE.paragraph}
 							</p>
 						</motion.div>
-					))}
-				</motion.div> */}
+
+						{/* Metrics row to fill space */}
+						{/* <motion.div 
+							variants={fadeUp} 
+							className="grid grid-cols-3 gap-3 rounded-2xl sm:gap-6"
+						>
+							{WHO_WE_ARE.metrics.map((m) => (
+								<div
+									key={m.label}
+									className="group flex flex-col justify-center rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all hover:border-hp-primary/30 hover:shadow-md sm:p-5"
+								>
+									<Counter target={m.value} suffix={m.suffix} />
+									<p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-hp-text-light transition-colors group-hover:text-hp-primary sm:mt-3 sm:text-xs">
+										{m.label}
+									</p>
+								</div>
+							))}
+						</motion.div> */}
+
+						<motion.div variants={fadeUp} className="pt-2">
+							<SignatureButton href="/about" showIcon={false}>
+								{WHO_WE_ARE.cta}
+							</SignatureButton>
+						</motion.div>
+					</motion.div>
+
+					{/* Image Side (Just One Image) */}
+					<motion.div variants={slideInRight} className="relative h-[400px] w-full sm:h-[500px] lg:h-[650px]">
+						<div className="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/5 lg:rounded-[3rem]">
+							<Image 
+								src="/about-children.webp" 
+								alt="Hridayam Hope Foundation" 
+								fill 
+								sizes="(max-width: 1024px) 100vw, 50vw"
+								className="object-cover transition-transform duration-1000 hover:scale-105" 
+								priority
+							/>
+							{/* Soft gradient overlay */}
+							<div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-hp-primary/10 to-transparent lg:rounded-[3rem]" />
+						</div>
+
+						{/* Floating decorative element (Heart) */}
+						<motion.div 
+							animate={{ y: [0, -10, 0] }}
+							transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+							className="absolute -bottom-6 -left-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5 sm:-bottom-8 sm:-left-8 sm:h-28 sm:w-28 sm:rounded-[2rem]"
+						>
+							<div className="flex h-full w-full items-center justify-center rounded-xl bg-hp-primary/10 sm:rounded-2xl">
+								<Heart size={32} className="text-hp-primary sm:h-12 sm:w-12" />
+							</div>
+						</motion.div>
+					</motion.div>
+				</motion.div>
 			</div>
 		</section>
 	);
