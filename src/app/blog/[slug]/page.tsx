@@ -121,7 +121,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
 												Your support can help us reach more communities and create lasting impact.
 												Whether through donations or volunteering, every contribution matters.
 											</p>
-											<div className="mt-5 flex flex-wrap gap-3">
+											{/* <div className="mt-5 flex flex-wrap gap-3">
 												<SignatureButton href="/donate" size="sm" showIcon={false}>
 													Donate Now
 												</SignatureButton>
@@ -131,7 +131,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
 												>
 													Volunteer
 												</Link>
-											</div>
+											</div> */}
 										</div>
 									</div>
 								</motion.div>

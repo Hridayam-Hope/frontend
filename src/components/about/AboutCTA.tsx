@@ -54,7 +54,7 @@ export default function AboutCTA() {
 							<SignatureButton href="#" size="md">
 								{ABOUT_CTA.primaryCta}
 							</SignatureButton>
-							<SignatureButton
+							{/* <SignatureButton
 								href="#"
 								size="md"
 								showIcon={false}
@@ -62,7 +62,7 @@ export default function AboutCTA() {
 							>
 								<Heart size={14} className="mr-2 fill-current text-white/70" />
 								{ABOUT_CTA.secondaryCta}
-							</SignatureButton>
+							</SignatureButton> */}
 						</motion.div>
 
 						{/* Trust Indicators */}

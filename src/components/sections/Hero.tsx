@@ -95,14 +95,14 @@ export default function Hero() {
 					animate="visible"
 					className="flex items-center justify-center gap-1.5 rounded-2xl bg-black/40 p-1.5 backdrop-blur-md ring-1 ring-white/10 sm:gap-4 sm:rounded-3xl sm:p-3"
 				>
-					<SignatureButton
+					{/* <SignatureButton
 						href="#quick-impact"
 						size="sm"
 						showIcon={false}
 						className="flex-1 !rounded-tl-2xl !rounded-br-2xl !rounded-tr-md !rounded-bl-md"
 					>
 						{HERO.cta.primary}
-					</SignatureButton>
+					</SignatureButton> */}
 
 					<SignatureButton
 						href="#volunteer"

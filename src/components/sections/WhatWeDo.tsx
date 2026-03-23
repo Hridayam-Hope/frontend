@@ -72,7 +72,6 @@ export default function WhatWeDo() {
 						<div ref={emblaRef} className="overflow-hidden">
 							<div className="flex gap-4 sm:gap-6">
 								{PROGRAMS.map((prog) => {
-									const Icon = iconMap[prog.icon as keyof typeof iconMap];
 									return (
 										<motion.div key={prog.title} variants={fadeUp} className="min-w-0 flex-[0_0_75%] sm:flex-[0_0_45%] lg:flex-[0_0_30%]">
 											<div className="group relative aspect-[3/4] overflow-hidden rounded-3xl bg-hp-text-dark/5 shadow-md transition-all duration-500 sm:aspect-[3/4]">
@@ -88,10 +87,6 @@ export default function WhatWeDo() {
 												{/* Gradient Overlay (Constant) */}
 												<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
 
-												{/* Icon Badge (Static) */}
-												<div className="absolute top-4 left-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-10">
-													<Icon size={20} className="text-white" />
-												</div>
 
 												{/* Slide-up Content */}
 												<div className="absolute inset-x-0 bottom-0 z-20 p-4 transition-transform duration-500 sm:p-6">

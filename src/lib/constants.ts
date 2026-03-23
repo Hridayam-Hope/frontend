@@ -59,42 +59,36 @@ export const PROGRAMS = [
     description:
       "Distribution of food to underprivileged individuals and families. Providing books, stationery, and learning materials to students in need. Support for basic necessities during emergencies and crises.",
     image: "/service.webp",
-    icon: "Utensils" as const,
   },
   {
     title: "Education & Awareness Programs",
     description:
       "Awareness sessions for students, teenagers, and the general public. Health awareness programs focusing on physical and mental well-being. Sex education programs for teenagers. Campaigns on social values.",
     image: "/do_2.webp",
-    icon: "BookOpen" as const,
   },
   {
     title: "Health & Well-being Initiatives",
     description:
       "Health awareness drives in schools and communities. Collaboration with professionals for seminars and workshops on hygiene, nutrition, and mental health. Promoting preventive healthcare.",
     image: "/do_3.webp",
-    icon: "Heart" as const,
   },
   {
     title: "Social Reformation & Community Development",
     description:
       "Programs that encourage social responsibility and positive behavioral change. Initiatives to address social issues through dialogue, education, and community participation.",
     image: "/program-social.webp",
-    icon: "Users" as const,
   },
   {
     title: "Environmental Protection & Sustainability",
     description:
       "Promoting environment-friendly habits and sustainable living. Awareness campaigns on waste management, plastic reduction, and conservation of natural resources. Tree plantation drives.",
     image: "/program-environment.webp",
-    icon: "Leaf" as const,
   },
   {
     title: "Technology & Innovation for Social Good",
     description:
       "Providing simple and effective tech solutions for social challenges. Promoting digital awareness and developing technical education models for communities in need of awareness.",
     image: "/program-education.webp",
-    icon: "Laptop" as const,
   },
 ] as const;
 
@@ -172,8 +166,8 @@ export const FOOTER = {
   aboutLinks: [
     { label: "Our Mission", href: "#who-we-are" },
     { label: "Our Team", href: "#" },
-    { label: "Annual Reports", href: "#" },
-    { label: "Transparency", href: "#" },
+    // { label: "Annual Reports", href: "#" },
+    // { label: "Transparency", href: "#" },
     { label: "Contact Us", href: "#footer" },
   ],
   programLinks: [

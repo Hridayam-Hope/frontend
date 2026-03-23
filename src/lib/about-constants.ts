@@ -74,13 +74,13 @@ export const ABOUT_CORE_VALUES = {
       color: 'text-rose-500',
       bg: 'bg-rose-50',
     },
-    {
-      title: 'Integrity & Transparency',
-      description: 'Upholding honesty and accountability in all activities.',
-      icon: 'ShieldCheck' as const,
-      color: 'text-blue-500',
-      bg: 'bg-blue-50',
-    },
+    // {
+    //   title: 'Integrity & Transparency',
+    //   description: 'Upholding honesty and accountability in all activities.',
+    //   icon: 'ShieldCheck' as const,
+    //   color: 'text-blue-500',
+    //   bg: 'bg-blue-50',
+    // },
     {
       title: 'Inclusiveness',
       description: 'Reaching out to all sections of society without discrimination.',

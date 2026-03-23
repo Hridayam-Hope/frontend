@@ -36,7 +36,7 @@ export default function AboutPage() {
 				<AboutCTA />
 			</main>
 			<Footer />
-			<MobileDonateButton />
+			{/* <MobileDonateButton /> */}
 		</>
 	);
 }

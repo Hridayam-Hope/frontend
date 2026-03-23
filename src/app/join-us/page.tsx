@@ -58,23 +58,23 @@ const WAYS_TO_JOIN = [
 			{ value: '2,000+', label: 'Hours Contributed' },
 		],
 	},
-	{
-		id: 'donate',
-		icon: Heart,
-		title: 'Make a Donation',
-		subtitle: 'Fund programs that matter',
-		description: "Every rupee creates hope. Your donation directly supports education, healthcare, food distribution, and environmental initiatives across communities.",
-		cta: 'Donate Now',
-		href: '/donate',
-		gradient: 'from-rose-500 to-pink-500',
-		bgLight: 'bg-rose-50',
-		borderColor: 'border-rose-200',
-		iconColor: 'text-rose-600',
-		stats: [
-			{ value: '₹5L+', label: 'Funds Raised' },
-			{ value: '500+', label: 'Lives Impacted' },
-		],
-	},
+	// {
+	// 	id: 'donate',
+	// 	icon: Heart,
+	// 	title: 'Make a Donation',
+	// 	subtitle: 'Fund programs that matter',
+	// 	description: "Every rupee creates hope. Your donation directly supports education, healthcare, food distribution, and environmental initiatives across communities.",
+	// 	cta: 'Donate Now',
+	// 	href: '/donate',
+	// 	gradient: 'from-rose-500 to-pink-500',
+	// 	bgLight: 'bg-rose-50',
+	// 	borderColor: 'border-rose-200',
+	// 	iconColor: 'text-rose-600',
+	// 	stats: [
+	// 		{ value: '₹5L+', label: 'Funds Raised' },
+	// 		{ value: '500+', label: 'Lives Impacted' },
+	// 	],
+	// },
 	{
 		id: 'partner',
 		icon: Handshake,
@@ -300,13 +300,13 @@ function HeroSection() {
 					<SignatureButton href="#volunteer-form" size="md">
 						Start Volunteering
 					</SignatureButton>
-					<Link
+					{/* <Link
 						href="/donate"
 						className="inline-flex items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700"
 					>
 						<Heart size={14} className="fill-current text-rose-400" />
 						Donate Now
-					</Link>
+					</Link> */}
 				</motion.div>
 
 				{/* Trust micro-stats */}
@@ -1385,7 +1385,7 @@ function ContactSection() {
 							<SignatureButton href="#volunteer-form" size="md">
 								Join as Volunteer
 							</SignatureButton>
-							<SignatureButton
+							{/* <SignatureButton
 								href="/donate"
 								size="md"
 								showIcon={false}
@@ -1393,7 +1393,7 @@ function ContactSection() {
 							>
 								<Heart size={14} className="mr-2 fill-current text-white/70" />
 								Support Our Work
-							</SignatureButton>
+							</SignatureButton> */}
 						</motion.div>
 					</motion.div>
 				</div>
