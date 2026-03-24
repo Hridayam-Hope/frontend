@@ -94,6 +94,7 @@ export const PROGRAMS = [
 
 export const ACTIVITIES = [
   {
+    id: "tree-plantation-drive-2026",
     image: "/program_1.webp",
     badge: "Environment",
     badgeColor: "bg-emerald-500",
@@ -103,6 +104,7 @@ export const ACTIVITIES = [
       "Planted 26 trees on behalf of our volunteers.",
   },
   {
+    id: "school-awareness-session-2026",
     image: "/program_2.webp",
     badge: "Education",
     badgeColor: "bg-blue-500",

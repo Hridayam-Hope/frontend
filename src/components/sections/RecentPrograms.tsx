@@ -79,7 +79,7 @@ export default function RecentPrograms() {
 									<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
 
 									{/* Hover Blur Reveal */}
-									<div className="absolute inset-0 flex flex-col justify-end bg-black/40 p-5 opacity-0 backdrop-blur-md transition-all duration-700 group-hover:opacity-100 sm:p-8">
+									<div className="absolute inset-0 z-20 flex flex-col justify-end bg-black/40 p-5 opacity-0 backdrop-blur-md transition-all duration-700 group-hover:opacity-100 sm:p-8 pointer-events-none group-hover:pointer-events-auto">
 										<div className="translate-y-8 transition-all duration-700 ease-[0.22, 1, 0.36, 1] group-hover:translate-y-0">
 											<div className="flex items-center gap-2 mb-3 sm:mb-4">
 												<span
@@ -102,7 +102,7 @@ export default function RecentPrograms() {
 											</p>
 
 											<SignatureButton
-												href="#"
+												href={`/story/${activity.id}`}
 												size="sm"
 												showIcon={false}
 												className="w-full !rounded-xl !bg-white !text-hp-text-dark hover:!bg-hp-teal hover:!text-white border-none shadow-2xl sm:!rounded-2xl"
@@ -113,7 +113,7 @@ export default function RecentPrograms() {
 									</div>
 
 									{/* Default State Branding (Bottom Left) */}
-									<div className="absolute bottom-6 left-6 right-6 transition-all duration-700 group-hover:opacity-0 group-hover:translate-y-8 sm:bottom-8 sm:left-8 sm:right-8">
+									<div className="absolute bottom-6 left-6 right-6 transition-all duration-700 group-hover:opacity-0 group-hover:translate-y-8 sm:bottom-8 sm:left-8 sm:right-8 pointer-events-none">
 										<div className="flex items-center gap-2 mb-1.5 sm:mb-2 text-white/60">
 											<div className="h-0.5 w-5 bg-current rounded-full" />
 											<p className="text-[9px] font-bold uppercase tracking-[0.2em]">{activity.meta}</p>
@@ -124,7 +124,7 @@ export default function RecentPrograms() {
 									</div>
 
 									{/* Static Badge */}
-									<div className="absolute top-6 right-6 z-10 transition-all duration-700">
+									<div className="absolute top-6 right-6 z-30 transition-all duration-700 pointer-events-none">
 										<span
 											className={`px-3 py-1.5 rounded-xl text-[10px] font-bold text-white uppercase tracking-widest shadow-2xl backdrop-blur-sm border border-white/10 ${activity.badgeColor}`}
 										>
