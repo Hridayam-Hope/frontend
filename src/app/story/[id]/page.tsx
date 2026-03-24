@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { ACTIVITIES } from '@/lib/constants';
 import { notFound, useParams } from 'next/navigation';
 import Header from '@/components/layout/Header';
@@ -17,6 +18,8 @@ import {
 	Heart,
 	Share2,
 	ArrowRight,
+	CheckCircle2,
+	Copy,
 } from 'lucide-react';
 import SignatureButton from '@/components/ui/SignatureButton';
 
@@ -366,29 +369,7 @@ export default function StoryPage() {
 									</div>
 
 									{/* Share Card */}
-									<div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100/80">
-										<div className="flex items-center gap-3 mb-4">
-											<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
-												<Share2 size={16} className="text-blue-500" />
-											</div>
-											<h3 className="font-(family-name:--font-poppins) text-base font-bold text-hp-text-dark">
-												Share This Story
-											</h3>
-										</div>
-										<p className="text-xs text-hp-text-light mb-4">
-											Spread the word and inspire others to make a difference.
-										</p>
-										<div className="flex gap-2">
-											{['WhatsApp', 'Twitter', 'Facebook'].map((platform) => (
-												<button
-													key={platform}
-													className="flex-1 py-2 rounded-xl bg-gray-50 text-xs font-semibold text-hp-text-light hover:bg-gray-100 transition-colors border border-gray-100"
-												>
-													{platform}
-												</button>
-											))}
-										</div>
-									</div>
+									<StoryShareCard title={activity.title} id={id} />
 
 									{/* Info card */}
 									{details && (
@@ -491,5 +472,86 @@ export default function StoryPage() {
 			</main>
 			<Footer />
 		</>
+	);
+}
+
+function StoryShareCard({ title, id }: { title: string; id: string }) {
+	const [copied, setCopied] = useState(false);
+
+	const getShareUrl = () => {
+		if (typeof window !== 'undefined') {
+			return `${window.location.origin}/story/${id}`;
+		}
+		return '';
+	};
+
+	const handleShare = (platform: string) => {
+		const url = getShareUrl();
+		const text = encodeURIComponent(title);
+		const encodedUrl = encodeURIComponent(url);
+
+		const shareUrls: Record<string, string> = {
+			WhatsApp: `https://wa.me/?text=${text}%20${encodedUrl}`,
+			Twitter: `https://twitter.com/intent/tweet?text=${text}&url=${encodedUrl}`,
+			Facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+		};
+
+		window.open(shareUrls[platform], '_blank', 'noopener,noreferrer');
+	};
+
+	const handleCopyLink = async () => {
+		const url = getShareUrl();
+		if (typeof navigator !== 'undefined' && navigator.clipboard) {
+			try {
+				await navigator.clipboard.writeText(url);
+				setCopied(true);
+				setTimeout(() => setCopied(false), 2000);
+			} catch {
+				// fallback
+			}
+		}
+	};
+
+	return (
+		<div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100/80">
+			<div className="flex items-center gap-3 mb-4">
+				<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
+					<Share2 size={16} className="text-blue-500" />
+				</div>
+				<h3 className="font-(family-name:--font-poppins) text-base font-bold text-hp-text-dark">
+					Share This Story
+				</h3>
+			</div>
+			<p className="text-xs text-hp-text-light mb-4">
+				Spread the word and inspire others to make a difference.
+			</p>
+			<div className="flex gap-2">
+				{(['WhatsApp', 'Twitter', 'Facebook'] as const).map((platform) => (
+					<button
+						key={platform}
+						onClick={() => handleShare(platform)}
+						className="flex-1 py-2 rounded-xl bg-gray-50 text-xs font-semibold text-hp-text-light hover:bg-gray-100 transition-colors border border-gray-100"
+					>
+						{platform}
+					</button>
+				))}
+			</div>
+			<button
+				onClick={handleCopyLink}
+				className="mt-3 flex w-full items-center justify-center gap-1.5 py-2 rounded-xl bg-gray-50 text-xs font-semibold text-hp-text-light hover:bg-gray-100 transition-colors border border-gray-100"
+			>
+				{copied ? (
+					<>
+						<CheckCircle2 size={13} className="text-emerald-500" />
+						Link Copied!
+					</>
+				) : (
+					<>
+						<Copy size={13} />
+						Copy Link
+					</>
+				)}
+			</button>
+		</div>
 	);
 }

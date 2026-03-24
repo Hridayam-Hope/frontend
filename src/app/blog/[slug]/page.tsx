@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ import {
 	Twitter,
 	Linkedin,
 	Facebook,
+	Copy,
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -433,9 +434,27 @@ function ShareCard({ slug, title }: { slug: string; title: string }) {
 
 function ShareButton({ slug, title }: { slug: string; title: string }) {
 	const [showMenu, setShowMenu] = useState(false);
+	const [copied, setCopied] = useState(false);
+	const menuRef = useRef<HTMLDivElement>(null);
+
+	const getUrl = () =>
+		typeof window !== 'undefined' ? `${window.location.origin}/blog/${slug}` : '';
+
+	// Close menu on click outside
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+				setShowMenu(false);
+			}
+		};
+		if (showMenu) {
+			document.addEventListener('mousedown', handleClickOutside);
+		}
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [showMenu]);
 
 	const handleShare = async () => {
-		const url = typeof window !== 'undefined' ? `${window.location.origin}/blog/${slug}` : '';
+		const url = getUrl();
 		if (navigator.share) {
 			try {
 				await navigator.share({ title, url });
@@ -447,18 +466,98 @@ function ShareButton({ slug, title }: { slug: string; title: string }) {
 		}
 	};
 
+	const handleCopyLink = async () => {
+		const url = getUrl();
+		if (typeof navigator !== 'undefined' && navigator.clipboard) {
+			try {
+				await navigator.clipboard.writeText(url);
+				setCopied(true);
+				setTimeout(() => setCopied(false), 2000);
+			} catch {
+				// fallback
+			}
+		}
+	};
+
+	const url = getUrl();
+	const encodedUrl = encodeURIComponent(url);
+	const encodedTitle = encodeURIComponent(title);
+
+	const shareLinks = [
+		{
+			icon: Twitter,
+			href: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+			label: 'Twitter',
+		},
+		{
+			icon: Facebook,
+			href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+			label: 'Facebook',
+		},
+		{
+			icon: Linkedin,
+			href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+			label: 'LinkedIn',
+		},
+	];
+
 	return (
-		<motion.button
-			onClick={handleShare}
-			initial={{ opacity: 0, x: 10 }}
-			animate={{ opacity: 1, x: 0 }}
-			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
-			className="flex items-center gap-1.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-		>
-			<Share2 size={16} />
-			Share
-		</motion.button>
+		<div className="relative" ref={menuRef}>
+			<motion.button
+				onClick={handleShare}
+				initial={{ opacity: 0, x: 10 }}
+				animate={{ opacity: 1, x: 0 }}
+				whileHover={{ scale: 1.05 }}
+				whileTap={{ scale: 0.95 }}
+				className="flex items-center gap-1.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+			>
+				<Share2 size={16} />
+				Share
+			</motion.button>
+
+			<AnimatePresence>
+				{showMenu && (
+					<motion.div
+						initial={{ opacity: 0, y: -8, scale: 0.95 }}
+						animate={{ opacity: 1, y: 0, scale: 1 }}
+						exit={{ opacity: 0, y: -8, scale: 0.95 }}
+						transition={{ duration: 0.15 }}
+						className="absolute right-0 top-full mt-2 z-50 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-xl ring-1 ring-gray-100"
+					>
+						{shareLinks.map((link) => (
+							<a
+								key={link.label}
+								href={link.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+								onClick={() => setShowMenu(false)}
+							>
+								<link.icon size={15} />
+								{link.label}
+							</a>
+						))}
+						<div className="my-1 h-px bg-gray-100" />
+						<button
+							onClick={handleCopyLink}
+							className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+						>
+							{copied ? (
+								<>
+									<CheckCircle2 size={15} className="text-emerald-500" />
+									Copied!
+								</>
+							) : (
+								<>
+									<Copy size={15} />
+									Copy Link
+								</>
+							)}
+						</button>
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</div>
 	);
 }
 
