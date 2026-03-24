@@ -105,7 +105,7 @@ export default function Hero() {
 					</SignatureButton> */}
 
 					<SignatureButton
-						href="#volunteer"
+						href="/join-us#volunteer-form"
 						size="sm"
 						showIcon={false}
 						className="flex-1 !bg-transparent !shadow-none border border-white/20 hover:border-white/40 !rounded-tl-2xl !rounded-br-2xl !rounded-tr-md !rounded-bl-md"

@@ -29,7 +29,7 @@ export default function AboutPage() {
 				<OurStory />
 				<OurPurpose />
 				<CoreValues />
-				<SixPillars />
+				{/* <SixPillars /> */}
 				<MeetTheTeam />
 				<AboutCTA />
 			</main>

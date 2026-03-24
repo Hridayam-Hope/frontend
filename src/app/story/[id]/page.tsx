@@ -359,7 +359,7 @@ export default function StoryPage() {
 												Donate Now
 											</SignatureButton> */}
 											<Link
-												href="/join-us"
+												href="/join-us#volunteer-form"
 												className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-hp-accent/20 text-hp-accent text-sm font-semibold hover:bg-hp-accent/5 transition-colors"
 											>
 												<Users size={16} />

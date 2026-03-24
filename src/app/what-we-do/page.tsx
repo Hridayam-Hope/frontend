@@ -347,7 +347,7 @@ export default function WhatWeDoPage() {
 							variants={fadeUp}
 							className="mt-8 flex flex-wrap items-center justify-center gap-3"
 						>
-							<SignatureButton href="/join-us" size="md">
+							<SignatureButton href="/join-us#volunteer-form" size="md">
 								Become a Volunteer
 							</SignatureButton>
 							<Link
