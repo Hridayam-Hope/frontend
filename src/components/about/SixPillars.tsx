@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { fadeUp, staggerContainer } from '@/lib/animations';
 import { ABOUT_PILLARS } from '@/lib/about-constants';
 
@@ -39,15 +40,12 @@ export default function SixPillars() {
 					whileInView="visible"
 					viewport={{ once: true, amount: 0.1 }}
 				>
-					{ABOUT_PILLARS.pillars.map((pillar) => (
+					{ABOUT_PILLARS.pillars.map((pillar, index) => (
 						<motion.div
 							key={pillar.title}
 							variants={fadeUp}
-							className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6"
+							className={`relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6 ${index >= 2 ? 'hidden sm:block' : ''}`}
 						>
-							{/* Hover gradient line at top
-							<div className="absolute top-0 left-0 right-0 h-0.5 hp-gradient-bg opacity-0 transition-opacity duration-400 group-hover:opacity-100" /> */}
-
 							{/* Badge */}
 							<span
 								className={`inline-block rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider sm:text-[10px] ${pillar.badgeColor}`}
@@ -72,34 +70,33 @@ export default function SixPillars() {
 							</ul>
 
 							{/* Learn more */}
-							<a
-								href="#"
+							<Link
+								href={`/what-we-do#${pillar.slug}`}
 								className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-hp-primary transition-colors hover:text-hp-accent sm:text-sm"
 							>
 								Learn more
 								<ArrowRight size={14} />
-							</a>
+							</Link>
 						</motion.div>
 					))}
 				</motion.div>
 
-				{/* Explore All Link */}
-				{/* <motion.div
-					className="mt-10 text-center sm:mt-14"
+				{/* Explore More Link (Mobile Only) */}
+				<motion.div
+					className="mt-8 flex justify-center sm:hidden"
 					initial="hidden"
 					whileInView="visible"
 					viewport={{ once: true }}
 					variants={fadeUp}
 				>
-					<motion.a
-						href="#"
-						whileHover={{ x: 4 }}
-						className="inline-flex items-center gap-2 font-(family-name:--font-poppins) text-sm font-semibold text-hp-text-dark transition-colors hover:text-hp-primary sm:text-base"
+					<Link
+						href="/what-we-do"
+						className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-2.5 font-(family-name:--font-poppins) text-sm font-semibold text-hp-text-dark transition-all hover:bg-gray-50 hover:text-hp-primary active:scale-95"
 					>
-						Explore All Programs
+						Explore More
 						<ArrowRight size={16} />
-					</motion.a>
-				</motion.div> */}
+					</Link>
+				</motion.div>
 			</div>
 		</section>
 	);

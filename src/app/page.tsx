@@ -8,6 +8,7 @@ import Newsletter from '@/components/sections/Newsletter';
 // import MobileDonateButton from '@/components/layout/MobileDonateButton';
 import Footer from '@/components/layout/Footer';
 import JsonLd from '@/components/seo/JsonLd';
+import SixPillars from '@/components/about/SixPillars';
 
 export default function Home() {
 	return (
@@ -17,7 +18,8 @@ export default function Home() {
 			<main>
 				<Hero />
 				<WhoWeAre />
-				<WhatWeDo />
+				{/* <WhatWeDo /> */}
+				<SixPillars />
 				<RecentPrograms />
 				<Testimonials />
 				<Newsletter />

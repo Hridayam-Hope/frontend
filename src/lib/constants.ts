@@ -4,8 +4,8 @@
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
-  { label: "What We Do", href: "/#what-we-do" },
-  { label: "Campaigns", href: "/#recent-programs" },
+  { label: "What We Do", href: "/what-we-do" },
+  { label: "Programs", href: "/programs" },
   { label: "Blog & News", href: "/blog" },
   { label: "Join Us", href: "/join-us" },
   // { label: "Contact Us", href: "#footer" },
