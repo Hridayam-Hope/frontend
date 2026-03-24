@@ -7,7 +7,7 @@ import { ABOUT_PURPOSE } from '@/lib/about-constants';
 
 export default function OurPurpose() {
 	return (
-		<section className="bg-white px-5 py-16 sm:py-24 lg:px-8" aria-label="Our purpose">
+		<section id="purpose" className="bg-white px-5 py-16 sm:py-24 lg:px-8" aria-label="Our purpose">
 			<div className="relative mx-auto max-w-7xl">
 				{/* Big gray card  -  the "frame" */}
 				<div className="rounded-[2rem] bg-gray-50 px-6 pb-40 pt-12 sm:rounded-[2.5rem] sm:px-10 sm:pb-48 sm:pt-16 md:pb-36">

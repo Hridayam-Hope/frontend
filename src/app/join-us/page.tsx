@@ -92,23 +92,23 @@ const WAYS_TO_JOIN = [
 			{ value: '25+', label: 'Joint Programs' },
 		],
 	},
-	{
-		id: 'campaign',
-		icon: Megaphone,
-		title: 'Request a Campaign',
-		subtitle: 'Bring change to your area',
-		description: "Know a community that needs help? Request a campaign and we'll work with local volunteers to plan and execute a meaningful initiative in your area.",
-		cta: 'Request Now',
-		href: '#contact-section',
-		gradient: 'from-amber-500 to-orange-500',
-		bgLight: 'bg-amber-50',
-		borderColor: 'border-amber-200',
-		iconColor: 'text-amber-600',
-		stats: [
-			{ value: '25+', label: 'Campaigns Run' },
-			{ value: '15+', label: 'Locations' },
-		],
-	},
+	// {
+	// 	id: 'campaign',
+	// 	icon: Megaphone,
+	// 	title: 'Request a Campaign',
+	// 	subtitle: 'Bring change to your area',
+	// 	description: "Know a community that needs help? Request a campaign and we'll work with local volunteers to plan and execute a meaningful initiative in your area.",
+	// 	cta: 'Request Now',
+	// 	href: '#contact-section',
+	// 	gradient: 'from-amber-500 to-orange-500',
+	// 	bgLight: 'bg-amber-50',
+	// 	borderColor: 'border-amber-200',
+	// 	iconColor: 'text-amber-600',
+	// 	stats: [
+	// 		{ value: '25+', label: 'Campaigns Run' },
+	// 		{ value: '15+', label: 'Locations' },
+	// 	],
+	// },
 ] as const;
 
 const VOLUNTEER_ROLES = [
@@ -727,6 +727,7 @@ function VolunteerFormSection() {
 	
 	const [step, setStep] = useState(1);
 	const [formData, setFormData] = useState({
+		partnerType: 'individual',
 		fullName: '',
 		email: '',
 		phone: '',
@@ -741,6 +742,18 @@ function VolunteerFormSection() {
 		availabilityWeekends: false,
 		hoursPerWeek: 4,
 		languages: [] as string[],
+		// Org specific
+		orgRegistrationNumber: '',
+		websiteUrl: '',
+		industry: '',
+		orgType: '',
+		contactPersonName: '',
+		// Influencer specific
+		socialHandle: '',
+		platform: '',
+		followerCount: 0,
+		niche: '',
+		// Emergency
 		emergencyName: '',
 		emergencyPhone: '',
 		emergencyRel: '',
@@ -835,35 +848,55 @@ function VolunteerFormSection() {
 		setWarning(null);
 
 		try {
-			await submitVolunteerApplication({
+			const submitData: any = {
+				partner_type: formData.partnerType,
 				full_name: formData.fullName,
 				email: formData.email,
 				phone: formData.phone,
-				date_of_birth: formData.dateOfBirth,
 				address: formData.address,
 				city: formData.city,
 				state: formData.state,
 				postal_code: formData.postalCode,
 				country: formData.country,
-				skill_ids: selectedSkillIds,
 				interests: formData.interests,
-				availability_weekdays: formData.availabilityWeekdays,
-				availability_weekends: formData.availabilityWeekends,
-				hours_per_week: formData.hoursPerWeek,
-				languages: formData.languages,
-				emergency_contact_name: formData.emergencyName,
-				emergency_contact_phone: formData.emergencyPhone,
-				emergency_contact_relationship: formData.emergencyRel,
 				turnstile_token: turnstileToken,
-			});
+			};
+
+			if (formData.partnerType === 'individual') {
+				submitData.date_of_birth = formData.dateOfBirth;
+				submitData.skill_ids = selectedSkillIds;
+				submitData.availability_weekdays = formData.availabilityWeekdays;
+				submitData.availability_weekends = formData.availabilityWeekends;
+				submitData.hours_per_week = formData.hoursPerWeek;
+				submitData.languages = formData.languages;
+				submitData.emergency_contact_name = formData.emergencyName;
+				submitData.emergency_contact_phone = formData.emergencyPhone;
+				submitData.emergency_contact_relationship = formData.emergencyRel;
+			} else if (formData.partnerType === 'organisation') {
+				submitData.org_registration_number = formData.orgRegistrationNumber;
+				submitData.website_url = formData.websiteUrl;
+				submitData.industry = formData.industry;
+				submitData.org_type = formData.orgType;
+				submitData.contact_person_name = formData.contactPersonName;
+			} else if (formData.partnerType === 'influencer') {
+				submitData.social_handle = formData.socialHandle;
+				submitData.platform = formData.platform;
+				submitData.follower_count = formData.followerCount;
+				submitData.niche = formData.niche;
+			}
+
+			await submitVolunteerApplication(submitData);
 
 			setShowSuccess(true);
 			setStep(1);
 			setFormData({
+				partnerType: 'individual',
 				fullName: '', email: '', phone: '', dateOfBirth: '',
 				address: '', city: '', state: '', postalCode: '', country: 'India',
 				interests: '', availabilityWeekdays: false, availabilityWeekends: false,
 				hoursPerWeek: 4, languages: [],
+				orgRegistrationNumber: '', websiteUrl: '', industry: '', orgType: '', contactPersonName: '',
+				socialHandle: '', platform: '', followerCount: 0, niche: '',
 				emergencyName: '', emergencyPhone: '', emergencyRel: '',
 			});
 			setSelectedSkillIds([]);
@@ -916,10 +949,10 @@ function VolunteerFormSection() {
 					</motion.h2>
 					<motion.p variants={fadeUp} className="mt-3 text-sm text-gray-500 sm:text-base">
 						Step {step} of 4: {
-							step === 1 ? 'Personal Details' :
-							step === 2 ? 'Location Info' :
-							step === 3 ? 'Interests & Skills' :
-							'Emergency Contact'
+							step === 1 ? 'Identity & Type' :
+							step === 2 ? 'Location & Core Info' :
+							step === 3 ? (formData.partnerType === 'individual' ? 'Interests & Skills' : 'Partner Specifics') :
+							'Review & Submit'
 						}
 					</motion.p>
 
@@ -951,13 +984,41 @@ function VolunteerFormSection() {
 								initial={{ opacity: 0, x: 20 }}
 								animate={{ opacity: 1, x: 0 }}
 								exit={{ opacity: 0, x: -20 }}
-								className="space-y-5"
+								className="space-y-6"
 							>
+								{/* Partner Type Selection */}
+								<div className="space-y-3">
+									<label className="block text-sm font-semibold text-gray-700">
+										How would you like to join? <span className="text-rose-400">*</span>
+									</label>
+									<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+										{[
+											{ id: 'individual', label: 'Individual', icon: Users },
+											{ id: 'organisation', label: 'Organisation', icon: Handshake },
+											{ id: 'influencer', label: 'Influencer', icon: Megaphone },
+										].map((type) => (
+											<button
+												key={type.id}
+												type="button"
+												onClick={() => handleInputChange('partnerType', type.id)}
+												className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition-all duration-200 ${
+													formData.partnerType === type.id
+														? 'border-teal-400 bg-teal-50 text-teal-700 ring-4 ring-teal-400/10'
+														: 'border-gray-100 bg-white text-gray-500 hover:border-gray-200'
+												}`}
+											>
+												<type.icon size={20} className={formData.partnerType === type.id ? 'text-teal-600' : 'text-gray-400'} />
+												<span className="text-xs font-bold sm:text-sm">{type.label}</span>
+											</button>
+										))}
+									</div>
+								</div>
+
 								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 									<FormField
-										label="Full Name"
+										label={formData.partnerType === 'organisation' ? 'Organisation Name' : 'Full Name'}
 										required
-										placeholder="Your full name"
+										placeholder={formData.partnerType === 'organisation' ? 'Enter organisation name' : 'Your full name'}
 										value={formData.fullName}
 										onChange={(v) => handleInputChange('fullName', v)}
 									/>
@@ -970,24 +1031,14 @@ function VolunteerFormSection() {
 										onChange={(v) => handleInputChange('email', v)}
 									/>
 								</div>
-								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-									<FormField
-										label="Phone Number"
-										required
-										type="tel"
-										placeholder="+91 XXXXX XXXXX"
-										value={formData.phone}
-										onChange={(v) => handleInputChange('phone', v)}
-									/>
-									<FormField
-										label="Date of Birth"
-										required
-										type="date"
-										placeholder="DD-MM-YYYY"
-										value={formData.dateOfBirth}
-										onChange={(v) => handleInputChange('dateOfBirth', v)}
-									/>
-								</div>
+								<FormField
+									label="Phone Number"
+									required
+									type="tel"
+									placeholder="+91 XXXXX XXXXX"
+									value={formData.phone}
+									onChange={(v) => handleInputChange('phone', v)}
+								/>
 							</motion.div>
 						)}
 
@@ -999,13 +1050,25 @@ function VolunteerFormSection() {
 								exit={{ opacity: 0, x: -20 }}
 								className="space-y-5"
 							>
-								<FormField
-									label="Residential Address"
-									required
-									placeholder="House No, Street, Landmark"
-									value={formData.address}
-									onChange={(v) => handleInputChange('address', v)}
-								/>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+									<FormField
+										label={formData.partnerType === 'organisation' ? 'Office Address' : 'Residential Address'}
+										required
+										placeholder="House No, Street, Landmark"
+										value={formData.address}
+										onChange={(v) => handleInputChange('address', v)}
+									/>
+									{formData.partnerType !== 'organisation' && (
+										<FormField
+											label="Date of Birth"
+											required
+											type="date"
+											value={formData.dateOfBirth}
+											onChange={(v) => handleInputChange('dateOfBirth', v)}
+											placeholder="YYYY-MM-DD"
+										/>
+									)}
+								</div>
 								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 									<FormField
 										label="City / Town"
@@ -1047,81 +1110,144 @@ function VolunteerFormSection() {
 								initial={{ opacity: 0, x: 20 }}
 								animate={{ opacity: 1, x: 0 }}
 								exit={{ opacity: 0, x: -20 }}
-								className="space-y-5"
+								className="space-y-6"
 							>
-								<div>
-									<label className="mb-2 block text-sm font-semibold text-gray-700">
-										Your Skills <span className="font-normal text-gray-400">(select all that apply)</span>
-									</label>
-									<div className="flex flex-wrap gap-2">
-										{skills.map((skill) => (
-											<motion.button
-												key={skill.id}
-												type="button"
-												onClick={() => toggleSkill(skill.id)}
-												whileHover={{ scale: 1.04 }}
-												whileTap={{ scale: 0.96 }}
-												className={`rounded-lg border-2 px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm ${
-													selectedSkillIds.includes(skill.id)
-														? 'border-teal-400 bg-teal-50 text-teal-700'
-														: 'border-gray-200 text-gray-500 hover:border-teal-300 hover:bg-teal-50/50'
-												}`}
-											>
-												{selectedSkillIds.includes(skill.id) && (
-													<CheckCircle2 size={12} className="mr-1 inline-block" />
-												)}
-												{skill.name}
-											</motion.button>
-										))}
-									</div>
-								</div>
+								{formData.partnerType === 'individual' ? (
+									<div className="space-y-6">
+										<div>
+											<label className="mb-2 block text-sm font-semibold text-gray-700">
+												Your Skills <span className="font-normal text-gray-400">(select all that apply)</span>
+											</label>
+											<div className="flex flex-wrap gap-2">
+												{skills.map((skill) => (
+													<motion.button
+														key={skill.id}
+														type="button"
+														onClick={() => toggleSkill(skill.id)}
+														whileHover={{ scale: 1.04 }}
+														whileTap={{ scale: 0.96 }}
+														className={`rounded-lg border-2 px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm ${
+															selectedSkillIds.includes(skill.id)
+																? 'border-teal-400 bg-teal-50 text-teal-700'
+																: 'border-gray-200 text-gray-500 hover:border-teal-300 hover:bg-teal-50/50'
+														}`}
+													>
+														{selectedSkillIds.includes(skill.id) && (
+															<CheckCircle2 size={12} className="mr-1 inline-block" />
+														)}
+														{skill.name}
+													</motion.button>
+												))}
+											</div>
+										</div>
 
-								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-									<div>
-										<label className="mb-2 block text-sm font-semibold text-gray-700">Availability</label>
-										<div className="flex flex-col gap-2">
-											<label className="flex items-center gap-2 text-sm text-gray-600">
-												<input
-													type="checkbox"
-													checked={formData.availabilityWeekdays}
-													onChange={(e) => handleInputChange('availabilityWeekdays', e.target.checked)}
-													className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
-												/>
-												Weekdays
-											</label>
-											<label className="flex items-center gap-2 text-sm text-gray-600">
-												<input
-													type="checkbox"
-													checked={formData.availabilityWeekends}
-													onChange={(e) => handleInputChange('availabilityWeekends', e.target.checked)}
-													className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
-												/>
-												Weekends
-											</label>
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<div>
+												<label className="mb-2 block text-sm font-semibold text-gray-700">Availability</label>
+												<div className="flex flex-col gap-2">
+													<label className="flex items-center gap-2 text-sm text-gray-600">
+														<input
+															type="checkbox"
+															checked={formData.availabilityWeekdays}
+															onChange={(e) => handleInputChange('availabilityWeekdays', e.target.checked)}
+															className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+														/>
+														Weekdays
+													</label>
+													<label className="flex items-center gap-2 text-sm text-gray-600">
+														<input
+															type="checkbox"
+															checked={formData.availabilityWeekends}
+															onChange={(e) => handleInputChange('availabilityWeekends', e.target.checked)}
+															className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+														/>
+														Weekends
+													</label>
+												</div>
+											</div>
+											<FormField
+												label="Hours/Week"
+												type="number"
+												required
+												placeholder="4"
+												value={formData.hoursPerWeek.toString()}
+												onChange={(v) => handleInputChange('hoursPerWeek', parseInt(v) || 0)}
+											/>
 										</div>
 									</div>
-									<FormField
-										label="Hours/Week"
-										type="number"
-										required
-										placeholder="4"
-										value={formData.hoursPerWeek.toString()}
-										onChange={(v) => handleInputChange('hoursPerWeek', parseInt(v) || 0)}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<label className="block text-sm font-semibold text-gray-700">
-										Anything else? <span className="font-normal text-gray-400">(Interests, motivation, etc.)</span>
-									</label>
-									<textarea
-										placeholder="Tell us why you'd like to join..."
-										value={formData.interests}
-										onChange={(e) => handleInputChange('interests', e.target.value)}
-										rows={3}
-										className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-gray-300 hover:border-gray-300 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/20 resize-y"
-									/>
-								</div>
+								) : formData.partnerType === 'organisation' ? (
+									<div className="space-y-5">
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<FormField
+												label="Registration Number"
+												placeholder="NGO/REG/12345"
+												value={formData.orgRegistrationNumber}
+												onChange={(v) => handleInputChange('orgRegistrationNumber', v)}
+											/>
+											<FormField
+												label="Website URL"
+												placeholder="https://your-org.org"
+												value={formData.websiteUrl}
+												onChange={(v) => handleInputChange('websiteUrl', v)}
+											/>
+										</div>
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<FormField
+												label="Industry"
+												placeholder="Education, Healthcare, etc."
+												value={formData.industry}
+												onChange={(v) => handleInputChange('industry', v)}
+											/>
+											<FormField
+												label="Organisation Type"
+												placeholder="Non-profit, Trust, etc."
+												value={formData.orgType}
+												onChange={(v) => handleInputChange('orgType', v)}
+											/>
+										</div>
+										<FormField
+											label="Contact Person Name"
+											required
+											placeholder="Point of contact name"
+											value={formData.contactPersonName}
+											onChange={(v) => handleInputChange('contactPersonName', v)}
+										/>
+									</div>
+								) : (
+									<div className="space-y-5">
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<FormField
+												label="Primary Platform"
+												required
+												placeholder="Instagram, YouTube, etc."
+												value={formData.platform}
+												onChange={(v) => handleInputChange('platform', v)}
+											/>
+											<FormField
+												label="Social Media Handle"
+												required
+												placeholder="@your_handle"
+												value={formData.socialHandle}
+												onChange={(v) => handleInputChange('socialHandle', v)}
+											/>
+										</div>
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<FormField
+												label="Follower Count"
+												type="number"
+												placeholder="5000"
+												value={formData.followerCount.toString()}
+												onChange={(v) => handleInputChange('followerCount', parseInt(v) || 0)}
+											/>
+											<FormField
+												label="Focus Area / Niche"
+												placeholder="Social Impact, Lifestyle, etc."
+												value={formData.niche}
+												onChange={(v) => handleInputChange('niche', v)}
+											/>
+										</div>
+									</div>
+								)}
 							</motion.div>
 						)}
 
@@ -1131,33 +1257,50 @@ function VolunteerFormSection() {
 								initial={{ opacity: 0, x: 20 }}
 								animate={{ opacity: 1, x: 0 }}
 								exit={{ opacity: 0, x: -20 }}
-								className="space-y-5"
+								className="space-y-6"
 							>
-								<FormField
-									label="Emergency Contact Name"
-									required
-									placeholder="Full name"
-									value={formData.emergencyName}
-									onChange={(v) => handleInputChange('emergencyName', v)}
-								/>
-								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-									<FormField
-										label="Emergency Phone"
-										required
-										type="tel"
-										placeholder="+91 XXXXX XXXXX"
-										value={formData.emergencyPhone}
-										onChange={(v) => handleInputChange('emergencyPhone', v)}
-									/>
-									<FormField
-										label="Relationship"
-										required
-										placeholder="Parent, Sibling, Friend"
-										value={formData.emergencyRel}
-										onChange={(v) => handleInputChange('emergencyRel', v)}
+								<div className="space-y-2">
+									<label className="block text-sm font-semibold text-gray-700">
+										Tell us about your interests <span className="font-normal text-gray-400">(motivation, expertise, etc.)</span>
+									</label>
+									<textarea
+										placeholder={formData.partnerType === 'individual' ? "Tell us why you'd like to join..." : "Describe how you'd like to partner with us..."}
+										value={formData.interests}
+										onChange={(e) => handleInputChange('interests', e.target.value)}
+										rows={3}
+										className="w-full rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-gray-300 hover:border-gray-300 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/20 resize-y"
 									/>
 								</div>
 
+								{formData.partnerType === 'individual' && (
+									<div className="space-y-4 pt-4 border-t border-gray-100">
+										<h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+											<Shield size={14} className="text-teal-500" />
+											Emergency Contact <span className="font-normal text-[10px] text-gray-400 uppercase tracking-wider">(Optional)</span>
+										</h4>
+										<FormField
+											label="Contact Name"
+											placeholder="Full name"
+											value={formData.emergencyName}
+											onChange={(v) => handleInputChange('emergencyName', v)}
+										/>
+										<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+											<FormField
+												label="Emergency Phone"
+												type="tel"
+												placeholder="+91 XXXXX XXXXX"
+												value={formData.emergencyPhone}
+												onChange={(v) => handleInputChange('emergencyPhone', v)}
+											/>
+											<FormField
+												label="Relationship"
+												placeholder="Parent, Sibling, Friend"
+												value={formData.emergencyRel}
+												onChange={(v) => handleInputChange('emergencyRel', v)}
+											/>
+										</div>
+									</div>
+								)}
 							</motion.div>
 						)}
 					</AnimatePresence>

@@ -2,8 +2,6 @@
 
 import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 import { confirmSubscriptionByToken } from '@/lib/api/newsletter';
 import { ApiError } from '@/lib/api/client';
 
@@ -61,9 +59,8 @@ export default function NewsletterConfirmPathPage({ params }: PageProps) {
   }, [state]);
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900">
-      <Header />
-      <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-12 text-gray-900">
+      <section className="w-full max-w-3xl">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm sm:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Newsletter</p>
           <h1 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h1>
@@ -81,7 +78,6 @@ export default function NewsletterConfirmPathPage({ params }: PageProps) {
           {token && <p className="mt-8 text-xs text-gray-400">Ref: {token.slice(0, 8)}...</p>}
         </div>
       </section>
-      <Footer />
     </main>
   );
 }

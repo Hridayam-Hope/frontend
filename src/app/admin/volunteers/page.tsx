@@ -19,11 +19,13 @@ export default function VolunteersPage() {
   const { handleError } = useApiError();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<string>("");
+  const [activeType, setActiveType] = useState<string>("individual");
   const [showForm, setShowForm] = useState(false);
+  const [formType, setFormType] = useState<string | null>(null);
 
   const buildParams = useCallback(
     (overrides: Record<string, unknown> = {}) => {
-      const params: Record<string, unknown> = { page: 1 };
+      const params: Record<string, unknown> = { page: 1, partner_type: overrides.partner_type || activeType };
       const q = overrides.search !== undefined ? overrides.search : search;
       const a = overrides.is_active !== undefined ? overrides.is_active : activeFilter;
       if (q) params.search = q;
@@ -31,12 +33,12 @@ export default function VolunteersPage() {
       if (overrides.page) params.page = overrides.page;
       return params;
     },
-    [search, activeFilter]
+    [search, activeFilter, activeType]
   );
 
   useEffect(() => {
-    fetchVolunteers();
-  }, [fetchVolunteers]);
+    fetchVolunteers(buildParams());
+  }, [fetchVolunteers, activeType]);
 
   const handleSearch = (value: string) => {
     setSearch(value);
@@ -46,6 +48,11 @@ export default function VolunteersPage() {
   const handleFilter = (value: string) => {
     setActiveFilter(value);
     fetchVolunteers(buildParams({ is_active: value }));
+  };
+
+  const handleTypeChange = (type: string) => {
+    setActiveType(type);
+    // useEffect will trigger fetch
   };
 
   const handleCreateVolunteer = async (data: VolunteerFormData) => {
@@ -82,16 +89,18 @@ export default function VolunteersPage() {
     },
     { key: "city", label: "City" },
     { key: "state", label: "State" },
-    {
-      key: "total_hours",
-      label: "Hours",
-      render: (item) => (
-        <span className="inline-flex items-center gap-1 text-sm font-medium text-gray-700">
-          <svg className="w-3.5 h-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          {item.total_hours}h
-        </span>
-      ),
-    },
+    ...(activeType === "individual" ? [
+      {
+        key: "total_hours",
+        label: "Hours",
+        render: (item: any) => (
+          <span className="inline-flex items-center gap-1 text-sm font-medium text-gray-700">
+            <svg className="w-3.5 h-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            {item.total_hours}h
+          </span>
+        ),
+      }
+    ] : []),
     {
       key: "is_active",
       label: "Status",
@@ -163,6 +172,30 @@ export default function VolunteersPage() {
         ))}
       </div>
 
+      {/* Partner Type Tabs */}
+      <div className="flex gap-4 border-b border-gray-200 mb-6">
+        {[
+          { id: "individual", label: "Individuals", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+          { id: "organisation", label: "Organisations", icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
+          { id: "influencer", label: "Influencers", icon: "M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            onClick={() => handleTypeChange(t.id)}
+            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeType === t.id
+                ? "border-brand-500 text-brand-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={t.icon} />
+            </svg>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
@@ -214,11 +247,47 @@ export default function VolunteersPage() {
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
-              <h2 className="text-xl font-bold text-gray-900">Add New Volunteer</h2>
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">
+                {!formType ? "Select Partner Type" : `Add New ${formType.charAt(0).toUpperCase() + formType.slice(1)}`}
+              </h2>
+              <button 
+                onClick={() => { setShowForm(false); setFormType(null); }}
+                className="text-gray-400 hover:text-gray-600 p-2"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
             </div>
             <div className="p-6">
-              <VolunteerForm onSubmit={handleCreateVolunteer} onCancel={() => setShowForm(false)} />
+              {!formType ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-8">
+                  {[
+                    { id: "individual", label: "Individual", desc: "A regular person wanting to volunteer", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+                    { id: "organisation", label: "Organisation", desc: "NGOs, Corporates, or Local Groups", icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
+                    { id: "influencer", label: "Influencer", desc: "Public figures and social leaders", icon: "M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setFormType(t.id)}
+                      className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-gray-100 bg-white hover:border-brand-400 hover:shadow-lg transition-all text-center group"
+                    >
+                      <div className="h-16 w-16 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center group-hover:bg-brand-500 group-hover:text-white transition-colors">
+                        <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={t.icon} /></svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-1">{t.label}</h3>
+                        <p className="text-sm text-gray-500">{t.desc}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <VolunteerForm 
+                  partnerType={formType} 
+                  onSubmit={handleCreateVolunteer} 
+                  onCancel={() => setFormType(null)} 
+                />
+              )}
             </div>
           </div>
         </div>

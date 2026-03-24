@@ -8,7 +8,6 @@ import OurPurpose from '@/components/about/OurPurpose';
 import SixPillars from '@/components/about/SixPillars';
 import CoreValues from '@/components/about/CoreValues';
 import MeetTheTeam from '@/components/about/MeetTheTeam';
-import AboutFAQs from '@/components/about/AboutFAQs';
 import AboutCTA from '@/components/about/AboutCTA';
 import { SITE_CONFIG } from '@/lib/seo-constants';
 
@@ -31,8 +30,7 @@ export default function AboutPage() {
 				<OurPurpose />
 				<CoreValues />
 				<SixPillars />
-				{/* <MeetTheTeam /> */}
-				<AboutFAQs />
+				<MeetTheTeam />
 				<AboutCTA />
 			</main>
 			<Footer />

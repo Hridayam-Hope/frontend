@@ -6,10 +6,11 @@ import Button from "@/components/ui/Button";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
 
 export interface VolunteerFormData {
+  partner_type: string;
   full_name: string;
   email: string;
   phone: string;
-  date_of_birth: string;
+  date_of_birth?: string;
   address: string;
   city: string;
   state: string;
@@ -21,9 +22,23 @@ export interface VolunteerFormData {
   availability_weekends: boolean;
   hours_per_week: number;
   languages: string[];
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
-  emergency_contact_relationship: string;
+  
+  // Org specific
+  org_registration_number?: string;
+  website_url?: string;
+  industry?: string;
+  org_type?: string;
+  contact_person_name?: string;
+  
+  // Influencer specific
+  social_handle?: string;
+  platform?: string;
+  follower_count?: number;
+  niche?: string;
+
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
   role: string;
   position: string;
   responsibilities: string;
@@ -52,13 +67,15 @@ const LEADERSHIP_ROLES = [
 ];
 
 interface VolunteerFormProps {
+  partnerType: string;
   onSubmit: (data: VolunteerFormData) => Promise<void>;
   onCancel: () => void;
 }
 
-export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps) {
+export default function VolunteerForm({ partnerType, onSubmit, onCancel }: VolunteerFormProps) {
   const { skills, fetchSkills, skillsLoading } = useVolunteersStore();
   const [form, setForm] = useState<VolunteerFormData>({
+    partner_type: partnerType,
     full_name: "",
     email: "",
     phone: "",
@@ -74,6 +91,15 @@ export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps
     availability_weekends: false,
     hours_per_week: 4,
     languages: [],
+    org_registration_number: "",
+    website_url: "",
+    industry: "",
+    org_type: "",
+    contact_person_name: "",
+    social_handle: "",
+    platform: "",
+    follower_count: 0,
+    niche: "",
     emergency_contact_name: "",
     emergency_contact_phone: "",
     emergency_contact_relationship: "",
@@ -101,11 +127,16 @@ export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps
     if (!form.full_name.trim()) errs.full_name = "Full name is required";
     if (!form.email.trim()) errs.email = "Email is required";
     if (!form.phone.trim()) errs.phone = "Phone is required";
-    if (!form.date_of_birth) errs.date_of_birth = "Date of birth is required";
+    
+    if (partnerType === "individual") {
+      if (!form.date_of_birth) errs.date_of_birth = "Date of birth is required";
+    }
+
     if (!form.address.trim()) errs.address = "Address is required";
     if (!form.city.trim()) errs.city = "City is required";
     if (!form.state.trim()) errs.state = "State is required";
     if (!form.postal_code.trim()) errs.postal_code = "Postal code is required";
+    
     setErrors(errs);
 
     if (Object.keys(errs).length > 0) {
@@ -136,6 +167,25 @@ export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps
       if (!submitData.emergency_contact_phone) delete submitData.emergency_contact_phone;
       if (!submitData.emergency_contact_relationship) delete submitData.emergency_contact_relationship;
       
+      // Clear irrelevant fields based on type
+      if (partnerType !== "individual") {
+        delete submitData.date_of_birth;
+        delete submitData.skill_ids;
+      }
+      if (partnerType !== "organisation") {
+        delete submitData.org_registration_number;
+        delete submitData.website_url;
+        delete submitData.industry;
+        delete submitData.org_type;
+        delete submitData.contact_person_name;
+      }
+      if (partnerType !== "influencer") {
+        delete submitData.social_handle;
+        delete submitData.platform;
+        delete submitData.follower_count;
+        delete submitData.niche;
+      }
+
       await onSubmit(submitData as any);
     } catch (err) {
       setApiError(err instanceof Error ? err.message : "Something went wrong");
@@ -171,9 +221,13 @@ export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps
 
   const sections = [
     { id: "basic" as const, label: "Basic Info", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-    { id: "skills" as const, label: "Skills & Availability", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
+    ...(partnerType === "individual" ? [
+      { id: "skills" as const, label: "Skills & Availability", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" }
+    ] : []),
     { id: "leadership" as const, label: "About", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { id: "emergency" as const, label: "Emergency Contact", icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" },
+    ...(partnerType === "individual" ? [
+      { id: "emergency" as const, label: "Emergency Contact", icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" }
+    ] : []),
   ];
 
   return (
@@ -211,12 +265,41 @@ export default function VolunteerForm({ onSubmit, onCancel }: VolunteerFormProps
           <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
             <div className="space-y-4">
-              <Input label="Full Name *" value={form.full_name} onChange={(e) => update("full_name", e.target.value)} error={errors.full_name} placeholder="John Doe" />
+              <Input label={partnerType === "organisation" ? "Organisation Name *" : "Full Name *"} value={form.full_name} onChange={(e) => update("full_name", e.target.value)} error={errors.full_name} placeholder={partnerType === "organisation" ? "NGO Name" : "John Doe"} />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input label="Email *" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} error={errors.email} placeholder="john@example.com" />
                 <Input label="Phone *" value={form.phone} onChange={(e) => update("phone", e.target.value)} error={errors.phone} placeholder="+91 9876543210" />
               </div>
-              <Input label="Date of Birth *" type="date" value={form.date_of_birth} onChange={(e) => update("date_of_birth", e.target.value)} error={errors.date_of_birth} />
+              
+              {partnerType === "individual" && (
+                <Input label="Date of Birth *" type="date" value={form.date_of_birth} onChange={(e) => update("date_of_birth", e.target.value)} error={errors.date_of_birth} />
+              )}
+
+              {partnerType === "organisation" && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input label="Registration Number" value={form.org_registration_number} onChange={(e) => update("org_registration_number", e.target.value)} placeholder="REG-12345" />
+                    <Input label="Website URL" value={form.website_url} onChange={(e) => update("website_url", e.target.value)} placeholder="https://..." />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input label="Industry" value={form.industry} onChange={(e) => update("industry", e.target.value)} placeholder="e.g. Healthcare, Tech" />
+                    <Input label="Contact Person Name" value={form.contact_person_name} onChange={(e) => update("contact_person_name", e.target.value)} placeholder="Main point of contact" />
+                  </div>
+                </div>
+              )}
+
+              {partnerType === "influencer" && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input label="Social Media Handle *" value={form.social_handle} onChange={(e) => update("social_handle", e.target.value)} placeholder="@handle" />
+                    <Input label="Primary Platform" value={form.platform} onChange={(e) => update("platform", e.target.value)} placeholder="e.g. Instagram, X" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input label="Follower Count" type="number" value={form.follower_count} onChange={(e) => update("follower_count", Number(e.target.value))} />
+                    <Input label="Niche / Focus Area" value={form.niche} onChange={(e) => update("niche", e.target.value)} placeholder="e.g. Social Work, Education" />
+                  </div>
+                </div>
+              )}
             </div>
           </section>
 

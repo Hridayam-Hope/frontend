@@ -76,7 +76,16 @@ export default function ApplicationDetailPage() {
               {app.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{app.full_name}</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-gray-900">{app.full_name}</h1>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                  app.partner_type === "organisation" ? "bg-blue-100 text-blue-700" :
+                  app.partner_type === "influencer" ? "bg-purple-100 text-purple-700" :
+                  "bg-brand-100 text-brand-700"
+                }`}>
+                  {app.partner_type}
+                </span>
+              </div>
               <p className="text-sm text-gray-500">{app.email} · {app.phone}</p>
               <p className="text-xs text-gray-400 mt-0.5">Applied {new Date(app.application_date).toLocaleDateString()}</p>
             </div>
@@ -132,17 +141,36 @@ export default function ApplicationDetailPage() {
 
       {/* Detail Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Personal Info */}
+        {/* Personal / Org Info */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {app.partner_type === "organisation" ? "Organisation Info" : 
+             app.partner_type === "influencer" ? "Influencer Profile" : 
+             "Personal Information"}
+          </h3>
           <dl className="space-y-3">
             {[
-              { label: "Full Name", value: app.full_name },
+              { label: "Name", value: app.full_name },
               { label: "Email", value: app.email },
               { label: "Phone", value: app.phone },
-              { label: "Date of Birth", value: new Date(app.date_of_birth).toLocaleDateString() },
+              ...(app.partner_type === "individual" ? [
+                { label: "Date of Birth", value: app.date_of_birth ? new Date(app.date_of_birth).toLocaleDateString() : "-" }
+              ] : []),
+              ...(app.partner_type === "organisation" ? [
+                { label: "Reg. Number", value: app.org_registration_number || "-" },
+                { label: "Industry", value: app.industry || "-" },
+                { label: "Org Type", value: app.org_type || "-" },
+                { label: "Contact Person", value: app.contact_person_name || "-" },
+                { label: "Website", value: app.website_url || "-" },
+              ] : []),
+              ...(app.partner_type === "influencer" ? [
+                { label: "Platform", value: app.platform || "-" },
+                { label: "Followers", value: app.follower_count?.toLocaleString() || "-" },
+                { label: "Niche", value: app.niche || "-" },
+                { label: "Social Handle", value: app.social_handle || "-" },
+              ] : []),
             ].map((item) => (
-              <div key={item.label} className="flex justify-between">
+              <div key={item.label} className="flex justify-between border-b border-gray-50 pb-2 last:border-0">
                 <dt className="text-sm text-gray-500">{item.label}</dt>
                 <dd className="text-sm font-medium text-gray-900">{item.value}</dd>
               </div>
@@ -169,68 +197,81 @@ export default function ApplicationDetailPage() {
           </dl>
         </div>
 
-        {/* Availability & Skills */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Availability & Skills</h3>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-gray-500 mb-2">Availability</p>
-              <div className="flex gap-2">
-                <span className={`px-3 py-1 text-xs font-medium rounded-full ${app.availability_weekdays ? "bg-green-50 text-green-700 border border-green-200" : "bg-gray-100 text-gray-400"}`}>
-                  Weekdays {app.availability_weekdays ? "✓" : "✗"}
-                </span>
-                <span className={`px-3 py-1 text-xs font-medium rounded-full ${app.availability_weekends ? "bg-green-50 text-green-700 border border-green-200" : "bg-gray-100 text-gray-400"}`}>
-                  Weekends {app.availability_weekends ? "✓" : "✗"}
-                </span>
-                <span className="px-3 py-1 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200">
-                  {app.hours_per_week}h/week
-                </span>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 mb-2">Skills</p>
-              <div className="flex flex-wrap gap-2">
-                {app.skills.length > 0 ? app.skills.map((skill) => (
-                  <span key={skill} className="px-3 py-1 bg-brand-50 text-brand-700 text-xs font-medium rounded-full border border-brand-200">
-                    {skill}
+        {/* Availability & Skills - Only for Individuals */}
+        {app.partner_type === "individual" ? (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Availability & Skills</h3>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-500 mb-2">Availability</p>
+                <div className="flex gap-2">
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${app.availability_weekdays ? "bg-green-50 text-green-700 border border-green-200" : "bg-gray-100 text-gray-400"}`}>
+                    Weekdays {app.availability_weekdays ? "✓" : "✗"}
                   </span>
-                )) : <p className="text-sm text-gray-400">None listed</p>}
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 mb-2">Languages</p>
-              <div className="flex flex-wrap gap-2">
-                {app.languages.map((lang) => (
-                  <span key={lang} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                    {lang}
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${app.availability_weekends ? "bg-green-50 text-green-700 border border-green-200" : "bg-gray-100 text-gray-400"}`}>
+                    Weekends {app.availability_weekends ? "✓" : "✗"}
                   </span>
-                ))}
+                  <span className="px-3 py-1 text-xs font-medium rounded-full bg-brand-50 text-brand-700 border border-brand-200">
+                    {app.hours_per_week}h/week
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-2">Skills</p>
+                <div className="flex flex-wrap gap-2">
+                  {app.skills.length > 0 ? app.skills.map((skill) => (
+                    <span key={skill} className="px-3 py-1 bg-brand-50 text-brand-700 text-xs font-medium rounded-full border border-brand-200">
+                      {skill}
+                    </span>
+                  )) : <p className="text-sm text-gray-400">None listed</p>}
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-2">Languages</p>
+                <div className="flex flex-wrap gap-2">
+                  {app.languages.map((lang) => (
+                    <span key={lang} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                      {lang}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">General Interests</h3>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">{app.interests || "No specific interests listed"}</p>
+          </div>
+        )}
 
         {/* Emergency Contact & Interests */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
-            Emergency Contact
-          </h3>
-          <dl className="space-y-3 mb-6">
-            {[
-              { label: "Name", value: app.emergency_contact_name },
-              { label: "Phone", value: app.emergency_contact_phone },
-              { label: "Relationship", value: app.emergency_contact_relationship },
-            ].map((item) => (
-              <div key={item.label} className="flex justify-between">
-                <dt className="text-sm text-gray-500">{item.label}</dt>
-                <dd className="text-sm font-medium text-gray-900">{item.value}</dd>
-              </div>
-            ))}
-          </dl>
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Interests</h4>
-          <p className="text-sm text-gray-600 whitespace-pre-wrap">{app.interests || "None listed"}</p>
-        </div>
+        {(app.partner_type === "individual" || app.emergency_contact_name) && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              Emergency Contact
+            </h3>
+            <dl className="space-y-3 mb-6">
+              {[
+                { label: "Name", value: app.emergency_contact_name || "-" },
+                { label: "Phone", value: app.emergency_contact_phone || "-" },
+                { label: "Relationship", value: app.emergency_contact_relationship || "-" },
+              ].map((item) => (
+                <div key={item.label} className="flex justify-between">
+                  <dt className="text-sm text-gray-500">{item.label}</dt>
+                  <dd className="text-sm font-medium text-gray-900">{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+            {app.partner_type === "individual" && (
+              <>
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Interests</h4>
+                <p className="text-sm text-gray-600 whitespace-pre-wrap">{app.interests || "None listed"}</p>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Review Modal */}

@@ -135,12 +135,6 @@ export default function Newsletter() {
 									{message}
 								</p>
 							)}
-
-							<div className="flex items-center justify-center gap-4 text-[10px] text-white/60 lg:justify-start">
-								<p>✓ Monthly Insights</p>
-								<p>✓ Case Studies</p>
-								<p>✓ No Spam Ever</p>
-							</div>
 						</div>
 					</div>
 				</motion.div>

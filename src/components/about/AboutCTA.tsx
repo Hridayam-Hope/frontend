@@ -66,7 +66,7 @@ export default function AboutCTA() {
 						</motion.div>
 
 						{/* Trust Indicators */}
-						<motion.div
+						{/* <motion.div
 							variants={fadeUp}
 							className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[10px] text-white/50 sm:gap-6 sm:text-xs"
 						>
@@ -80,7 +80,7 @@ export default function AboutCTA() {
 									</span>
 								);
 							})}
-						</motion.div>
+						</motion.div> */}
 					</motion.div>
 				</div>
 			</div>

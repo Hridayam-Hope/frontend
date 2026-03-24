@@ -1,15 +1,20 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, Users } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, MapPin, Users } from 'lucide-react';
 import { fadeUp, staggerContainer } from '@/lib/animations';
 import { ABOUT_TEAM } from '@/lib/about-constants';
 
+const INITIAL_VISIBLE_COUNT = 8;
+
 export default function MeetTheTeam() {
+	const [showAll, setShowAll] = useState(false);
+	const visibleMembers = showAll ? ABOUT_TEAM.members : ABOUT_TEAM.members.slice(0, INITIAL_VISIBLE_COUNT);
+
 	return (
-		<section className="bg-white px-5 py-16 sm:py-24 lg:px-8" aria-label="Our team">
-			{/* Big gray card frame wrapping everything */}
-			<div className="mx-auto max-w-7xl rounded-[2rem] bg-gray-50 px-6 py-12 sm:rounded-[2.5rem] sm:px-10 sm:py-16">
+		<section id="team" className="bg-white px-5 py-16 sm:py-24 lg:px-8" aria-label="Our team">
+			<div className="mx-auto max-w-7xl">
 				{/* Header */}
 				<motion.div
 					className="mx-auto mb-10 max-w-3xl text-center sm:mb-14"
@@ -35,57 +40,72 @@ export default function MeetTheTeam() {
 					{/* Badge */}
 					<motion.div
 						variants={fadeUp}
-						whileHover={{ scale: 1.05 }}
-						className="mt-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 shadow-sm transition-shadow duration-300 hover:shadow-md"
+						className="mt-6 inline-flex items-center gap-2 rounded-full border border-gray-100 bg-gray-50/50 px-4 py-2"
 					>
 						<Users size={14} className="text-hp-primary" />
 						<span className="text-xs font-medium text-hp-text-dark sm:text-sm">{ABOUT_TEAM.badge}</span>
 					</motion.div>
 				</motion.div>
 
-				{/* Team cards  -  inside the frame */}
+				{/* Compact Grid */}
 				<motion.div
-					className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6"
+					className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5"
 					variants={staggerContainer}
 					initial="hidden"
 					whileInView="visible"
-					viewport={{ once: true, amount: 0.15 }}
+					viewport={{ once: true }}
 				>
-					{ABOUT_TEAM.members.map((member: { name: string; role: string; bio: string; contact: string }) => (
-						<motion.div
-							key={member.name}
-							variants={fadeUp}
-							whileHover={{ y: -8, scale: 1.02 }}
-							transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-							className="group relative overflow-hidden rounded-3xl border-2 border-gray-100 bg-white p-6 text-center shadow-md sm:p-7"
-						>
-							{/* Decorative gradient on hover */}
-							<div className="absolute top-0 left-0 right-0 h-1 hp-gradient-bg opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-							{/* Placeholder Avatar */}
-							<div className="relative mx-auto mb-5">
-								<motion.div
-									whileHover={{ scale: 1.08 }}
-									className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-hp-primary/20 to-hp-accent/20 ring-3 ring-gray-100 transition-all duration-300 group-hover:ring-hp-primary/30 sm:h-24 sm:w-24"
-								/>
-							</div>
-
-							<h3 className="font-(family-name:--font-poppins) text-base font-bold text-hp-text-dark sm:text-lg">{member.name}</h3>
-							<p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-hp-primary sm:text-xs">{member.role}</p>
-							<p className="mt-3 text-xs leading-relaxed text-hp-text-dark/60 sm:text-sm">{member.bio}</p>
-
-							{/* Contact link */}
-							<motion.a
-								href="#"
-								whileHover={{ x: 4 }}
-								className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-hp-primary transition-colors hover:text-hp-accent sm:text-sm"
+					<AnimatePresence mode="popLayout">
+						{visibleMembers.map((member, index) => (
+							<motion.div
+								key={`${member.name}-${index}`}
+								variants={fadeUp}
+								layout
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, scale: 0.95 }}
+								whileHover={{ y: -4 }}
+								className="group relative flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4 transition-all duration-300 hover:border-hp-primary/20 hover:shadow-md"
 							>
-								{member.contact}
-								<ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-							</motion.a>
-						</motion.div>
-					))}
+								{/* <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-hp-bg-1 text-hp-primary group-hover:bg-hp-primary group-hover:text-white transition-colors duration-300">
+									<span className="text-sm font-bold">{member.name.charAt(0)}</span>
+								</div> */}
+								<div className="min-w-0">
+									<h3 className="truncate font-(family-name:--font-poppins) text-[15px] font-bold text-hp-text-dark group-hover:text-hp-primary transition-colors">
+										{member.name}
+									</h3>
+									<div className="mt-0.5 flex items-center gap-1 text-hp-text-light">
+										<MapPin size={10} className="flex-shrink-0" />
+										<p className="truncate text-[11px] leading-none sm:text-xs">
+											{member.address}
+										</p>
+									</div>
+								</div>
+							</motion.div>
+						))}
+					</AnimatePresence>
 				</motion.div>
+
+				{/* See More Button */}
+				{ABOUT_TEAM.members.length > INITIAL_VISIBLE_COUNT && (
+					<motion.div 
+						className="mt-12 flex justify-center"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 0.5 }}
+					>
+						<button
+							onClick={() => setShowAll(!showAll)}
+							className="group flex items-center gap-2 rounded-full border border-gray-200 bg-white px-8 py-3 font-(family-name:--font-poppins) text-sm font-bold text-hp-text-dark transition-all hover:bg-gray-50 hover:text-hp-primary active:scale-95 shadow-sm hover:shadow-md"
+						>
+							{showAll ? 'Show Less' : `See All ${ABOUT_TEAM.members.length} Members`}
+							<ChevronDown 
+								size={18} 
+								className={`transition-transform duration-300 ${showAll ? 'rotate-180' : ''}`} 
+							/>
+						</button>
+					</motion.div>
+				)}
 			</div>
 		</section>
 	);

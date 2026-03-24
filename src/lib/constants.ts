@@ -8,7 +8,7 @@ export const NAV_LINKS = [
   { label: "Programs", href: "/programs" },
   { label: "Blog & News", href: "/blog" },
   { label: "Join Us", href: "/join-us" },
-  // { label: "Contact Us", href: "#footer" },
+    { label: "Contact Us", href: "/contact" },
 ] as const;
 
 export const HERO = {
@@ -166,26 +166,25 @@ export const FOOTER = {
   tagline:
     "Building a compassionate, informed, and inclusive society where every individual has access to dignity and opportunities.",
   aboutLinks: [
-    { label: "Our Mission", href: "#who-we-are" },
-    { label: "Our Team", href: "#" },
+    { label: "Our Mission", href: "/about#purpose" },
+    { label: "Our Team", href: "/about#team" },
     // { label: "Annual Reports", href: "#" },
     // { label: "Transparency", href: "#" },
-    { label: "Contact Us", href: "#footer" },
+    { label: "Contact Us", href: "/contact" },
   ],
   programLinks: [
-    { label: "Education & Awareness", href: "#what-we-do" },
-    { label: "Health & Well-being", href: "#what-we-do" },
-    { label: "Care for the Needy", href: "#what-we-do" },
-    { label: "Social Reformation", href: "#what-we-do" },
-    { label: "Environmental Protection", href: "#what-we-do" },
-    { label: "Technology for Good", href: "#what-we-do" },
+    { label: "Education & Awareness", href: "/what-we-do#education-awareness" },
+    { label: "Health & Well-being", href: "/what-we-do#health-wellbeing" },
+    { label: "Care for the Needy", href: "/what-we-do#service-to-the-needy" },
+    { label: "Social Reformation", href: "/what-we-do#social-reformation" },
+    { label: "Environmental Protection", href: "/what-we-do#environmental-protection" },
+    { label: "Technology for Good", href: "/what-we-do#technology-innovation" },
   ],
   joinLinks: [
-    { label: "Donate Now", href: "#" },
-    { label: "Become a Volunteer", href: "#" },
-    { label: "Join Our Team", href: "#" },
-    { label: "Partner with Us", href: "#" },
-    { label: "Request a Campaign", href: "#" },
+    // { label: "Donate Now", href: "#" },
+    { label: "Join Our Team", href: "/join-us" },
+    { label: "Partner with Us", href: "/join-us" },
+    { label: "Request a Campaign", href: "/join-us" },
   ],
   contact: {
     email: "hridayamhopefoundation@gmail.com",
@@ -196,6 +195,6 @@ export const FOOTER = {
   bottomLinks: [
     { label: "Privacy Policy", href: "#" },
     { label: "Terms of Use", href: "#" },
-    { label: "Refund Policy", href: "#" },
+    // { label: "Refund Policy", href: "#" },
   ],
 } as const;

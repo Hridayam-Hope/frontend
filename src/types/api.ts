@@ -241,6 +241,7 @@ export interface InKindDonationStats {
 
 export interface VolunteerApplicationListItem {
   id: number;
+  partner_type: string;
   full_name: string;
   email: string;
   phone: string;
@@ -254,24 +255,37 @@ export interface VolunteerApplicationListItem {
 
 export interface VolunteerApplicationDetail {
   id: number;
+  partner_type: string;
   full_name: string;
   email: string;
   phone: string;
-  date_of_birth: string;
-  address: string;
+  date_of_birth?: string;
+  address?: string;
   city: string;
   state: string;
-  postal_code: string;
+  postal_code?: string;
   country: string;
   skills: string[];
   interests: string;
   availability_weekdays: boolean;
   availability_weekends: boolean;
-  hours_per_week: number;
+  hours_per_week?: number;
   languages: string[];
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
-  emergency_contact_relationship: string;
+
+  // Org / Influencer specific
+  org_registration_number?: string;
+  website_url?: string;
+  industry?: string;
+  org_type?: string;
+  contact_person_name?: string;
+  social_handle?: string;
+  platform?: string;
+  follower_count?: number;
+  niche?: string;
+
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
   status: string;
   application_date: string;
   reviewed_by_id: number | null;
@@ -297,6 +311,7 @@ export interface VolunteerProfile {
 
 export interface VolunteerProfileListItem {
   id: number;
+  partner_type: string;
   full_name: string;
   email: string;
   role: string;
@@ -310,27 +325,45 @@ export interface VolunteerProfileListItem {
   display_order: number;
 }
 
+export interface IndividualDetails {
+  date_of_birth?: string;
+  skills: string[];
+  availability_weekdays: boolean;
+  availability_weekends: boolean;
+  hours_per_week?: number;
+  languages: string[];
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
+}
+
+export interface OrganisationDetails {
+  registration_number?: string;
+  industry?: string;
+  website_url?: string;
+  contact_person_name?: string;
+  org_type?: string;
+}
+
+export interface InfluencerDetails {
+  platform?: string;
+  handle?: string;
+  follower_count?: number;
+  niche?: string;
+}
+
 export interface VolunteerProfileDetail {
   id: number;
+  partner_type: string;
   full_name: string;
   email: string;
   phone: string;
-  date_of_birth: string;
   profile_photo: string | null;
-  address: string;
+  address?: string;
   city: string;
   state: string;
-  postal_code: string;
+  postal_code?: string;
   country: string;
-  skills: string[];
-  interests: string;
-  availability_weekdays: boolean;
-  availability_weekends: boolean;
-  hours_per_week: number;
-  languages: string[];
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
-  emergency_contact_relationship: string;
   role: string;
   position: string;
   responsibilities: string;
@@ -342,9 +375,13 @@ export interface VolunteerProfileDetail {
   joined_date: string;
   total_hours: number;
   last_activity_date: string | null;
-  tenure_years: number;
   created_at: string;
   updated_at: string;
+
+  // Type specific details
+  individual_details?: IndividualDetails;
+  organisation_details?: OrganisationDetails;
+  influencer_details?: InfluencerDetails;
 }
 
 export interface VolunteerOpportunity {

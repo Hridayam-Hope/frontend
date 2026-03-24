@@ -78,7 +78,16 @@ export default function ApplicationsPage() {
       label: "Name",
       render: (item) => (
         <div>
-          <p className="font-medium text-gray-900">{item.full_name}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-medium text-gray-900">{item.full_name}</p>
+            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+              item.partner_type === "organisation" ? "bg-blue-100 text-blue-700" :
+              item.partner_type === "influencer" ? "bg-purple-100 text-purple-700" :
+              "bg-brand-100 text-brand-700"
+            }`}>
+              {item.partner_type}
+            </span>
+          </div>
           <p className="text-xs text-gray-400">{item.email}</p>
         </div>
       ),

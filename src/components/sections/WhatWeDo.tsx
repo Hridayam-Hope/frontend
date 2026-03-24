@@ -4,12 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import useEmblaCarousel from 'embla-carousel-react';
-import { BookOpen, Heart, Utensils, Users, Leaf, Laptop, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 import { fadeUp, staggerContainer } from '@/lib/animations';
-import { PROGRAMS } from '@/lib/constants';
-import SignatureButton from '@/components/ui/SignatureButton';
-
-const iconMap = { BookOpen, Heart, Utensils, Users, Leaf, Laptop } as const;
+import { ABOUT_PILLARS } from '@/lib/about-constants';
 
 export default function WhatWeDo() {
 	const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -19,15 +17,15 @@ export default function WhatWeDo() {
 		containScroll: 'trimSnaps',
 	});
 
+	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [canPrev, setCanPrev] = useState(false);
 	const [canNext, setCanNext] = useState(true);
-	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const onSelect = useCallback(() => {
 		if (!emblaApi) return;
+		setSelectedIndex(emblaApi.selectedScrollSnap());
 		setCanPrev(emblaApi.canScrollPrev());
 		setCanNext(emblaApi.canScrollNext());
-		setSelectedIndex(emblaApi.selectedScrollSnap());
 	}, [emblaApi]);
 
 	useEffect(() => {
@@ -71,38 +69,31 @@ export default function WhatWeDo() {
 					<div className="relative">
 						<div ref={emblaRef} className="overflow-hidden">
 							<div className="flex gap-4 sm:gap-6">
-								{PROGRAMS.map((prog) => {
+								{ABOUT_PILLARS.pillars.map((pillar) => {
 									return (
-										<motion.div key={prog.title} variants={fadeUp} className="min-w-0 flex-[0_0_75%] sm:flex-[0_0_45%] lg:flex-[0_0_30%]">
-											<div className="group relative aspect-[3/4] overflow-hidden rounded-3xl bg-hp-text-dark/5 shadow-md transition-all duration-500 sm:aspect-[3/4]">
-												{/* Image */}
-												<Image
-													src={prog.image}
-													alt={prog.title}
-													fill
-													className="object-cover transition-transform duration-700 group-hover:scale-110"
-													sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 30vw"
-												/>
-
-												{/* Gradient Overlay (Constant) */}
-												<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
-
-
-												{/* Slide-up Content */}
-												<div className="absolute inset-x-0 bottom-0 z-20 p-4 transition-transform duration-500 sm:p-6">
-													<div className="flex flex-col gap-2 rounded-2xl bg-black/40 p-3 backdrop-blur-xl border border-white/10 shadow-2xl sm:p-5 sm:gap-4">
-														<h3 className="font-(family-name:--font-poppins) text-lg font-bold text-white sm:text-xl">{prog.title}</h3>
-														{/* <p className="text-xs leading-relaxed text-white/80 sm:text-sm">
-															{prog.description}
-														</p> */}
-														{/* <div className="translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-															<SignatureButton href="#" showIcon={false} size="sm" className="w-full !rounded-xl">
-																Learn More
-															</SignatureButton>
-														</div> */}
-													</div>
+										<motion.div key={pillar.slug} variants={fadeUp} className="min-w-0 flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_32%]">
+											<Link 
+												href={`/what-we-do#${pillar.slug}`}
+												className="group block"
+											>
+												<div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 hover:shadow-xl sm:rounded-[3rem]">
+													<Image
+														src={pillar.image}
+														alt={pillar.title}
+														fill
+														className="object-cover transition-transform duration-700 group-hover:scale-105"
+														sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 32vw"
+													/>
 												</div>
-											</div>
+												<div className="mt-6 text-center sm:mt-8 px-2">
+													<h3 className="font-(family-name:--font-poppins) text-lg font-bold text-hp-text-dark transition-colors group-hover:text-hp-primary sm:text-xl lg:text-2xl leading-tight">
+														{pillar.title}
+													</h3>
+													<p className="mt-2 line-clamp-2 text-sm leading-relaxed text-hp-text-light sm:mt-3 sm:text-base">
+														{pillar.description}
+													</p>
+												</div>
+											</Link>
 										</motion.div>
 									);
 								})}
@@ -114,35 +105,35 @@ export default function WhatWeDo() {
 					<div className="mt-10 relative flex items-center justify-center sm:mt-16">
 						{/* Dots (Pagination) - Center */}
 						<div className="flex gap-2">
-							{PROGRAMS.map((_, i) => (
+							{ABOUT_PILLARS.pillars.map((_, i) => (
 								<button
 									key={i}
 									onClick={() => emblaApi?.scrollTo(i)}
 									className={`h-1.5 rounded-full transition-all duration-300 ${
 										i === selectedIndex ? 'w-8 hp-gradient-bg' : 'w-2 bg-gray-200 hover:bg-gray-300'
 									}`}
-									aria-label={`Go to program ${i + 1}`}
+									aria-label={`Go to ${ABOUT_PILLARS.pillars[i].title}`}
 								/>
 							))}
 						</div>
 
 						{/* Chevron Arrows - Right */}
-						<div className="absolute right-0 flex gap-2 sm:gap-3">
+						<div className="absolute right-0 hidden items-center gap-2 sm:flex">
 							<button
 								onClick={() => emblaApi?.scrollPrev()}
 								disabled={!canPrev}
-								className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm border border-gray-100 text-hp-text-dark transition-all hover:bg-gray-50 hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none sm:h-11 sm:w-11 sm:rounded-2xl"
-								aria-label="Previous programs"
+								className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-50 text-hp-text-dark transition-all hover:bg-hp-primary hover:text-white disabled:opacity-30 disabled:pointer-events-none"
+								aria-label="Previous slide"
 							>
-								<ChevronLeft size={20} />
+								<ChevronLeft size={18} />
 							</button>
 							<button
 								onClick={() => emblaApi?.scrollNext()}
 								disabled={!canNext}
-								className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm border border-gray-100 text-hp-text-dark transition-all hover:bg-gray-50 hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none sm:h-11 sm:w-11 sm:rounded-2xl"
-								aria-label="Next programs"
+								className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-50 text-hp-text-dark transition-all hover:bg-hp-primary hover:text-white disabled:opacity-30 disabled:pointer-events-none"
+								aria-label="Next slide"
 							>
-								<ChevronRight size={20} />
+								<ChevronRight size={18} />
 							</button>
 						</div>
 					</div>

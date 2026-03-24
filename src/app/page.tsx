@@ -5,10 +5,9 @@ import WhatWeDo from '@/components/sections/WhatWeDo';
 import RecentPrograms from '@/components/sections/RecentPrograms';
 import Testimonials from '@/components/sections/Testimonials';
 import Newsletter from '@/components/sections/Newsletter';
-// import MobileDonateButton from '@/components/layout/MobileDonateButton';
+import FAQ from '@/components/sections/FAQ';
 import Footer from '@/components/layout/Footer';
 import JsonLd from '@/components/seo/JsonLd';
-import SixPillars from '@/components/about/SixPillars';
 
 export default function Home() {
 	return (
@@ -18,10 +17,10 @@ export default function Home() {
 			<main>
 				<Hero />
 				<WhoWeAre />
-				{/* <WhatWeDo /> */}
-				<SixPillars />
+				<WhatWeDo />
 				<RecentPrograms />
 				<Testimonials />
+				<FAQ />
 				<Newsletter />
 			</main>
 			<Footer />
