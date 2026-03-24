@@ -2,11 +2,13 @@
 
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Heart, BookOpen, Activity, Users, Leaf, Cpu } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Heart, BookOpen, Activity, Users, Leaf, Cpu, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import MobileDonateButton from '@/components/layout/MobileDonateButton';
+import SignatureButton from '@/components/ui/SignatureButton';
 import { fadeUp, staggerContainer, scaleIn } from '@/lib/animations';
 import { ABOUT_PILLARS } from '@/lib/about-constants';
 
@@ -79,92 +81,107 @@ export default function WhatWeDoPage() {
 			<Header />
 			<main className="min-h-screen bg-[#F8FAFC]">
 				{/* ── Hero Section ── */}
-				<section className="relative overflow-hidden bg-gradient-to-br from-[#1a2e4a] via-[#1e3a5f] to-[#0f2137] pt-32 pb-20 sm:pt-36 sm:pb-28">
-					{/* Decorative elements */}
-					<div className="absolute inset-0 overflow-hidden pointer-events-none">
-						<div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-hp-primary/10 blur-3xl" />
-						<div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-hp-accent/8 blur-3xl" />
-						<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-hp-primary/5 blur-3xl" />
-					</div>
-
-					{/* Grid pattern overlay */}
-					<div
-						className="absolute inset-0 opacity-[0.03]"
-						style={{
-							backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-							backgroundSize: '40px 40px',
+				<section className="relative overflow-hidden bg-linear-to-b from-[#e8f4f1] via-[#f0f8f7] to-gray-50 pt-28 pb-12 sm:pt-36 sm:pb-16">
+					{/* Decorative background orbs */}
+					<motion.div
+						className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-linear-to-br from-teal-200/30 to-cyan-200/20 blur-3xl"
+						animate={{
+							y: [0, -15, 0],
+							rotate: [0, 5, 0],
+							transition: { duration: 7, repeat: Infinity, ease: 'easeInOut' as const },
+						}}
+					/>
+					<motion.div
+						className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-linear-to-br from-blue-200/20 to-teal-200/15 blur-3xl"
+						animate={{
+							y: [0, 12, 0],
+							rotate: [0, -3, 0],
+							transition: { duration: 9, repeat: Infinity, ease: 'easeInOut' as const },
 						}}
 					/>
 
-					<div className="relative z-10 mx-auto max-w-6xl px-5 lg:px-8">
-						{/* Back nav */}
-						<motion.div
-							initial={{ opacity: 0, x: -20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ delay: 0.2 }}
-						>
-							<Link
-								href="/about"
-								className="group inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 px-4 py-2 text-white/70 text-sm font-medium transition-all hover:bg-white/15 hover:text-white/90 mb-8"
-							>
-								<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-								About Us
-							</Link>
-						</motion.div>
-
-						<motion.div
-							initial="hidden"
-							animate="visible"
-							variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-						>
-							<motion.p
-								variants={fadeUp}
-								className="text-[10px] font-semibold uppercase tracking-[3px] text-hp-accent/80 sm:text-xs mb-4"
-							>
+					<motion.div
+						className="relative z-10 mx-auto max-w-4xl px-5 text-center lg:px-8"
+						initial="hidden"
+						animate="visible"
+						variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+					>
+						{/* Eyebrow */}
+						<motion.div variants={scaleIn} className="mb-5 inline-flex">
+							<span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-teal-700 shadow-sm ring-1 ring-teal-100 backdrop-blur-sm sm:text-xs">
+								<Sparkles size={12} className="text-teal-500" />
 								Our Focus Areas
-							</motion.p>
-							<motion.h1
-								variants={fadeUp}
-								className="font-(family-name:--font-poppins) text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-bold text-white leading-[1.1] max-w-3xl"
-							>
-								What We{' '}
-								<span className="font-(family-name:--font-playfair) italic bg-gradient-to-r from-hp-primary to-hp-accent bg-clip-text text-transparent">
-									Do
-								</span>
-							</motion.h1>
-							<motion.p
-								variants={fadeUp}
-								className="mt-5 text-white/60 text-base sm:text-lg max-w-2xl leading-relaxed"
-							>
-								{ABOUT_PILLARS.subtitle}
-							</motion.p>
-
-							{/* Quick nav pills */}
-							<motion.div
-								variants={fadeUp}
-								className="mt-8 flex flex-wrap gap-2"
-							>
-								{ABOUT_PILLARS.pillars.map((pillar) => (
-									<a
-										key={pillar.slug}
-										href={`#${pillar.slug}`}
-										className="rounded-full bg-white/8 backdrop-blur-sm border border-white/10 px-4 py-2 text-xs font-medium text-white/60 transition-all hover:bg-white/15 hover:text-white/90 hover:border-white/20"
-										onClick={(e) => {
-											e.preventDefault();
-											const el = document.getElementById(pillar.slug);
-											if (el) {
-												const headerOffset = 100;
-												const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-												window.scrollTo({ top: elementPosition - headerOffset, behavior: 'smooth' });
-											}
-										}}
-									>
-										{pillar.title}
-									</a>
-								))}
-							</motion.div>
+							</span>
 						</motion.div>
-					</div>
+
+						{/* Headline */}
+						<motion.h1
+							variants={fadeUp}
+							className="font-poppins text-3xl font-bold leading-tight text-gray-900 sm:text-4xl md:text-5xl lg:text-[3.5rem]"
+						>
+							What We{' '}
+							<span className="font-playfair relative italic">
+								<span className="hp-gradient-text">Do</span>
+								<motion.svg
+									className="absolute -bottom-2 left-0 w-full"
+									viewBox="0 0 80 12"
+									fill="none"
+									initial={{ pathLength: 0, opacity: 0 }}
+									animate={{ pathLength: 1, opacity: 1 }}
+									transition={{ delay: 1, duration: 1, ease: 'easeOut' }}
+								>
+									<motion.path
+										d="M2 8 C20 2, 60 2, 78 8"
+										stroke="url(#wwdGrad)"
+										strokeWidth="3"
+										strokeLinecap="round"
+										initial={{ pathLength: 0 }}
+										animate={{ pathLength: 1 }}
+										transition={{ delay: 1, duration: 1, ease: 'easeOut' }}
+									/>
+									<defs>
+										<linearGradient id="wwdGrad" x1="0" y1="0" x2="80" y2="0">
+											<stop offset="0%" stopColor="#4886cf" />
+											<stop offset="100%" stopColor="#65bac1" />
+										</linearGradient>
+									</defs>
+								</motion.svg>
+							</span>
+						</motion.h1>
+
+						{/* Subtitle */}
+						<motion.p
+							variants={fadeUp}
+							className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-gray-500 sm:mt-6 sm:text-base"
+						>
+							{ABOUT_PILLARS.subtitle}
+						</motion.p>
+
+						{/* Quick nav pills */}
+						<motion.div
+							variants={fadeUp}
+							className="mt-8 flex flex-wrap items-center justify-center gap-2"
+						>
+							{ABOUT_PILLARS.pillars.map((pillar) => (
+								<a
+									key={pillar.slug}
+									href={`#${pillar.slug}`}
+									className="rounded-full border border-gray-200 bg-white/80 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm backdrop-blur-sm transition-all hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700"
+									onClick={(e) => {
+										e.preventDefault();
+										const el = document.getElementById(pillar.slug);
+										if (el) {
+											const headerOffset = 100;
+											const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+											window.scrollTo({ top: elementPosition - headerOffset, behavior: 'smooth' });
+										}
+									}}
+								>
+									{pillar.title}
+								</a>
+							))}
+						</motion.div>
+					</motion.div>
 				</section>
 
 				{/* ── Focus Areas Detailed Sections ── */}
@@ -279,12 +296,24 @@ export default function WhatWeDoPage() {
 				</section>
 
 				{/* ── CTA Section ── */}
-				<section className="relative overflow-hidden bg-gradient-to-br from-[#1a2e4a] via-[#1e3a5f] to-[#0f2137] py-20 sm:py-28">
-					{/* Decorative blobs */}
-					<div className="absolute inset-0 pointer-events-none">
-						<div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-hp-primary/10 blur-3xl" />
-						<div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full bg-hp-accent/10 blur-3xl" />
-					</div>
+				<section className="relative overflow-hidden bg-linear-to-b from-gray-50 via-[#f0f8f7] to-[#e8f4f1] py-16 sm:py-24">
+					{/* Decorative background orbs */}
+					<motion.div
+						className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-linear-to-br from-teal-200/25 to-cyan-200/15 blur-3xl"
+						animate={{
+							y: [0, -12, 0],
+							rotate: [0, 3, 0],
+							transition: { duration: 8, repeat: Infinity, ease: 'easeInOut' as const },
+						}}
+					/>
+					<motion.div
+						className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-linear-to-br from-blue-200/20 to-teal-200/15 blur-3xl"
+						animate={{
+							y: [0, 10, 0],
+							rotate: [0, -3, 0],
+							transition: { duration: 10, repeat: Infinity, ease: 'easeInOut' as const },
+						}}
+					/>
 
 					<motion.div
 						className="relative z-10 mx-auto max-w-4xl px-5 lg:px-8 text-center"
@@ -293,41 +322,37 @@ export default function WhatWeDoPage() {
 						viewport={{ once: true, amount: 0.3 }}
 						variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
 					>
-						<motion.p
-							variants={fadeUp}
-							className="text-[10px] font-semibold uppercase tracking-[3px] text-hp-accent/70 sm:text-xs mb-4"
-						>
-							Get Involved
-						</motion.p>
+						<motion.div variants={scaleIn} className="mb-5 inline-flex">
+							<span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-teal-700 shadow-sm ring-1 ring-teal-100 backdrop-blur-sm sm:text-xs">
+								<Heart size={12} className="fill-teal-500 text-teal-500" />
+								Get Involved
+							</span>
+						</motion.div>
 						<motion.h2
 							variants={fadeUp}
-							className="font-(family-name:--font-poppins) text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight"
+							className="font-poppins text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
 						>
 							Be Part of the{' '}
-							<span className="font-(family-name:--font-playfair) italic bg-gradient-to-r from-hp-primary to-hp-accent bg-clip-text text-transparent">
+							<span className="font-playfair italic hp-gradient-text">
 								Change
 							</span>
 						</motion.h2>
 						<motion.p
 							variants={fadeUp}
-							className="mt-5 text-white/60 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed"
+							className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-gray-500 sm:mt-6 sm:text-base"
 						>
 							Whether you can give time, skills, or resources — there is a place for you. Join our mission to build a more compassionate and empowered society.
 						</motion.p>
 						<motion.div
 							variants={fadeUp}
-							className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
+							className="mt-8 flex flex-wrap items-center justify-center gap-3"
 						>
-							<Link
-								href="/join-us"
-								className="group inline-flex items-center gap-2 rounded-full hp-gradient-bg px-8 py-3.5 text-white text-sm font-semibold shadow-lg shadow-hp-primary/25 transition-all hover:shadow-xl hover:shadow-hp-primary/30 hover:scale-[1.02]"
-							>
+							<SignatureButton href="/join-us" size="md">
 								Become a Volunteer
-								<ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-							</Link>
+							</SignatureButton>
 							<Link
 								href="/about"
-								className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-8 py-3.5 text-white/80 text-sm font-semibold transition-all hover:bg-white/15 hover:text-white"
+								className="inline-flex items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700"
 							>
 								Learn About Us
 							</Link>
