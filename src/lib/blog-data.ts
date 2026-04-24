@@ -33,12 +33,6 @@ export const BLOG_CATEGORIES = ['All', 'Education', 'Environment', 'Community'] 
 export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
-	kavita: {
-		name: 'David Raju',
-		role: 'Author',
-		bio: 'A passionate advocate for social change and community development.',
-		avatar: null,
-	},
 	rahul: {
 		name: 'Rahul Sharma',
 		role: 'Volunteer Coordinator',

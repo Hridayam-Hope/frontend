@@ -1519,7 +1519,7 @@ function ContactSection() {
 								<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 transition-colors group-hover:bg-teal-500/20">
 									<Phone size={16} />
 								</div>
-								+91-81217-02286
+								+91-76740-28833
 							</a>
 						</motion.div>
 

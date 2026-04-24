@@ -70,6 +70,6 @@ export const SEO_FAQS = [
   {
     question: 'How can I partner with Hridayam Hope Foundation as a business or organization?',
     answer:
-      'We welcome CSR partnerships, institutional collaborations, and community partnerships. Contact us at hridayamhopefoundation@gmail.com or call +91-81217-02286 to discuss how we can work together for social impact.',
+      'We welcome CSR partnerships, institutional collaborations, and community partnerships. Contact us at hridayamhopefoundation@gmail.com or call +91-76740-28833 to discuss how we can work together for social impact.',
   },
 ] as const;
