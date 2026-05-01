@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.hridayamhopefoundation.com https://challenges.cloudflare.com https://www.google-analytics.com https://www.googletagmanager.com",
+              "connect-src 'self' http://localhost:8000 https://api.hridayamhopefoundation.com https://challenges.cloudflare.com https://www.google-analytics.com https://www.googletagmanager.com",
               "frame-src 'self' https://challenges.cloudflare.com",
               "worker-src 'self' blob:",
             ].join('; '),
