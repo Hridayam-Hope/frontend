@@ -138,7 +138,7 @@ export default function ProgramsPage() {
 														
 														<div className="flex items-center justify-between">
 															<Link
-																href={`/story/${activity.id}`}
+																href={`/programs/${activity.id}`}
 																className="inline-flex items-center gap-2 text-sm font-bold text-hp-primary group-hover/card:text-hp-accent transition-colors relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-hp-accent after:transition-all after:duration-300 group-hover/card:after:w-full"
 															>
 																Read Full Story

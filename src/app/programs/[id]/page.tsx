@@ -434,7 +434,7 @@ export default function StoryPage() {
 								{otherStories.map((story, i) => (
 									<motion.div key={story.id} variants={fadeUp}>
 										<Link
-											href={`/story/${story.id}`}
+											href={`/programs/${story.id}`}
 											className="group block bg-[#F8FAFC] rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl hover:shadow-black/5 transition-all duration-500"
 										>
 											<div className="relative aspect-[4/3] overflow-hidden">
@@ -480,7 +480,7 @@ function StoryShareCard({ title, id }: { title: string; id: string }) {
 
 	const getShareUrl = () => {
 		if (typeof window !== 'undefined') {
-			return `${window.location.origin}/story/${id}`;
+			return `${window.location.origin}/programs/${id}`;
 		}
 		return '';
 	};

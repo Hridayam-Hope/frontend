@@ -102,7 +102,7 @@ export default function RecentPrograms() {
 											</p>
 
 											<SignatureButton
-												href={`/story/${activity.id}`}
+												href={`/programs/${activity.id}`}
 												size="sm"
 												showIcon={false}
 												className="w-full !rounded-xl !bg-white !text-hp-text-dark hover:!bg-hp-teal hover:!text-white border-none shadow-2xl sm:!rounded-2xl"

@@ -45,6 +45,12 @@ export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
 		bio: 'Documenting the journey of communities transforming through education and care.',
 		avatar: null,
 	},
+	kavita: {
+		name: 'Kavita Reddy',
+		role: 'Education Lead',
+		bio: 'Passionate about bringing quality education to every child.',
+		avatar: null,
+	},
 };
 
 export const BLOG_POSTS: BlogPost[] = [
