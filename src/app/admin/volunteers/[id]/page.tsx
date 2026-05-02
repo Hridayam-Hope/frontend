@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useVolunteersStore } from "@/lib/stores/volunteers";
+import { useToast } from "@/lib/toast";
 import { StatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import VolunteerEditForm from "@/components/admin/VolunteerEditForm";
 import type { VolunteerProfileDetail } from "@/types/api";
 
 type Tab = "overview" | "activities" | "campaigns" | "certificates";
@@ -20,6 +22,8 @@ export default function VolunteerDetailPage() {
   } = useVolunteersStore();
   const [volunteer, setVolunteer] = useState<VolunteerProfileDetail | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [isEditing, setIsEditing] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (numId) {
@@ -107,7 +111,17 @@ export default function VolunteerDetailPage() {
             </div>
             <div className="flex gap-2 pb-1">
               <StatusBadge status={volunteer.is_active ? "active" : "inactive"} />
-              {volunteer.is_active && (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  setIsEditing((prev) => !prev);
+                  setActiveTab("overview");
+                }}
+              >
+                {isEditing ? "Cancel Edit" : "Edit"}
+              </Button>
+              {volunteer.is_active && !isEditing && (
                 <Button size="sm" variant="danger" onClick={handleDeactivate}>Deactivate</Button>
               )}
             </div>
@@ -139,16 +153,19 @@ export default function VolunteerDetailPage() {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs — disabled while editing */}
       <div className="flex gap-1 mb-6 bg-white rounded-lg border border-gray-100 shadow-sm p-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => !isEditing && setActiveTab(tab.id)}
+            disabled={isEditing && tab.id !== "overview"}
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-md transition-colors ${
               activeTab === tab.id
                 ? "bg-brand-50 text-brand-700 shadow-sm"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                : isEditing && tab.id !== "overview"
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
             }`}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} /></svg>
@@ -156,8 +173,21 @@ export default function VolunteerDetailPage() {
           </button>
         ))}
       </div>
-      {/* Overview Tab */}
-      {activeTab === "overview" && (
+
+      {/* Edit Form — replaces overview content when editing */}
+      {isEditing && activeTab === "overview" && (
+        <VolunteerEditForm
+          volunteer={volunteer}
+          onSaved={(updated) => {
+            setVolunteer(updated);
+            setIsEditing(false);
+            showToast("success", "Volunteer updated successfully");
+          }}
+          onCancel={() => setIsEditing(false)}
+        />
+      )}
+      {/* Overview Tab — hidden while editing */}
+      {!isEditing && activeTab === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Main Info */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">

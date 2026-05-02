@@ -51,7 +51,7 @@ export default function AboutCTA() {
 
 						{/* CTAs */}
 						<motion.div variants={fadeUp} className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-							<SignatureButton href="#" size="md">
+							<SignatureButton href="/join-us#volunteer-form" size="md">
 								{ABOUT_CTA.primaryCta}
 							</SignatureButton>
 							{/* <SignatureButton

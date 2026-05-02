@@ -64,6 +64,7 @@ interface VolunteersState {
   fetchVolunteers: (params?: Record<string, unknown>) => Promise<void>;
   fetchVolunteer: (id: number, force?: boolean) => Promise<VolunteerProfileDetail>;
   createVolunteer: (data: Record<string, unknown>) => Promise<void>;
+  updateVolunteer: (id: number, data: Record<string, unknown>) => Promise<VolunteerProfileDetail>;
   deactivateVolunteer: (id: number) => Promise<void>;
   fetchActivities: (volunteerId: number) => Promise<void>;
   fetchCertificates: (volunteerId: number) => Promise<void>;
@@ -201,8 +202,14 @@ export const useVolunteersStore = create<VolunteersState>((set, get) => ({
 
   createVolunteer: async (data) => {
     await api.createVolunteer(data);
-    // Refresh list after creation
     get().fetchVolunteers();
+  },
+
+  updateVolunteer: async (id, data) => {
+    await api.updateVolunteer(id, data);
+    // Force-refresh detail cache so the page shows fresh data
+    const updated = await get().fetchVolunteer(id, true);
+    return updated;
   },
 
   deactivateVolunteer: async (id) => {

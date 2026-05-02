@@ -364,12 +364,13 @@ export interface VolunteerProfileDetail {
   state: string;
   postal_code?: string;
   country: string;
+  interests?: string;
   role: string;
-  position: string;
-  responsibilities: string;
-  bio: string;
-  linkedin_url: string | null;
-  tenure_end_date: string | null;
+  position?: string;
+  responsibilities?: string;
+  bio?: string;
+  linkedin_url?: string | null;
+  tenure_end_date?: string | null;
   display_order: number;
   is_active: boolean;
   joined_date: string;
