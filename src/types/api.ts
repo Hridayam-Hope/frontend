@@ -851,3 +851,103 @@ export interface ExpenseSummary {
     count: number;
   }[];
 }
+
+// ============================================================================
+// Programs Types
+// ============================================================================
+
+export interface ProgramCategory {
+  id: number;
+  name: string;
+  slug: string;
+  color_class: string;
+  icon?: string;
+  description: string;
+  is_active: boolean;
+  program_count?: number;
+}
+
+export interface ProgramListItem {
+  id: number;
+  slug: string;
+  title: string;
+  short_description: string;
+  featured_image: string;
+  category_name: string;
+  category_color: string;
+  badge_label: string;
+  location: string;
+  event_date: string;
+  volunteers_count: number;
+  status: string;
+  is_featured: boolean;
+  view_count: number;
+  created_at: string;
+}
+
+export interface ProgramMedia {
+  id: number;
+  image_url: string;
+  caption: string;
+  alt_text: string;
+  order: number;
+  is_featured: boolean;
+  uploaded_at: string;
+}
+
+export interface ProgramHighlight {
+  id: number;
+  text: string;
+  order: number;
+}
+
+export interface ProgramQuote {
+  id: number;
+  text: string;
+  author_name: string;
+  author_role: string;
+  order: number;
+}
+
+export interface ProgramDetail {
+  id: number;
+  slug: string;
+  title: string;
+  short_description: string;
+  full_story: string;
+  category_id: number;
+  category_name: string;
+  category_color: string;
+  badge_label: string;
+  location: string;
+  city: string;
+  state: string;
+  event_date: string;
+  volunteers_count: number;
+  beneficiaries_count: number | null;
+  trees_planted: number | null;
+  people_reached: number | null;
+  featured_image: string;
+  featured_image_alt: string;
+  status: string;
+  is_featured: boolean;
+  display_order: number;
+  meta_title: string;
+  meta_description: string;
+  view_count: number;
+  media: ProgramMedia[];
+  highlights: ProgramHighlight[];
+  quotes: ProgramQuote[];
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+}
+
+export interface ProgramSummary {
+  total_programs: number;
+  published_programs: number;
+  draft_programs: number;
+  archived_programs: number;
+  featured_programs: number;
+  total_views: number;
+}

@@ -88,7 +88,7 @@ export default function Footer() {
 
 								{/* Link List */}
 								<AnimatePresence>
-									{(activeAccordion === section.title || (typeof window !== 'undefined' && window.innerWidth >= 1024)) && (
+									{(activeAccordion === section.title || (isMounted && window.innerWidth >= 1024)) && (
 										<motion.ul
 											initial={{ height: 0, opacity: 0 }}
 											animate={{ height: 'auto', opacity: 1 }}

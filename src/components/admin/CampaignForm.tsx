@@ -449,9 +449,6 @@ export default function CampaignForm({
               onChange={(url) => update("featured_image", url)}
               folder="campaigns"
               label="Campaign Cover Image"
-              variant="banner"
-              deferred
-              hint="Recommended: 1920×1080 or 16:9 aspect ratio, max 5MB"
             />
           </section>
 
@@ -510,9 +507,6 @@ export default function CampaignForm({
                 onChange={(url) => update("og_image", url)}
                 folder="campaigns/og"
                 label="OG Image (Social Sharing)"
-                variant="banner"
-                deferred
-                hint="1200×630 recommended. Shown when shared on social media."
               />
             )}
           </section>
