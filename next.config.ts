@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'media.hridayamhopefoundation.com',
+        pathname: '/**',
+      },
     ],
   },
   poweredByHeader: false,

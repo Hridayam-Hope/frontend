@@ -227,4 +227,16 @@ async function apiUpload<T>(
   return res.json();
 }
 
+export function extractPathFromUrl(url: string | null | undefined): string {
+  if (!url) return "";
+  if (!url.startsWith("http")) return url;
+  try {
+    const parsed = new URL(url);
+    // Remove the leading slash so it matches the DB expectation (e.g. 'general/filename.webp')
+    return parsed.pathname.substring(1);
+  } catch (e) {
+    return url;
+  }
+}
+
 export { apiFetch, apiUpload, ApiError, getTokens, setTokens, clearTokens, API_URL };

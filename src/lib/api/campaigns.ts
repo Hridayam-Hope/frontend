@@ -1,4 +1,4 @@
-import { apiFetch, apiUpload } from "./client";
+import { apiFetch, apiUpload, extractPathFromUrl } from "./client";
 import type {
   PaginatedResponse,
   CampaignListItem,
@@ -31,16 +31,30 @@ export async function getCampaignBySlug(slug: string) {
 }
 
 export async function createCampaign(data: Record<string, unknown>) {
+  const payload = { ...data };
+  if (typeof payload.featured_image === 'string') {
+    payload.featured_image = extractPathFromUrl(payload.featured_image);
+  }
+  if (typeof payload.og_image === 'string') {
+    payload.og_image = extractPathFromUrl(payload.og_image);
+  }
   return apiFetch<CampaignDetail>("/campaigns/campaigns", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 }
 
 export async function updateCampaign(id: number, data: Record<string, unknown>) {
+  const payload = { ...data };
+  if (typeof payload.featured_image === 'string') {
+    payload.featured_image = extractPathFromUrl(payload.featured_image);
+  }
+  if (typeof payload.og_image === 'string') {
+    payload.og_image = extractPathFromUrl(payload.og_image);
+  }
   return apiFetch<CampaignDetail>(`/campaigns/campaigns/${id}`, {
     method: "PUT",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 }
 

@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, extractPathFromUrl } from "./client";
 import type {
   PaginatedResponse,
   ProgramListItem,
@@ -81,16 +81,24 @@ export async function createProgram(data: {
   meta_title?: string;
   meta_description?: string;
 }) {
+  const payload = {
+    ...data,
+    featured_image: extractPathFromUrl(data.featured_image),
+  };
   return apiFetch<ProgramDetail>("/programs/admin/", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 }
 
 export async function updateProgram(id: number, data: Record<string, unknown>) {
+  const payload = { ...data };
+  if (typeof payload.featured_image === 'string') {
+    payload.featured_image = extractPathFromUrl(payload.featured_image);
+  }
   return apiFetch<ProgramDetail>(`/programs/admin/${id}`, {
     method: "PUT",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -126,9 +134,13 @@ export async function addProgramMedia(
     is_featured?: boolean;
   }
 ) {
+  const payload = {
+    ...data,
+    image_url: extractPathFromUrl(data.image_url),
+  };
   return apiFetch<ProgramMedia>(`/programs/admin/${programId}/media`, {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 }
 

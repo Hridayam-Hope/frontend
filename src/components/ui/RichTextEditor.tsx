@@ -38,6 +38,38 @@ interface RichTextEditorProps {
   error?: string;
 }
 
+const TIPTAP_EXTENSIONS = [
+  StarterKit.configure({
+    heading: {
+      levels: [1, 2, 3],
+    },
+  }),
+  Underline,
+  Link.configure({
+    openOnClick: false,
+    HTMLAttributes: {
+      class: "text-brand-600 underline hover:text-brand-700",
+    },
+  }),
+  Table.configure({
+    resizable: true,
+    HTMLAttributes: {
+      class: "border-collapse table-auto w-full",
+    },
+  }),
+  TableRow,
+  TableHeader.configure({
+    HTMLAttributes: {
+      class: "border border-gray-300 bg-gray-50 px-4 py-2 text-left font-semibold",
+    },
+  }),
+  TableCell.configure({
+    HTMLAttributes: {
+      class: "border border-gray-300 px-4 py-2",
+    },
+  }),
+];
+
 export default function RichTextEditor({
   value,
   onChange,
@@ -50,37 +82,7 @@ export default function RichTextEditor({
   const tablePickerRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-      }),
-      Underline,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: "text-brand-600 underline hover:text-brand-700",
-        },
-      }),
-      Table.configure({
-        resizable: true,
-        HTMLAttributes: {
-          class: "border-collapse table-auto w-full",
-        },
-      }),
-      TableRow,
-      TableHeader.configure({
-        HTMLAttributes: {
-          class: "border border-gray-300 bg-gray-50 px-4 py-2 text-left font-semibold",
-        },
-      }),
-      TableCell.configure({
-        HTMLAttributes: {
-          class: "border border-gray-300 px-4 py-2",
-        },
-      }),
-    ],
+    extensions: TIPTAP_EXTENSIONS,
     content: markdownToHtml(value),
     editorProps: {
       attributes: {
