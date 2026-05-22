@@ -28,9 +28,7 @@ export default function OpportunityDetailPage() {
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
-    location: "",
-    city: "",
-    state: "",
+    work_mode: "in_office" as "in_office" | "remote",
     event_date: "",
     event_time: "",
     duration_hours: 0,
@@ -65,9 +63,7 @@ export default function OpportunityDetailPage() {
     setEditForm({
       title: opp.title,
       description: opp.description,
-      location: opp.location,
-      city: opp.city,
-      state: opp.state,
+      work_mode: opp.work_mode,
       event_date: opp.event_date,
       event_time: opp.event_time,
       duration_hours: Number(opp.duration_hours),
@@ -183,7 +179,7 @@ export default function OpportunityDetailPage() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center">
+            <div className="h-14 w-14 rounded-xl bg-linear-to-br from-brand-400 to-accent-400 flex items-center justify-center">
               <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
@@ -195,7 +191,7 @@ export default function OpportunityDetailPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {opp.location ? `${opp.location}, ` : ""}{opp.city}, {opp.state}
+                {opp.work_mode === "remote" ? "Remote" : "In-Office"}
               </p>
             </div>
           </div>
@@ -281,7 +277,7 @@ export default function OpportunityDetailPage() {
                     className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-full bg-gradient-to-r from-brand-400 to-accent-400 flex items-center justify-center text-white text-xs font-bold">
+                      <div className="h-9 w-9 rounded-full bg-linear-to-r from-brand-400 to-accent-400 flex items-center justify-center text-white text-xs font-bold">
                         {app.volunteer_name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                       </div>
                       <div>
@@ -358,6 +354,7 @@ export default function OpportunityDetailPage() {
                 },
                 { label: "Time", value: opp.event_time },
                 { label: "Duration", value: `${opp.duration_hours} hours` },
+                { label: "Work Mode", value: opp.work_mode === "remote" ? "Remote" : "In-Office" },
                 { label: "Location", value: opp.location || `${opp.city}, ${opp.state}` },
                 { label: "Published", value: opp.is_published ? "Yes" : "No" },
                 { label: "Created", value: new Date(opp.created_at).toLocaleDateString() },
@@ -404,6 +401,17 @@ export default function OpportunityDetailPage() {
             <div className="space-y-4">
               <Input label="Title *" value={editForm.title} onChange={(e) => setEditForm({ ...editForm, title: e.target.value })} />
               <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Work Mode *</label>
+                <select
+                  value={editForm.work_mode}
+                  onChange={(e) => setEditForm({ ...editForm, work_mode: e.target.value as "in_office" | "remote" })}
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
+                >
+                  <option value="in_office">In-Office</option>
+                  <option value="remote">Remote</option>
+                </select>
+              </div>
+              <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">Description *</label>
                 <textarea
                   value={editForm.description}
@@ -411,11 +419,6 @@ export default function OpportunityDetailPage() {
                   rows={3}
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
                 />
-              </div>
-              <Input label="Location" value={editForm.location} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} />
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="City *" value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })} />
-                <Input label="State" value={editForm.state} onChange={(e) => setEditForm({ ...editForm, state: e.target.value })} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Event Date *" type="date" value={editForm.event_date} onChange={(e) => setEditForm({ ...editForm, event_date: e.target.value })} />

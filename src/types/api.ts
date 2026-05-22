@@ -391,6 +391,7 @@ export interface VolunteerOpportunity {
   description: string;
   city: string;
   state: string;
+  work_mode: "in_office" | "remote";
   event_date: string;
   event_time: string;
   duration_hours: number;
@@ -407,6 +408,7 @@ export interface VolunteerOpportunityDetail {
   location: string;
   city: string;
   state: string;
+  work_mode: "in_office" | "remote";
   event_date: string;
   event_time: string;
   duration_hours: number;

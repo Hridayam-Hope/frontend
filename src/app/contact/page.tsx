@@ -151,19 +151,6 @@ export default function ContactPage() {
 										</div>
 									</div>
 								</div>
-
-								{/* Map Placeholder */}
-								<div className="group relative h-[300px] overflow-hidden rounded-[2rem] bg-gray-100 bg-[url('/map-contact.png')] bg-cover bg-center grayscale transition-all hover:grayscale-0 sm:rounded-[2.5rem]">
-									<div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-									<div className="absolute inset-0 flex items-center justify-center">
-										<motion.div
-											whileHover={{ scale: 1.05 }}
-											className="rounded-2xl bg-white/90 px-6 py-3 text-sm font-bold text-gray-900 shadow-xl backdrop-blur-md"
-										>
-											View on Google Maps
-										</motion.div>
-									</div>
-								</div>
 							</motion.div>
 						</motion.div>
 					</div>

@@ -26,9 +26,7 @@ export default function OpportunitiesPage() {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    location: "",
-    city: "",
-    state: "",
+    work_mode: "in_office" as "in_office" | "remote",
     event_date: "",
     event_time: "",
     duration_hours: 1,
@@ -65,7 +63,7 @@ export default function OpportunitiesPage() {
   };
 
   const handleCreate = async () => {
-    if (!form.title || !form.city || !form.event_date || !form.event_time) {
+    if (!form.title || !form.event_date || !form.event_time) {
       showToast("error", "Please fill in all required fields");
       return;
     }
@@ -80,7 +78,7 @@ export default function OpportunitiesPage() {
       showToast("success", "Opportunity created successfully");
       setShowCreate(false);
       setSelectedSkillIds([]);
-      setForm({ title: "", description: "", location: "", city: "", state: "", event_date: "", event_time: "", duration_hours: 1, volunteers_needed: 1, is_published: true });
+      setForm({ title: "", description: "", work_mode: "in_office", event_date: "", event_time: "", duration_hours: 1, volunteers_needed: 1, is_published: true });
       fetchOpportunities();
     } catch (error) {
       handleError(error, "Failed to create opportunity");
@@ -101,9 +99,13 @@ export default function OpportunitiesPage() {
       ),
     },
     {
-      key: "city",
-      label: "Location",
-      render: (item) => `${item.city}, ${item.state}`,
+      key: "work_mode",
+      label: "Mode",
+      render: (item) => (
+        <span className="inline-flex rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
+          {item.work_mode === "remote" ? "Remote" : "In-Office"}
+        </span>
+      ),
     },
     {
       key: "event_date",
@@ -208,6 +210,17 @@ export default function OpportunitiesPage() {
             <div className="space-y-4">
               <Input label="Title *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g., Community cleanup drive" />
               <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Work Mode *</label>
+                <select
+                  value={form.work_mode}
+                  onChange={(e) => setForm({ ...form, work_mode: e.target.value as "in_office" | "remote" })}
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
+                >
+                  <option value="in_office">In-Office</option>
+                  <option value="remote">Remote</option>
+                </select>
+              </div>
+              <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">Description *</label>
                 <textarea
                   value={form.description}
@@ -216,11 +229,6 @@ export default function OpportunitiesPage() {
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
                   placeholder="Describe the opportunity..."
                 />
-              </div>
-              <Input label="Location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="Full address" />
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="City *" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="City" />
-                <Input label="State" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} placeholder="State" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Event Date *" type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} />

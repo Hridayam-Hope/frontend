@@ -155,6 +155,10 @@ export async function getOpportunity(id: number) {
   return apiFetch<VolunteerOpportunityDetail>(`/volunteers/opportunities/${id}`);
 }
 
+export async function getPublicOpportunity(id: number) {
+  return apiFetch<VolunteerOpportunityDetail>(`/volunteers/opportunities/public/${id}`);
+}
+
 export async function createOpportunity(data: Record<string, unknown>) {
   return apiFetch<VolunteerOpportunityDetail>("/volunteers/opportunities", {
     method: "POST",
