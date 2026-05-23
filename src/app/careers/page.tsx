@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Briefcase, Calendar, Clock3, Users } from 'lucide-react';
+import { ArrowRight, Briefcase, Calendar } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import MobileDonateButton from '@/components/layout/MobileDonateButton';
@@ -116,7 +116,6 @@ export default function CareersPage() {
 									month: 'short',
 									year: 'numeric',
 								});
-								const spotsLeft = Math.max(job.volunteers_needed - job.volunteers_accepted, 0);
 
 								return (
 									<motion.article
@@ -148,14 +147,6 @@ export default function CareersPage() {
 											<p className="flex items-center gap-2">
 												<Calendar size={14} className="text-gray-400" />
 												{eventDate}
-											</p>
-											<p className="flex items-center gap-2">
-												<Clock3 size={14} className="text-gray-400" />
-												{job.event_time} • {job.duration_hours} hrs
-											</p>
-											<p className="flex items-center gap-2">
-												<Users size={14} className="text-gray-400" />
-												{spotsLeft} spots left
 											</p>
 										</div>
 

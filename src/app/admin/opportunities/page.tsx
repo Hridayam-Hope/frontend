@@ -28,9 +28,6 @@ export default function OpportunitiesPage() {
     description: "",
     work_mode: "in_office" as "in_office" | "remote",
     event_date: "",
-    event_time: "",
-    duration_hours: 1,
-    volunteers_needed: 1,
     is_published: true,
   });
 
@@ -63,7 +60,7 @@ export default function OpportunitiesPage() {
   };
 
   const handleCreate = async () => {
-    if (!form.title || !form.event_date || !form.event_time) {
+    if (!form.title || !form.event_date) {
       showToast("error", "Please fill in all required fields");
       return;
     }
@@ -71,14 +68,12 @@ export default function OpportunitiesPage() {
     try {
       await api.createOpportunity({
         ...form,
-        duration_hours: Number(form.duration_hours),
-        volunteers_needed: Number(form.volunteers_needed),
         required_skill_ids: selectedSkillIds,
       });
       showToast("success", "Opportunity created successfully");
       setShowCreate(false);
       setSelectedSkillIds([]);
-      setForm({ title: "", description: "", work_mode: "in_office", event_date: "", event_time: "", duration_hours: 1, volunteers_needed: 1, is_published: true });
+      setForm({ title: "", description: "", work_mode: "in_office", event_date: "", is_published: true });
       fetchOpportunities();
     } catch (error) {
       handleError(error, "Failed to create opportunity");
@@ -109,29 +104,19 @@ export default function OpportunitiesPage() {
     },
     {
       key: "event_date",
-      label: "Date & Time",
+      label: "Date",
       render: (item) => (
-        <div>
-          <p className="text-sm text-gray-700">{new Date(item.event_date).toLocaleDateString()}</p>
-          <p className="text-xs text-gray-400">{item.event_time}</p>
-        </div>
+        <p className="text-sm text-gray-700">{new Date(item.event_date).toLocaleDateString()}</p>
       ),
     },
-    { key: "duration_hours", label: "Duration", render: (item) => `${item.duration_hours}h` },
     {
-      key: "volunteers_accepted",
-      label: "Capacity",
-      render: (item) => {
-        const pct = item.volunteers_needed > 0 ? (item.volunteers_accepted / item.volunteers_needed) * 100 : 0;
-        return (
-          <div className="flex items-center gap-2">
-            <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-brand-400 rounded-full" style={{ width: `${Math.min(pct, 100)}%` }} />
-            </div>
-            <span className="text-xs text-gray-600">{item.volunteers_accepted}/{item.volunteers_needed}</span>
-          </div>
-        );
-      },
+      key: "applicants",
+      label: "Applicants",
+      render: (item) => (
+        <span className="inline-flex rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700">
+          {item.applicants}
+        </span>
+      ),
     },
     {
       key: "status",
@@ -230,14 +215,7 @@ export default function OpportunitiesPage() {
                   placeholder="Describe the opportunity..."
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Event Date *" type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} />
-                <Input label="Event Time *" type="time" value={form.event_time} onChange={(e) => setForm({ ...form, event_time: e.target.value })} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Duration (hours)" type="number" value={form.duration_hours} onChange={(e) => setForm({ ...form, duration_hours: Number(e.target.value) })} />
-                <Input label="Volunteers Needed" type="number" value={form.volunteers_needed} onChange={(e) => setForm({ ...form, volunteers_needed: Number(e.target.value) })} />
-              </div>
+              <Input label="Event Date *" type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} />
               {/* Required Skills */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">Required Skills</label>

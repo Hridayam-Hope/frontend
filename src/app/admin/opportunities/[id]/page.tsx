@@ -9,7 +9,12 @@ import { StatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import * as api from "@/lib/api/volunteers";
-import type { VolunteerOpportunityDetail, OpportunityApplicationItem } from "@/types/api";
+import type {
+  VolunteerOpportunityDetail,
+  OpportunityApplicationItem,
+  CareerApplicationItem,
+  VolunteerProfileListItem,
+} from "@/types/api";
 
 export default function OpportunityDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +25,14 @@ export default function OpportunityDetailPage() {
   const { handleError } = useApiError();
   const [opp, setOpp] = useState<VolunteerOpportunityDetail | null>(null);
   const [applicants, setApplicants] = useState<OpportunityApplicationItem[]>([]);
+  const [careerApplicants, setCareerApplicants] = useState<CareerApplicationItem[]>([]);
   const [applicantsLoading, setApplicantsLoading] = useState(false);
+  const [careerActionLoading, setCareerActionLoading] = useState<number | null>(null);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const [assignSearch, setAssignSearch] = useState("");
+  const [assignCandidates, setAssignCandidates] = useState<VolunteerProfileListItem[]>([]);
+  const [assignCandidatesLoading, setAssignCandidatesLoading] = useState(false);
+  const [assignLoadingVolunteerId, setAssignLoadingVolunteerId] = useState<number | null>(null);
   const [closeLoading, setCloseLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [editing, setEditing] = useState(false);
@@ -30,9 +42,6 @@ export default function OpportunityDetailPage() {
     description: "",
     work_mode: "in_office" as "in_office" | "remote",
     event_date: "",
-    event_time: "",
-    duration_hours: 0,
-    volunteers_needed: 0,
     is_published: true,
   });
   const [editSkillIds, setEditSkillIds] = useState<number[]>([]);
@@ -40,14 +49,37 @@ export default function OpportunityDetailPage() {
   const loadApplicants = useCallback(async () => {
     setApplicantsLoading(true);
     try {
-      const data = await api.getOpportunityApplications(numId);
-      setApplicants(data);
+      const [volApps, careerApps] = await Promise.all([
+        api.getOpportunityApplications(numId),
+        api.getCareerApplications(numId),
+      ]);
+      setApplicants(volApps);
+      setCareerApplicants(careerApps);
     } catch {
       /* ignore */
     } finally {
       setApplicantsLoading(false);
     }
   }, [numId]);
+
+  const loadAssignCandidates = useCallback(async (searchTerm: string) => {
+    setAssignCandidatesLoading(true);
+    try {
+      const response = await api.getVolunteers({
+        page: 1,
+        page_size: 20,
+        is_active: true,
+        search: searchTerm,
+      });
+      const existingVolunteerIds = new Set(applicants.map((a) => a.volunteer_id));
+      const filtered = response.items.filter((v) => !existingVolunteerIds.has(v.id));
+      setAssignCandidates(filtered);
+    } catch {
+      setAssignCandidates([]);
+    } finally {
+      setAssignCandidatesLoading(false);
+    }
+  }, [applicants]);
 
   useEffect(() => {
     if (numId) {
@@ -58,6 +90,14 @@ export default function OpportunityDetailPage() {
     }
   }, [numId, fetchOpportunity, loadApplicants, fetchSkills]);
 
+  useEffect(() => {
+    if (!assignModalOpen) return;
+    const timer = setTimeout(() => {
+      loadAssignCandidates(assignSearch.trim());
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [assignModalOpen, assignSearch, loadAssignCandidates]);
+
   const startEdit = () => {
     if (!opp) return;
     setEditForm({
@@ -65,9 +105,6 @@ export default function OpportunityDetailPage() {
       description: opp.description,
       work_mode: opp.work_mode,
       event_date: opp.event_date,
-      event_time: opp.event_time,
-      duration_hours: Number(opp.duration_hours),
-      volunteers_needed: opp.volunteers_needed,
       is_published: opp.is_published,
     });
     // Match skill names to IDs from the skills list
@@ -83,8 +120,6 @@ export default function OpportunityDetailPage() {
     try {
       const updated = await api.updateOpportunity(numId, {
         ...editForm,
-        duration_hours: Number(editForm.duration_hours),
-        volunteers_needed: Number(editForm.volunteers_needed),
         required_skill_ids: editSkillIds,
       });
       setOpp(updated);
@@ -142,6 +177,41 @@ export default function OpportunityDetailPage() {
     }
   };
 
+  const handleCareerStatus = async (applicationId: number, status: "shortlisted" | "rejected") => {
+    setCareerActionLoading(applicationId);
+    try {
+      await api.updateCareerApplicationStatus(applicationId, status);
+      setCareerApplicants((prev) =>
+        prev.map((a) => (a.id === applicationId ? { ...a, status } : a))
+      );
+      showToast("success", `Applicant ${status}`);
+    } catch (error) {
+      handleError(error, "Failed to update status");
+    } finally {
+      setCareerActionLoading(null);
+    }
+  };
+
+  const openAssignModal = () => {
+    setAssignSearch("");
+    setAssignCandidates([]);
+    setAssignModalOpen(true);
+  };
+
+  const handleAssignVolunteer = async (volunteerId: number) => {
+    setAssignLoadingVolunteerId(volunteerId);
+    try {
+      await api.assignOpportunityVolunteer(numId, volunteerId);
+      await loadApplicants();
+      showToast("success", "Volunteer assigned successfully");
+      setAssignModalOpen(false);
+    } catch (error) {
+      handleError(error, "Failed to assign volunteer");
+    } finally {
+      setAssignLoadingVolunteerId(null);
+    }
+  };
+
   if (oppDetailLoading && !opp) {
     return (
       <div className="flex items-center justify-center p-12">
@@ -152,15 +222,14 @@ export default function OpportunityDetailPage() {
 
   if (!opp) return <p className="p-6 text-gray-500">Opportunity not found</p>;
 
-  const capacityPct = opp.volunteers_needed > 0
-    ? (opp.volunteers_accepted / opp.volunteers_needed) * 100
-    : 0;
   const isFull = opp.volunteers_accepted >= opp.volunteers_needed;
   const eventDate = new Date(opp.event_date);
-  const isPast = eventDate < new Date();
   const pendingApplicants = applicants.filter((a) => a.status === "pending");
   const acceptedApplicants = applicants.filter((a) => a.status === "accepted");
   const rejectedApplicants = applicants.filter((a) => a.status === "rejected");
+  const totalApplicants = applicants.length + careerApplicants.length;
+  const volunteerApplicantsCount = applicants.length;
+  const publicApplicantsCount = careerApplicants.length;
 
   return (
     <div>
@@ -210,7 +279,7 @@ export default function OpportunityDetailPage() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-100">
+        <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-100">
           <div className="text-center">
             <p className="text-2xl font-bold text-gray-900">
               {eventDate.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
@@ -218,16 +287,11 @@ export default function OpportunityDetailPage() {
             <p className="text-xs text-gray-500">Event Date</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">{opp.event_time}</p>
-            <p className="text-xs text-gray-500">Start Time</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">{opp.duration_hours}h</p>
-            <p className="text-xs text-gray-500">Duration</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">{applicants.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{totalApplicants}</p>
             <p className="text-xs text-gray-500">Total Applicants</p>
+            <p className="text-[11px] text-gray-400 mt-1">
+              {volunteerApplicantsCount} volunteers + {publicApplicantsCount} from public site
+            </p>
           </div>
         </div>
       </div>
@@ -251,11 +315,20 @@ export default function OpportunityDetailPage() {
                   <span className="ml-2 text-sm font-normal text-gray-400">({applicants.length})</span>
                 )}
               </h3>
-              {pendingApplicants.length > 0 && (
-                <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
-                  {pendingApplicants.length} pending
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {pendingApplicants.length > 0 && (
+                  <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
+                    {pendingApplicants.length} pending
+                  </span>
+                )}
+                <button
+                  onClick={openAssignModal}
+                  disabled={isFull || opp.status !== "open"}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 transition-colors disabled:opacity-50"
+                >
+                  Assign Volunteer
+                </button>
+              </div>
             </div>
 
             {applicantsLoading ? (
@@ -292,13 +365,13 @@ export default function OpportunityDetailPage() {
                         <>
                           <button
                             onClick={() => handleAccept(app.id)}
-                            disabled={actionLoading === app.id || isFull}
+                            disabled={actionLoading === app.id}
                             className="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors disabled:opacity-50"
                           >
                             {actionLoading === app.id ? "..." : "Accept"}
                           </button>
                           <button
-                            onClick={() => handleReject(app.id)}
+                            disabled={opp.status !== "open"}
                             disabled={actionLoading === app.id}
                             className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50"
                           >
@@ -314,35 +387,103 @@ export default function OpportunityDetailPage() {
               </div>
             )}
           </div>
+
+          {/* Career Applicants */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Career Applicants
+                {careerApplicants.length > 0 && (
+                  <span className="ml-2 text-sm font-normal text-gray-400">({careerApplicants.length})</span>
+                )}
+              </h3>
+              {careerApplicants.filter((a) => a.status === "pending").length > 0 && (
+                <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
+                  {careerApplicants.filter((a) => a.status === "pending").length} pending
+                </span>
+              )}
+            </div>
+
+            {applicantsLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="h-6 w-6 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin" />
+              </div>
+            ) : careerApplicants.length === 0 ? (
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 mx-auto text-gray-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p className="text-sm text-gray-400">No career applications yet</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {careerApplicants.map((app) => (
+                  <div
+                    key={app.id}
+                    className="rounded-lg border border-gray-100 p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-9 w-9 shrink-0 rounded-full bg-linear-to-r from-teal-400 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
+                          {app.first_name[0]}{app.last_name[0]}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900">{app.first_name} {app.last_name}</p>
+                          <p className="text-xs text-gray-400 truncate">{app.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {app.status === "pending" ? (
+                          <>
+                            <button
+                              onClick={() => handleCareerStatus(app.id, "shortlisted")}
+                              disabled={careerActionLoading === app.id}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors disabled:opacity-50"
+                            >
+                              {careerActionLoading === app.id ? "..." : "Shortlist"}
+                            </button>
+                            <button
+                              onClick={() => handleCareerStatus(app.id, "rejected")}
+                              disabled={careerActionLoading === app.id}
+                              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50"
+                            >
+                              {careerActionLoading === app.id ? "..." : "Reject"}
+                            </button>
+                          </>
+                        ) : (
+                          <StatusBadge status={app.status} />
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      <p className="text-xs text-gray-500 line-clamp-2">
+                        <span className="font-medium text-gray-600">Why interested: </span>
+                        {app.why_interested}
+                      </p>
+                      <a
+                        href={app.resume_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-teal-600 hover:text-teal-700 hover:underline"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        View Resume
+                      </a>
+                    </div>
+                    <p className="mt-2 text-xs text-gray-400">
+                      Applied {new Date(app.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Sidebar - 1 col */}
         <div className="space-y-6">
-          {/* Capacity */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Volunteer Capacity</h3>
-            <div className="relative pt-1">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl font-bold text-gray-900">
-                  {opp.volunteers_accepted}
-                  <span className="text-sm font-normal text-gray-400">/{opp.volunteers_needed}</span>
-                </span>
-                <span className={`text-sm font-medium ${isFull ? "text-green-600" : "text-brand-600"}`}>
-                  {Math.round(capacityPct)}%
-                </span>
-              </div>
-              <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all ${isFull ? "bg-green-500" : "bg-brand-400"}`}
-                  style={{ width: `${Math.min(capacityPct, 100)}%` }}
-                />
-              </div>
-              {isFull && (
-                <p className="text-xs text-green-600 font-medium mt-2">✓ Fully staffed</p>
-              )}
-            </div>
-          </div>
-
           {/* Event Details */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
             <h3 className="text-sm font-semibold text-gray-900 mb-3">Event Details</h3>
@@ -352,8 +493,6 @@ export default function OpportunityDetailPage() {
                   label: "Date",
                   value: eventDate.toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
                 },
-                { label: "Time", value: opp.event_time },
-                { label: "Duration", value: `${opp.duration_hours} hours` },
                 { label: "Work Mode", value: opp.work_mode === "remote" ? "Remote" : "In-Office" },
                 { label: "Location", value: opp.location || `${opp.city}, ${opp.state}` },
                 { label: "Published", value: opp.is_published ? "Yes" : "No" },
@@ -365,11 +504,6 @@ export default function OpportunityDetailPage() {
                 </div>
               ))}
             </dl>
-            {isPast && opp.status === "open" && (
-              <div className="mt-4 p-2.5 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-xs text-amber-700 font-medium">⚠ This event date has passed but the opportunity is still open.</p>
-              </div>
-            )}
           </div>
 
           {/* Required Skills */}
@@ -392,6 +526,67 @@ export default function OpportunityDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Assign Volunteer Modal */}
+      {assignModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">Assign Volunteer</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Select an active registered volunteer to create an internal application for this opportunity.
+            </p>
+
+            <Input
+              label="Search volunteer"
+              placeholder="Type name, email, city..."
+              value={assignSearch}
+              onChange={(e) => setAssignSearch(e.target.value)}
+            />
+
+            <div className="mt-4 border border-gray-100 rounded-lg overflow-hidden">
+              {assignCandidatesLoading ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-6 w-6 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin" />
+                </div>
+              ) : assignCandidates.length === 0 ? (
+                <div className="text-center py-8 px-4">
+                  <p className="text-sm text-gray-500">No assignable volunteers found.</p>
+                  <p className="text-xs text-gray-400 mt-1">Try another search, or this opportunity may already contain all matching volunteers.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100 max-h-72 overflow-y-auto">
+                  {assignCandidates.map((volunteer) => (
+                    <div key={volunteer.id} className="p-3 flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{volunteer.full_name}</p>
+                        <p className="text-xs text-gray-400 truncate">{volunteer.email}</p>
+                        <p className="text-xs text-gray-500 truncate">{volunteer.city}, {volunteer.state}</p>
+                      </div>
+                      <button
+                        onClick={() => handleAssignVolunteer(volunteer.id)}
+                        disabled={assignLoadingVolunteerId === volunteer.id}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors disabled:opacity-50"
+                      >
+                        {assignLoadingVolunteerId === volunteer.id ? "Assigning..." : "Assign"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setAssignModalOpen(false)}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+                disabled={assignLoadingVolunteerId !== null}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editing && (
@@ -420,14 +615,7 @@ export default function OpportunityDetailPage() {
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Event Date *" type="date" value={editForm.event_date} onChange={(e) => setEditForm({ ...editForm, event_date: e.target.value })} />
-                <Input label="Event Time *" type="time" value={editForm.event_time} onChange={(e) => setEditForm({ ...editForm, event_time: e.target.value })} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Duration (hours)" type="number" value={editForm.duration_hours} onChange={(e) => setEditForm({ ...editForm, duration_hours: Number(e.target.value) })} />
-                <Input label="Volunteers Needed" type="number" value={editForm.volunteers_needed} onChange={(e) => setEditForm({ ...editForm, volunteers_needed: Number(e.target.value) })} />
-              </div>
+              <Input label="Event Date *" type="date" value={editForm.event_date} onChange={(e) => setEditForm({ ...editForm, event_date: e.target.value })} />
               {/* Required Skills */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">Required Skills</label>

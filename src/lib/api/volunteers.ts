@@ -13,6 +13,7 @@ import type {
   CampaignVolunteerItem,
   VolunteerSkill,
   OpportunityApplicationItem,
+  CareerApplicationItem,
   MessageResponse,
 } from "@/types/api";
 
@@ -54,6 +55,25 @@ export async function submitVolunteerApplication(data: Record<string, unknown>) 
     method: "POST",
     body: JSON.stringify(data),
   });
+}
+
+export async function submitCareerApplication(
+  opportunityId: number,
+  data: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    why_interested: string;
+    resume_link: string;
+  }
+) {
+  return apiFetch<MessageResponse>(
+    `/volunteers/opportunities/${opportunityId}/apply`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    }
+  );
 }
 
 // ── Volunteers ──
@@ -182,6 +202,32 @@ export async function updateOpportunity(id: number, data: Record<string, unknown
 export async function getOpportunityApplications(opportunityId: number) {
   return apiFetch<OpportunityApplicationItem[]>(
     `/volunteers/opportunities/${opportunityId}/applications`
+  );
+}
+
+export async function assignOpportunityVolunteer(opportunityId: number, volunteerId: number) {
+  return apiFetch<MessageResponse>(
+    `/volunteers/opportunities/${opportunityId}/applications/assign`,
+    {
+      method: "POST",
+      body: JSON.stringify({ volunteer_id: volunteerId }),
+    }
+  );
+}
+
+export async function getCareerApplications(opportunityId: number) {
+  return apiFetch<CareerApplicationItem[]>(
+    `/volunteers/opportunities/${opportunityId}/career-applications`
+  );
+}
+
+export async function updateCareerApplicationStatus(
+  applicationId: number,
+  status: "pending" | "shortlisted" | "rejected"
+) {
+  return apiFetch<MessageResponse>(
+    `/volunteers/opportunities/career-applications/${applicationId}/status?status=${status}`,
+    { method: "PATCH" }
   );
 }
 

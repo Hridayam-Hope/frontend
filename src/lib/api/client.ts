@@ -227,6 +227,50 @@ async function apiUpload<T>(
   return res.json();
 }
 
+async function apiFormFetch<T>(
+  path: string,
+  formData: FormData,
+  options: Omit<RequestInit, "body" | "headers"> = {}
+): Promise<T> {
+  const tokens = getTokens();
+  const headers: Record<string, string> = {};
+
+  if (tokens?.access_token) {
+    headers["Authorization"] = `Bearer ${tokens.access_token}`;
+  }
+
+  const method = options.method || "POST";
+  let res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    method,
+    headers,
+    body: formData,
+  });
+
+  if (res.status === 401 && tokens?.refresh_token) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      headers["Authorization"] = `Bearer ${newToken}`;
+      res = await fetch(`${API_URL}${path}`, {
+        ...options,
+        method,
+        headers,
+        body: formData,
+      });
+    } else {
+      throw new ApiError(401, { detail: "Session expired" });
+    }
+  }
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new ApiError(res.status, data);
+  }
+
+  if (res.status === 204) return undefined as T;
+  return res.json();
+}
+
 export function extractPathFromUrl(url: string | null | undefined): string {
   if (!url) return "";
   if (!url.startsWith("http")) return url;
@@ -239,4 +283,4 @@ export function extractPathFromUrl(url: string | null | undefined): string {
   }
 }
 
-export { apiFetch, apiUpload, ApiError, getTokens, setTokens, clearTokens, API_URL };
+export { apiFetch, apiUpload, apiFormFetch, ApiError, getTokens, setTokens, clearTokens, API_URL };

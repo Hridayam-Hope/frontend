@@ -39,13 +39,6 @@ export interface VolunteerFormData {
   emergency_contact_name?: string;
   emergency_contact_phone?: string;
   emergency_contact_relationship?: string;
-  role: string;
-  position: string;
-  responsibilities: string;
-  bio: string;
-  linkedin_url: string;
-  tenure_end_date: string;
-  display_order: number;
 }
 
 const INDIAN_STATES = [
@@ -55,15 +48,6 @@ const INDIAN_STATES = [
   "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
   "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
   "Delhi", "Jammu & Kashmir", "Ladakh", "Puducherry", "Chandigarh",
-];
-
-const LEADERSHIP_ROLES = [
-  { value: "member", label: "Member" },
-  { value: "founder", label: "Founder" },
-  { value: "co_founder", label: "Co-Founder" },
-  { value: "trustee", label: "Trustee" },
-  { value: "board_member", label: "Board Member" },
-  { value: "advisor", label: "Advisor" },
 ];
 
 interface VolunteerFormProps {
@@ -103,19 +87,12 @@ export default function VolunteerForm({ partnerType, onSubmit, onCancel }: Volun
     emergency_contact_name: "",
     emergency_contact_phone: "",
     emergency_contact_relationship: "",
-    role: "member",
-    position: "",
-    responsibilities: "",
-    bio: "",
-    linkedin_url: "",
-    tenure_end_date: "",
-    display_order: 0,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
-  const [activeSection, setActiveSection] = useState<"basic" | "skills" | "leadership" | "emergency">("basic");
+  const [activeSection, setActiveSection] = useState<"basic" | "skills" | "emergency">("basic");
   const [languageInput, setLanguageInput] = useState("");
 
   useEffect(() => {
@@ -157,11 +134,6 @@ export default function VolunteerForm({ partnerType, onSubmit, onCancel }: Volun
       const submitData: Record<string, unknown> = { ...form };
       
       // Remove empty optional fields
-      if (!submitData.tenure_end_date) delete submitData.tenure_end_date;
-      if (!submitData.position) delete submitData.position;
-      if (!submitData.responsibilities) delete submitData.responsibilities;
-      if (!submitData.bio) delete submitData.bio;
-      if (!submitData.linkedin_url) delete submitData.linkedin_url;
       if (!submitData.interests) delete submitData.interests;
       if (!submitData.emergency_contact_name) delete submitData.emergency_contact_name;
       if (!submitData.emergency_contact_phone) delete submitData.emergency_contact_phone;
@@ -224,7 +196,6 @@ export default function VolunteerForm({ partnerType, onSubmit, onCancel }: Volun
     ...(partnerType === "individual" ? [
       { id: "skills" as const, label: "Skills & Availability", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" }
     ] : []),
-    { id: "leadership" as const, label: "About", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
     ...(partnerType === "individual" ? [
       { id: "emergency" as const, label: "Emergency Contact", icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" }
     ] : []),
@@ -427,53 +398,6 @@ export default function VolunteerForm({ partnerType, onSubmit, onCancel }: Volun
                   placeholder="Describe volunteer interests..."
                 />
               </div>
-            </div>
-          </section>
-        </div>
-      )}
-
-      {/* About */}
-      {activeSection === "leadership" && (
-        <div className="space-y-6">
-          <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">About</h2>
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Role</label>
-                <select
-                  value={form.role}
-                  onChange={(e) => update("role", e.target.value)}
-                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
-                >
-                  {LEADERSHIP_ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
-                </select>
-              </div>
-              <Input label="Position" value={form.position} onChange={(e) => update("position", e.target.value)} placeholder="e.g., Head of Operations" />
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Responsibilities</label>
-                <textarea
-                  value={form.responsibilities}
-                  onChange={(e) => update("responsibilities", e.target.value)}
-                  rows={3}
-                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
-                  placeholder="Key responsibilities..."
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Bio</label>
-                <textarea
-                  value={form.bio}
-                  onChange={(e) => update("bio", e.target.value)}
-                  rows={4}
-                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20"
-                  placeholder="Professional bio..."
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input label="LinkedIn URL" value={form.linkedin_url} onChange={(e) => update("linkedin_url", e.target.value)} placeholder="https://linkedin.com/in/..." />
-                <Input label="Tenure End Date" type="date" value={form.tenure_end_date} onChange={(e) => update("tenure_end_date", e.target.value)} />
-              </div>
-              <Input label="Display Order" type="number" value={form.display_order} onChange={(e) => update("display_order", Number(e.target.value))} />
             </div>
           </section>
         </div>

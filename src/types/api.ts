@@ -393,10 +393,7 @@ export interface VolunteerOpportunity {
   state: string;
   work_mode: "in_office" | "remote";
   event_date: string;
-  event_time: string;
-  duration_hours: number;
-  volunteers_needed: number;
-  volunteers_accepted: number;
+  applicants: number;
   status: string;
   is_published: boolean;
 }
@@ -410,11 +407,7 @@ export interface VolunteerOpportunityDetail {
   state: string;
   work_mode: "in_office" | "remote";
   event_date: string;
-  event_time: string;
-  duration_hours: number;
   required_skills: string[];
-  volunteers_needed: number;
-  volunteers_accepted: number;
   status: string;
   is_published: boolean;
   created_by_id: number;
@@ -473,6 +466,21 @@ export interface OpportunityApplicationItem {
   applied_date: string;
   reviewed_by_id: number | null;
   reviewed_at: string | null;
+}
+
+export interface CareerApplicationItem {
+  id: number;
+  opportunity_id: number;
+  opportunity_title: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  why_interested: string;
+  resume_link: string;
+  status: string;
+  reviewed_by_id: number | null;
+  reviewed_at: string | null;
+  created_at: string;
 }
 
 export interface VolunteerSkill {

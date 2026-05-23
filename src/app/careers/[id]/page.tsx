@@ -7,17 +7,16 @@ import { motion } from 'framer-motion';
 import {
 	ArrowLeft,
 	Calendar,
-	Clock3,
 	Share2,
-	Users,
 	Briefcase,
 	CheckCircle2,
 	Tag,
+	X,
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import MobileDonateButton from '@/components/layout/MobileDonateButton';
-import { getPublicOpportunity } from '@/lib/api/volunteers';
+import { getPublicOpportunity, submitCareerApplication } from '@/lib/api/volunteers';
 import type { VolunteerOpportunityDetail } from '@/types/api';
 
 export default function CareerDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -27,6 +26,17 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 	const [job, setJob] = useState<VolunteerOpportunityDetail | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [shareDone, setShareDone] = useState(false);
+	const [showApplyForm, setShowApplyForm] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [submitSuccess, setSubmitSuccess] = useState(false);
+	const [submitError, setSubmitError] = useState<string | null>(null);
+	const [applyForm, setApplyForm] = useState({
+		firstName: '',
+		lastName: '',
+		email: '',
+		whyInterested: '',
+		resumeLink: '',
+	});
 
 	useEffect(() => {
 		let mounted = true;
@@ -74,6 +84,52 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 		}
 	}
 
+	function closeApplyForm() {
+		setShowApplyForm(false);
+		setSubmitError(null);
+		setSubmitSuccess(false);
+	}
+
+	function handleApplyInputChange(field: 'firstName' | 'lastName' | 'email' | 'whyInterested' | 'resumeLink', value: string) {
+		setApplyForm((prev) => ({ ...prev, [field]: value }));
+		setSubmitError(null);
+	}
+
+	async function handleApplySubmit(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		setSubmitError(null);
+		setSubmitSuccess(false);
+
+		if (!applyForm.resumeLink.trim()) {
+			setSubmitError('Please provide a link to your resume (e.g. Google Drive).');
+			return;
+		}
+
+		try {
+			setIsSubmitting(true);
+			await submitCareerApplication(roleId, {
+				first_name: applyForm.firstName.trim(),
+				last_name: applyForm.lastName.trim(),
+				email: applyForm.email.trim(),
+				why_interested: applyForm.whyInterested.trim(),
+				resume_link: applyForm.resumeLink.trim(),
+			});
+			setSubmitSuccess(true);
+			setApplyForm({
+				firstName: '',
+				lastName: '',
+				email: '',
+				whyInterested: '',
+				resumeLink: '',
+			});
+		} catch (error) {
+			console.error('Career application submit failed:', error);
+			setSubmitError(error instanceof Error ? error.message : 'Failed to submit application. Please try again.');
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
+
 	if (loading) {
 		return (
 			<>
@@ -112,7 +168,6 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 		);
 	}
 
-	const spotsLeft = Math.max(job.volunteers_needed - job.volunteers_accepted, 0);
 	const eventDate = new Date(job.event_date).toLocaleDateString('en-IN', {
 		day: '2-digit',
 		month: 'long',
@@ -208,24 +263,17 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 											<Calendar size={14} className="text-gray-400" />
 											{eventDate}
 										</p>
-										<p className="flex items-center gap-2">
-											<Clock3 size={14} className="text-gray-400" />
-											{job.event_time} • {job.duration_hours} hours
-										</p>
-										<p className="flex items-center gap-2">
-											<Users size={14} className="text-gray-400" />
-											{spotsLeft} open spots
-										</p>
 									</div>
 								</div>
 
 								<div className="space-y-3">
-									<Link
-										href={`/join-us?opportunity=${job.id}`}
+									<button
+										type="button"
+										onClick={() => setShowApplyForm(true)}
 										className="inline-flex w-full items-center justify-center rounded-xl bg-teal-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-700"
 									>
 										Apply Now
-									</Link>
+									</button>
 									<button
 										onClick={onShare}
 										className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
@@ -238,6 +286,113 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 						</div>
 					</motion.div>
 				</section>
+
+				{showApplyForm && (
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4">
+						<div className="w-full max-w-xl rounded-3xl bg-white p-6 shadow-xl ring-1 ring-gray-100 sm:p-8">
+							<div className="mb-5 flex items-start justify-between gap-4">
+								<div>
+									<h2 className="font-poppins text-xl font-semibold text-gray-900">Apply for {job.title}</h2>
+									<p className="mt-1 text-sm text-gray-500">Submit your details and we'll be in touch if shortlisted.</p>
+								</div>
+								<button
+									type="button"
+									onClick={closeApplyForm}
+									className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+									aria-label="Close apply form"
+								>
+									<X size={16} />
+								</button>
+							</div>
+
+							<form className="space-y-4" onSubmit={handleApplySubmit}>
+								<div className="grid gap-4 sm:grid-cols-2">
+									<div>
+										<label className="mb-1.5 block text-sm font-medium text-gray-700">First Name</label>
+										<input
+											type="text"
+											value={applyForm.firstName}
+											onChange={(e) => handleApplyInputChange('firstName', e.target.value)}
+											required
+											className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none ring-teal-500 transition focus:ring-2"
+										/>
+									</div>
+									<div>
+										<label className="mb-1.5 block text-sm font-medium text-gray-700">Last Name</label>
+										<input
+											type="text"
+											value={applyForm.lastName}
+											onChange={(e) => handleApplyInputChange('lastName', e.target.value)}
+											required
+											className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none ring-teal-500 transition focus:ring-2"
+										/>
+									</div>
+								</div>
+
+								<div>
+									<label className="mb-1.5 block text-sm font-medium text-gray-700">Email</label>
+									<input
+										type="email"
+										value={applyForm.email}
+										onChange={(e) => handleApplyInputChange('email', e.target.value)}
+										required
+										className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none ring-teal-500 transition focus:ring-2"
+									/>
+								</div>
+
+								<div>
+									<label className="mb-1.5 block text-sm font-medium text-gray-700">Resume Link (Google Drive or similar)</label>
+									<input
+										type="url"
+										value={applyForm.resumeLink}
+										onChange={(e) => handleApplyInputChange('resumeLink', e.target.value)}
+										required
+										placeholder="https://drive.google.com/..."
+										className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none ring-teal-500 transition focus:ring-2"
+									/>
+								</div>
+
+								<div>
+									<label className="mb-1.5 block text-sm font-medium text-gray-700">Why are you interested for this role?</label>
+									<textarea
+										rows={4}
+										value={applyForm.whyInterested}
+										onChange={(e) => handleApplyInputChange('whyInterested', e.target.value)}
+										required
+										className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none ring-teal-500 transition focus:ring-2"
+									/>
+								</div>
+
+								{submitError && (
+									<p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-100">{submitError}</p>
+								)}
+
+								{submitSuccess && (
+									<p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700 ring-1 ring-emerald-100">
+										Application submitted successfully.
+									</p>
+								)}
+
+								<div className="flex items-center justify-end gap-3 pt-1">
+									<button
+										type="button"
+										onClick={closeApplyForm}
+										className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+									>
+										Cancel
+									</button>
+									<button
+										type="submit"
+										disabled={isSubmitting}
+										className="rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-teal-400"
+									>
+										{isSubmitting ? 'Submitting...' : 'Submit Application'}
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				)}
 			</main>
 			<Footer />
 			<MobileDonateButton />
