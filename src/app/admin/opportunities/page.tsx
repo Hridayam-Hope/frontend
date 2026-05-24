@@ -66,8 +66,18 @@ export default function OpportunitiesPage() {
     }
     setCreateLoading(true);
     try {
+      const isRemote = form.work_mode === "remote";
+      const defaultLocation = isRemote ? "Remote" : "In-Office";
+
       await api.createOpportunity({
         ...form,
+        location: defaultLocation,
+        city: defaultLocation,
+        state: defaultLocation,
+        // Backward-compatible fields for older deployed APIs.
+        event_time: "09:00:00",
+        duration_hours: 1,
+        volunteers_needed: 1,
         required_skill_ids: selectedSkillIds,
       });
       showToast("success", "Opportunity created successfully");
