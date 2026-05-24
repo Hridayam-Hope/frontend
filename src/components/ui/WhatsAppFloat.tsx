@@ -2,10 +2,12 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function WhatsAppFloat() {
 	const [isVisible, setIsVisible] = useState(false);
+	const pathname = usePathname();
 
 	useEffect(() => {
 		// Small delay before showing to not distract initial load
@@ -13,7 +15,7 @@ export default function WhatsAppFloat() {
 		return () => clearTimeout(timer);
 	}, []);
 
-	if (!isVisible) return null;
+	if (!isVisible || pathname?.startsWith('/admin')) return null;
 
 	return (
 		<motion.div
