@@ -192,6 +192,12 @@ export async function closeOpportunity(id: number) {
   });
 }
 
+export async function deleteOpportunity(id: number) {
+  return apiFetch<MessageResponse>(`/volunteers/opportunities/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export async function updateOpportunity(id: number, data: Record<string, unknown>) {
   return apiFetch<VolunteerOpportunityDetail>(`/volunteers/opportunities/${id}`, {
     method: "PATCH",

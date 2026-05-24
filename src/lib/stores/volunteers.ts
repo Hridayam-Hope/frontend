@@ -71,6 +71,7 @@ interface VolunteersState {
   fetchOpportunities: (params?: Record<string, unknown>) => Promise<void>;
   fetchOpportunity: (id: number, force?: boolean) => Promise<VolunteerOpportunityDetail>;
   closeOpportunity: (id: number) => Promise<void>;
+  deleteOpportunity: (id: number) => Promise<void>;
 }
 
 export const useVolunteersStore = create<VolunteersState>((set, get) => ({
@@ -282,6 +283,16 @@ export const useVolunteersStore = create<VolunteersState>((set, get) => ({
 
   closeOpportunity: async (id) => {
     await api.closeOpportunity(id);
+    set((s) => {
+      const newCache = { ...s.opportunityCache };
+      delete newCache[id];
+      return { opportunityCache: newCache };
+    });
+    get().fetchOpportunities();
+  },
+
+  deleteOpportunity: async (id) => {
+    await api.deleteOpportunity(id);
     set((s) => {
       const newCache = { ...s.opportunityCache };
       delete newCache[id];

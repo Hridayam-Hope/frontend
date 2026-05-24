@@ -408,6 +408,8 @@ export interface VolunteerOpportunityDetail {
   work_mode: "in_office" | "remote";
   event_date: string;
   required_skills: string[];
+  volunteers_needed: number;
+  volunteers_accepted: number;
   status: string;
   is_published: boolean;
   created_by_id: number;

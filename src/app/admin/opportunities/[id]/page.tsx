@@ -20,7 +20,7 @@ export default function OpportunityDetailPage() {
   const { id } = useParams<{ id: string }>();
   const numId = Number(id);
   const router = useRouter();
-  const { fetchOpportunity, closeOpportunity, oppDetailLoading, opportunityCache, skills, fetchSkills } = useVolunteersStore();
+  const { fetchOpportunity, closeOpportunity, deleteOpportunity, oppDetailLoading, opportunityCache, skills, fetchSkills } = useVolunteersStore();
   const { showToast } = useToast();
   const { handleError } = useApiError();
   const [opp, setOpp] = useState<VolunteerOpportunityDetail | null>(null);
@@ -34,6 +34,7 @@ export default function OpportunityDetailPage() {
   const [assignCandidatesLoading, setAssignCandidatesLoading] = useState(false);
   const [assignLoadingVolunteerId, setAssignLoadingVolunteerId] = useState<number | null>(null);
   const [closeLoading, setCloseLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [editing, setEditing] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
@@ -146,6 +147,20 @@ export default function OpportunityDetailPage() {
       handleError(error, "Failed to close opportunity");
     } finally {
       setCloseLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this opportunity? This cannot be undone.")) return;
+    setDeleteLoading(true);
+    try {
+      await deleteOpportunity(numId);
+      showToast("success", "Opportunity deleted successfully");
+      router.push("/admin/opportunities");
+    } catch (error) {
+      handleError(error, "Failed to delete opportunity");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -275,6 +290,9 @@ export default function OpportunityDetailPage() {
                 Close
               </Button>
             )}
+            <Button size="sm" variant="danger" onClick={handleDelete} loading={deleteLoading}>
+              Delete
+            </Button>
           </div>
         </div>
 
@@ -371,8 +389,8 @@ export default function OpportunityDetailPage() {
                             {actionLoading === app.id ? "..." : "Accept"}
                           </button>
                           <button
-                            disabled={opp.status !== "open"}
-                            disabled={actionLoading === app.id}
+                            onClick={() => handleReject(app.id)}
+                            disabled={opp.status !== "open" || actionLoading === app.id}
                             className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50"
                           >
                             {actionLoading === app.id ? "..." : "Reject"}
