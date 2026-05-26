@@ -17,6 +17,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import MobileDonateButton from '@/components/layout/MobileDonateButton';
 import { getPublicOpportunity, submitCareerApplication } from '@/lib/api/volunteers';
+import { ApiError } from '@/lib/api/client';
 import type { VolunteerOpportunityDetail } from '@/types/api';
 
 export default function CareerDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,6 +31,7 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitSuccess, setSubmitSuccess] = useState(false);
 	const [submitError, setSubmitError] = useState<string | null>(null);
+	const [duplicateMessage, setDuplicateMessage] = useState<string | null>(null);
 	const [applyForm, setApplyForm] = useState({
 		firstName: '',
 		lastName: '',
@@ -88,11 +90,13 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 		setShowApplyForm(false);
 		setSubmitError(null);
 		setSubmitSuccess(false);
+		setDuplicateMessage(null);
 	}
 
 	function handleApplyInputChange(field: 'firstName' | 'lastName' | 'email' | 'whyInterested' | 'resumeLink', value: string) {
 		setApplyForm((prev) => ({ ...prev, [field]: value }));
 		setSubmitError(null);
+		setDuplicateMessage(null);
 	}
 
 	async function handleApplySubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -124,7 +128,17 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 			});
 		} catch (error) {
 			console.error('Career application submit failed:', error);
-			setSubmitError(error instanceof Error ? error.message : 'Failed to submit application. Please try again.');
+			// If backend indicates duplicate submission, show a dedicated UI state
+			if (error instanceof ApiError) {
+				const msg = typeof error.getUserMessage === 'function' ? error.getUserMessage() : error.message;
+				if (msg && msg.toLowerCase().includes('already submitted')) {
+					setDuplicateMessage(msg);
+				} else {
+					setSubmitError(msg ?? 'Failed to submit application. Please try again.');
+				}
+			} else {
+				setSubmitError(error instanceof Error ? error.message : 'Failed to submit application. Please try again.');
+			}
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -305,7 +319,22 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 								</button>
 							</div>
 
-							<form className="space-y-4" onSubmit={handleApplySubmit}>
+							{duplicateMessage && (
+								<div className="space-y-4">
+									<p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-700 ring-1 ring-amber-100">{duplicateMessage}</p>
+									<div className="flex items-center justify-end gap-3 pt-1">
+										<button
+											type="button"
+											onClick={closeApplyForm}
+											className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+										>
+											Close
+										</button>
+									</div>
+								</div>
+							)}
+							{!duplicateMessage && (
+								<form className="space-y-4" onSubmit={handleApplySubmit}>
 								<div className="grid gap-4 sm:grid-cols-2">
 									<div>
 										<label className="mb-1.5 block text-sm font-medium text-gray-700">First Name</label>
@@ -390,6 +419,7 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 									</button>
 								</div>
 							</form>
+							)}
 						</div>
 					</div>
 				)}
