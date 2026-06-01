@@ -1126,7 +1126,7 @@ function VolunteerFormSection() {
 											<label className="mb-2 block text-sm font-semibold text-gray-700">
 												Your Skills <span className="font-normal text-gray-400">(select all that apply)</span>
 											</label>
-											<div className="flex flex-wrap gap-2">
+											<div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
 												{skills.map((skill) => (
 													<motion.button
 														key={skill.id}
@@ -1134,14 +1134,14 @@ function VolunteerFormSection() {
 														onClick={() => toggleSkill(skill.id)}
 														whileHover={{ scale: 1.04 }}
 														whileTap={{ scale: 0.96 }}
-														className={`rounded-lg border-2 px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm ${
+														className={`inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 text-center text-xs font-medium leading-snug transition-all duration-200 sm:min-h-0 sm:w-auto sm:py-1.5 sm:text-sm ${
 															selectedSkillIds.includes(skill.id)
 																? 'border-teal-400 bg-teal-50 text-teal-700'
 																: 'border-gray-200 text-gray-500 hover:border-teal-300 hover:bg-teal-50/50'
 														}`}
 													>
 														{selectedSkillIds.includes(skill.id) && (
-															<CheckCircle2 size={12} className="mr-1 inline-block" />
+															<CheckCircle2 size={12} className="shrink-0" />
 														)}
 														{skill.name}
 													</motion.button>
