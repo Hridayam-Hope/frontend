@@ -208,7 +208,6 @@ export const ABOUT_TEAM = {
     'Hridayam Hope is led by a small, hands-on team and powered by hundreds of volunteers, partners, and supporters.',
   badge: '30+ volunteers & community champions',
   members: [
-    { name: 'Kuppala David Raju', address: 'Bhimavaram' },
     { name: 'Billa Manoj Manfred', address: 'Chennai' },
     { name: 'Pasumarthi Rupa Tharun', address: 'Eluru' },
     { name: 'Arepalli Asha', address: 'Bhimavaram' },

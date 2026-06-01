@@ -165,7 +165,7 @@ export default function CareersPage() {
 				</section>
 			</main>
 			<Footer />
-			<MobileDonateButton />
+			{/* <MobileDonateButton /> */}
 		</>
 	);
 }

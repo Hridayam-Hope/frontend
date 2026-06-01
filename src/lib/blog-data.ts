@@ -34,19 +34,19 @@ export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
 	rahul: {
-		name: 'Rahul Sharma',
+		name: 'Manoj Manfred Billa',
 		role: 'Volunteer Coordinator',
 		bio: 'Leading volunteer initiatives and sharing stories of impact from the field.',
 		avatar: null,
 	},
 	priya: {
-		name: 'Priya Menon',
+		name: 'Vinoliya',
 		role: 'Content Writer',
 		bio: 'Documenting the journey of communities transforming through education and care.',
 		avatar: null,
 	},
 	kavita: {
-		name: 'Kavita Reddy',
+		name: 'Vigna Ramtej Telagarapu',
 		role: 'Education Lead',
 		bio: 'Passionate about bringing quality education to every child.',
 		avatar: null,

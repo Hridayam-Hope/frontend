@@ -425,7 +425,7 @@ export default function CareerDetailPage({ params }: { params: Promise<{ id: str
 				)}
 			</main>
 			<Footer />
-			<MobileDonateButton />
+			{/* <MobileDonateButton /> */}
 		</>
 	);
 }

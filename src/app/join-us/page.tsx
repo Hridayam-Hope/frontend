@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import MobileDonateButton from '@/components/layout/MobileDonateButton';
+// import MobileDonateButton from '@/components/layout/MobileDonateButton';
 import SignatureButton from '@/components/ui/SignatureButton';
 import { fadeUp, fadeIn, scaleIn, staggerContainer, slideInLeft, slideInRight } from '@/lib/animations';
 import { submitVolunteerApplication } from '@/lib/api/volunteers';
@@ -153,19 +153,29 @@ const VOLUNTEER_BENEFITS = [
 
 const TESTIMONIALS = [
 	{
-		quote: "Volunteering with Hridayam has been life-changing. Seeing the direct impact on children's education keeps me inspired every day.",
-		name: 'Priya Sharma',
-		role: 'Education Volunteer',
+		quote: 'I enjoyed being part of Hridayam through plantation and awareness activities, interacting with kids, spreading useful knowledge, and contributing to a greener, better future.',
+		name: 'Yogendra P',
+		role: 'Volunteer',
 	},
 	{
-		quote: 'The team is incredibly supportive. I started with just 2 hours a week and now I lead our tree plantation initiative in Chevella.',
-		name: 'Rahul Menon',
-		role: 'Environment Champion',
+		quote: "This month's activities were meaningful and impactful, promoting environmental responsibility through plantation and spreading social awareness among students, while providing an enjoyable and inspiring experience.",
+		name: 'Asha',
+		role: 'Volunteer',
 	},
 	{
-		quote: "As a remote volunteer, I was amazed at how connected I felt. My design work actually reaches real communities and I can see the results.",
-		name: 'Ananya Das',
-		role: 'Digital Volunteer',
+		quote: 'Being part of Hridayam Hope Foundation has been meaningful, offering a positive, inspiring community where volunteering feels purposeful and truly special.',
+		name: 'Zaheer Khan',
+		role: 'Volunteer',
+	},
+	{
+		quote: 'Spreading awareness made me realize that even a message can shift how people think and act—and that gave my experience real meaning.',
+		name: 'Bhanu Sai',
+		role: 'Volunteer',
+	},
+	{
+		quote: 'Planting trees felt like a small step at first, but I later understood the impact it holds for the future and the responsibility it carries.',
+		name: 'Ankith Pissay',
+		role: 'Volunteer',
 	},
 ] as const;
 
@@ -207,7 +217,7 @@ export default function JoinUsPage() {
 				<ContactSection />
 			</main>
 			<Footer />
-			<MobileDonateButton />
+			{/* <MobileDonateButton /> */}
 		</>
 	);
 }
@@ -312,8 +322,6 @@ function HeroSection() {
 				{/* Trust micro-stats */}
 				<motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400 sm:gap-8">
 					{[
-						{ icon: Users, text: '50+ Active Volunteers' },
-						{ icon: Heart, text: '500+ Lives Impacted' },
 						{ icon: Shield, text: 'Registered NGO' },
 					].map((item) => (
 						<span key={item.text} className="flex items-center gap-1.5">
@@ -405,14 +413,14 @@ function WayToJoinCard({ way, index }: { way: (typeof WAYS_TO_JOIN)[number]; ind
 			<p className="mb-5 text-sm leading-relaxed text-gray-500">{way.description}</p>
 
 			{/* Stats */}
-			<div className="mb-5 flex gap-4">
+			{/* <div className="mb-5 flex gap-4">
 				{way.stats.map((stat) => (
 					<div key={stat.label} className={`flex-1 rounded-xl ${way.bgLight} px-3 py-2.5 text-center`}>
 						<p className={`font-poppins text-lg font-bold ${way.iconColor}`}>{stat.value}</p>
 						<p className="text-[10px] text-gray-500">{stat.label}</p>
 					</div>
 				))}
-			</div>
+			</div> */}
 
 			{/* CTA */}
 			{way.href.startsWith('#') ? (
