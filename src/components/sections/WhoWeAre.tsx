@@ -56,12 +56,12 @@ export default function WhoWeAre() {
 					{/* Content Side */}
 					<motion.div className="space-y-6 sm:space-y-8" variants={{ visible: { transition: { staggerChildren: 0.12 } } }}>
 						<div className="space-y-4">
-							<motion.div variants={fadeUp} className="inline-flex">
-								<span className="inline-flex items-center gap-1.5 rounded-full bg-hp-primary/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-hp-primary shadow-sm sm:text-xs">
-									<Sparkles size={14} className="text-hp-primary" />
-									{WHO_WE_ARE.eyebrow}
-								</span>
-							</motion.div>
+							<motion.span
+								variants={fadeUp}
+								className="inline-block px-3 py-1 rounded-full bg-hp-teal/10 hp-gradient-text text-[10px] font-bold uppercase tracking-widest mb-4"
+							>
+								{WHO_WE_ARE.eyebrow}
+							</motion.span>
 
 							<motion.h2
 								variants={fadeUp}
@@ -71,10 +71,11 @@ export default function WhoWeAre() {
 							</motion.h2>
 						</div>
 
-						<motion.div variants={fadeUp} className="relative rounded-2xl border-l-4 border-hp-primary bg-hp-bg-1 p-5 shadow-sm sm:p-6 lg:rounded-3xl lg:p-8">
-							<p className="text-sm leading-relaxed text-hp-text-dark/80 sm:text-base sm:leading-loose">
-								{WHO_WE_ARE.paragraph}
-							</p>
+						<motion.div
+							variants={fadeUp}
+							className="relative rounded-2xl border-l-4 border-hp-primary bg-hp-bg-1 p-5 shadow-sm sm:p-6 lg:rounded-3xl lg:p-8"
+						>
+							<p className="text-sm leading-relaxed text-hp-text-dark/80 sm:text-base sm:leading-loose">{WHO_WE_ARE.paragraph}</p>
 						</motion.div>
 
 						{/* Metrics row to fill space */}
@@ -103,14 +104,14 @@ export default function WhoWeAre() {
 					</motion.div>
 
 					{/* Image Side (Just One Image) */}
-					<motion.div variants={slideInRight} className="relative h-[400px] w-full sm:h-[500px] lg:h-[650px]">
+					<motion.div variants={slideInRight} className="hidden lg:block relative h-[400px] w-full sm:h-[500px] lg:h-[650px]">
 						<div className="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/5 lg:rounded-[3rem]">
-							<Image 
-								src="/about-children.webp" 
-								alt="Hridayam Hope Foundation" 
-								fill 
+							<Image
+								src="/about-children.webp"
+								alt="Hridayam Hope Foundation"
+								fill
 								sizes="(max-width: 1024px) 100vw, 50vw"
-								className="object-cover transition-transform duration-1000 hover:scale-105" 
+								className="object-cover transition-transform duration-1000 hover:scale-105"
 								priority
 							/>
 							{/* Soft gradient overlay */}
@@ -118,7 +119,7 @@ export default function WhoWeAre() {
 						</div>
 
 						{/* Floating decorative element (Heart) */}
-						<motion.div 
+						<motion.div
 							animate={{ y: [0, -10, 0] }}
 							transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
 							className="absolute -bottom-6 -left-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5 sm:-bottom-8 sm:-left-8 sm:h-28 sm:w-28 sm:rounded-[2rem]"
