@@ -180,6 +180,60 @@ async function apiFetch<T>(
   return res.json();
 }
 
+async function apiFetchBlob(
+  path: string,
+  options: FetchOptions = {}
+): Promise<{ blob: Blob; filename: string }> {
+  const { params, headers: customHeaders, ...rest } = options;
+
+  let url = `${API_URL}${path}`;
+  if (params) {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        searchParams.set(key, String(value));
+      }
+    });
+    const qs = searchParams.toString();
+    if (qs) url += `?${qs}`;
+  }
+
+  const tokens = getTokens();
+  const headers: Record<string, string> = {
+    ...(customHeaders as Record<string, string>),
+  };
+
+  if (tokens?.access_token) {
+    headers["Authorization"] = `Bearer ${tokens.access_token}`;
+  }
+
+  let res = await fetch(url, { ...rest, headers });
+
+  if (res.status === 401 && tokens?.refresh_token) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      headers["Authorization"] = `Bearer ${newToken}`;
+      res = await fetch(url, { ...rest, headers });
+    } else {
+      if (typeof window !== "undefined") {
+        window.location.href = "/admin/login";
+      }
+      throw new ApiError(401, { detail: "Session expired" });
+    }
+  }
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new ApiError(res.status, data);
+  }
+
+  const disposition = res.headers.get("Content-Disposition") || "";
+  const match = disposition.match(/filename="?([^"]+)"?/i);
+  const filename = match?.[1] || "download.csv";
+  const blob = await res.blob();
+  return { blob, filename };
+}
+
 async function apiUpload<T>(
   path: string,
   file: File,
@@ -283,4 +337,4 @@ export function extractPathFromUrl(url: string | null | undefined): string {
   }
 }
 
-export { apiFetch, apiUpload, apiFormFetch, ApiError, getTokens, setTokens, clearTokens, API_URL };
+export { apiFetch, apiFetchBlob, apiUpload, apiFormFetch, ApiError, getTokens, setTokens, clearTokens, API_URL };

@@ -192,18 +192,57 @@ export default function OpportunityDetailPage() {
     }
   };
 
-  const handleCareerStatus = async (applicationId: number, status: "shortlisted" | "rejected") => {
+  const handleCareerStatus = async (
+    applicationId: number,
+    status: "pending" | "shortlisted" | "rejected"
+  ) => {
     setCareerActionLoading(applicationId);
     try {
       await api.updateCareerApplicationStatus(applicationId, status);
       setCareerApplicants((prev) =>
-        prev.map((a) => (a.id === applicationId ? { ...a, status } : a))
+        prev.map((a) =>
+          a.id === applicationId
+            ? {
+                ...a,
+                status,
+                reviewed_by_id: status === "pending" ? null : a.reviewed_by_id,
+                reviewed_at: status === "pending" ? null : a.reviewed_at,
+              }
+            : a
+        )
       );
-      showToast("success", `Applicant ${status}`);
+      const messages: Record<typeof status, string> = {
+        pending: "Applicant reverted to pending",
+        shortlisted: "Applicant shortlisted",
+        rejected: "Applicant rejected",
+      };
+      showToast("success", messages[status]);
     } catch (error) {
       handleError(error, "Failed to update status");
     } finally {
       setCareerActionLoading(null);
+    }
+  };
+
+  const getCareerStatusActions = (status: string) => {
+    switch (status) {
+      case "pending":
+        return [
+          { status: "shortlisted" as const, label: "Shortlist", className: "bg-green-50 text-green-700 border-green-200 hover:bg-green-100" },
+          { status: "rejected" as const, label: "Reject", className: "bg-red-50 text-red-700 border-red-200 hover:bg-red-100" },
+        ];
+      case "shortlisted":
+        return [
+          { status: "pending" as const, label: "Revert to Pending", className: "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100" },
+          { status: "rejected" as const, label: "Reject", className: "bg-red-50 text-red-700 border-red-200 hover:bg-red-100" },
+        ];
+      case "rejected":
+        return [
+          { status: "pending" as const, label: "Revert to Pending", className: "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100" },
+          { status: "shortlisted" as const, label: "Shortlist", className: "bg-green-50 text-green-700 border-green-200 hover:bg-green-100" },
+        ];
+      default:
+        return [];
     }
   };
 
@@ -451,26 +490,17 @@ export default function OpportunityDetailPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        {app.status === "pending" ? (
-                          <>
-                            <button
-                              onClick={() => handleCareerStatus(app.id, "shortlisted")}
-                              disabled={careerActionLoading === app.id}
-                              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors disabled:opacity-50"
-                            >
-                              {careerActionLoading === app.id ? "..." : "Shortlist"}
-                            </button>
-                            <button
-                              onClick={() => handleCareerStatus(app.id, "rejected")}
-                              disabled={careerActionLoading === app.id}
-                              className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50"
-                            >
-                              {careerActionLoading === app.id ? "..." : "Reject"}
-                            </button>
-                          </>
-                        ) : (
-                          <StatusBadge status={app.status} />
-                        )}
+                        {app.status !== "pending" && <StatusBadge status={app.status} />}
+                        {getCareerStatusActions(app.status).map((action) => (
+                          <button
+                            key={action.status}
+                            onClick={() => handleCareerStatus(app.id, action.status)}
+                            disabled={careerActionLoading === app.id}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors disabled:opacity-50 ${action.className}`}
+                          >
+                            {careerActionLoading === app.id ? "..." : action.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
                     <div className="mt-3 space-y-2">

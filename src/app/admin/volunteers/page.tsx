@@ -10,6 +10,7 @@ import DataTable, { type Column } from "@/components/ui/DataTable";
 import Pagination from "@/components/ui/Pagination";
 import { StatusBadge } from "@/components/ui/Badge";
 import VolunteerForm, { type VolunteerFormData } from "@/components/admin/VolunteerForm";
+import { exportVolunteersCsv } from "@/lib/api/volunteers";
 import type { VolunteerProfileListItem } from "@/types/api";
 
 export default function VolunteersPage() {
@@ -22,6 +23,7 @@ export default function VolunteersPage() {
   const [activeType, setActiveType] = useState<string>("individual");
   const [showForm, setShowForm] = useState(false);
   const [formType, setFormType] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   const buildParams = useCallback(
     (overrides: Record<string, unknown> = {}) => {
@@ -63,6 +65,21 @@ export default function VolunteersPage() {
     } catch (err) {
       handleError(err);
       throw err;
+    }
+  };
+
+  const handleExportCsv = async () => {
+    try {
+      setExporting(true);
+      const params: Record<string, unknown> = { partner_type: activeType };
+      if (search) params.search = search;
+      if (activeFilter !== "") params.is_active = activeFilter === "true";
+      await exportVolunteersCsv(params);
+      showToast("success", "Volunteers exported as CSV");
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -127,6 +144,16 @@ export default function VolunteersPage() {
           <p className="text-gray-500 mt-1">Manage volunteer profiles and track contributions</p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={handleExportCsv}
+            disabled={exporting || volLoading}
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" /></svg>
+              {exporting ? "Exporting..." : "Export CSV"}
+            </span>
+          </button>
           <button
             onClick={() => setShowForm(true)}
             className="px-4 py-2 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"

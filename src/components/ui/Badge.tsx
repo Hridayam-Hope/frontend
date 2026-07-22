@@ -32,6 +32,7 @@ const statusVariantMap: Record<string, Variant> = {
   donated: "success",
   approved: "success",
   accepted: "success",
+  shortlisted: "success",
   sent: "success",
   pending: "warning",
   draft: "warning",

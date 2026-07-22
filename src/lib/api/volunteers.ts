@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, apiFetchBlob } from "./client";
 import type {
   PaginatedResponse,
   VolunteerApplicationListItem,
@@ -83,6 +83,21 @@ export async function getVolunteers(params?: Record<string, unknown>) {
     "/volunteers/volunteers",
     { params: params as Record<string, string | number | boolean> }
   );
+}
+
+export async function exportVolunteersCsv(params?: Record<string, unknown>) {
+  const { blob, filename } = await apiFetchBlob("/volunteers/volunteers/export", {
+    params: params as Record<string, string | number | boolean>,
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename || "volunteers_export.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 export async function getVolunteer(id: number) {
