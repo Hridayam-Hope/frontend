@@ -223,3 +223,19 @@
 		background-clip: text;
 	}
 }
+
+/* ── Program Category Colors (defined at root level to prevent Tailwind purging) ── */
+.bg-emerald-500 { background-color: #10b981 !important; }
+.bg-blue-500 { background-color: #3b82f6 !important; }
+.bg-red-500 { background-color: #ef4444 !important; }
+.bg-purple-500 { background-color: #a855f7 !important; }
+.bg-pink-500 { background-color: #ec4899 !important; }
+.bg-yellow-500 { background-color: #eab308 !important; }
+.bg-orange-500 { background-color: #f97316 !important; }
+.bg-amber-500 { background-color: #f59e0b !important; }
+.bg-indigo-500 { background-color: #6366f1 !important; }
+.bg-teal-500 { background-color: #14b8a6 !important; }
+.bg-cyan-500 { background-color: #06b6d4 !important; }
+.bg-rose-500 { background-color: #f43f5e !important; }
+
+

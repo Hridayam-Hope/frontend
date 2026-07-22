@@ -33,19 +33,19 @@ export const BLOG_CATEGORIES = ['All', 'Education', 'Environment', 'Community'] 
 export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
-	rahul: {
+	manoj: {
 		name: 'Manoj Manfred Billa',
 		role: 'Volunteer Coordinator',
 		bio: 'Leading volunteer initiatives and sharing stories of impact from the field.',
 		avatar: null,
 	},
-	priya: {
+	vinoliya: {
 		name: 'Vinoliya',
 		role: 'Content Writer',
 		bio: 'Documenting the journey of communities transforming through education and care.',
 		avatar: null,
 	},
-	kavita: {
+	ramtej: {
 		name: 'Vigna Ramtej Telagarapu',
 		role: 'Education Lead',
 		bio: 'Passionate about bringing quality education to every child.',
@@ -89,7 +89,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		],
 		category: 'Education',
 		featuredImage: '/program_2.webp',
-		author: BLOG_AUTHORS.kavita,
+		author: BLOG_AUTHORS.ramtej,
 		publishedAt: '2026-03-11',
 		readTime: 5,
 		isFeatured: true,
@@ -137,7 +137,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		],
 		category: 'Environment',
 		featuredImage: '/blog_2.webp',
-		author: BLOG_AUTHORS.rahul,
+		author: BLOG_AUTHORS.manoj,
 		publishedAt: '2026-03-11',
 		readTime: 4,
 		isFeatured: false,
@@ -193,7 +193,7 @@ export const BLOG_POSTS: BlogPost[] = [
 		],
 		category: 'Community',
 		featuredImage: '/volunteers.webp',
-		author: BLOG_AUTHORS.priya,
+		author: BLOG_AUTHORS.vinoliya,
 		publishedAt: '2026-02-15',
 		readTime: 6,
 		isFeatured: false,

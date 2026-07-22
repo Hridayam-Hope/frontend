@@ -149,7 +149,7 @@ export const TESTIMONIALS = [
   },
   {
     quote:
-      "Spreading awareness made me realize that even a message can shift how people think and act—and that gave my experience real meaning.",
+      "Spreading awareness made me realize that even a message can shift how people think and act, and that gave my experience real meaning.",
     name: "Bhanu Sai",
     role: "Volunteer",
     image: "/testimonial-person.webp",
@@ -169,8 +169,6 @@ export const FOOTER = {
   aboutLinks: [
     { label: "Our Mission", href: "/about#purpose" },
     { label: "Our Team", href: "/about#team" },
-    // { label: "Annual Reports", href: "#" },
-    // { label: "Transparency", href: "#" },
     { label: "Contact Us", href: "/contact" },
   ],
   programLinks: [
@@ -182,7 +180,6 @@ export const FOOTER = {
     { label: "Technology for Good", href: "/what-we-do#technology-innovation" },
   ],
   joinLinks: [
-    // { label: "Donate Now", href: "#" },
     { label: "Join Our Team", href: "/join-us" },
     { label: "Partner with Us", href: "/join-us" },
     { label: "Request a Campaign", href: "/join-us" },
@@ -194,8 +191,7 @@ export const FOOTER = {
   },
   registrations: "",
   bottomLinks: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Use", href: "#" },
-    // { label: "Refund Policy", href: "#" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Use", href: "/terms-of-use" },
   ],
 } as const;
